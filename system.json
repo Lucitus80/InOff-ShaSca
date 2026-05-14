@@ -1,0 +1,51 @@
+{
+  "id": "shadow-scar",
+  "title": "Shadow Scar",
+  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: tabbed character sheet, attributes and skills, item management, d6-pool rolls, resources, background page, equipment, techniques, mikkyo, conditions, expanded item sheets, usable Techniques/Mikkyo, Technique Rank/Origin, Mikkyo Ki spending, usable weapons, usable gear, equipped toggles, and active condition reminders in roll dialogs.",
+  "version": "0.6.0",
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "authors": [
+    {
+      "name": "Dein Name"
+    }
+  ],
+  "esmodules": [
+    "shadow-scar.mjs"
+  ],
+  "styles": [
+    "styles/shadow-scar.css"
+  ],
+  "languages": [
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
+  "documentTypes": {
+    "Actor": {
+      "character": {},
+      "npc": {}
+    },
+    "Item": {
+      "gear": {},
+      "weapon": {},
+      "technique": {},
+      "mikkyo": {},
+      "condition": {}
+    }
+  },
+  "grid": {
+    "distance": 1,
+    "units": "m"
+  },
+  "initiative": "1d6",
+  "primaryTokenAttribute": "resources.vitality",
+  "secondaryTokenAttribute": "resources.ki",
+  "url": "",
+  "manifest": "",
+  "download": ""
+}

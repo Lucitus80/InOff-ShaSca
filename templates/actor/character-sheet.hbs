@@ -1,0 +1,257 @@
+<form class="{{cssClass}} shadow-scar character-sheet" autocomplete="off">
+  <header class="sheet-header character-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="112" width="112" />
+
+    <div class="header-fields identity-fields">
+      <label class="field-block character-name-field">
+        <span>Name</span>
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+      </label>
+
+      <label class="field-block">
+        <span>Concept</span>
+        <input name="system.details.concept" type="text" value="{{system.details.concept}}" placeholder="Concept" />
+      </label>
+    </div>
+
+    <section class="header-resources" aria-label="Resources">
+      <div class="resource-card">
+        <label>{{config.resources.vitality}}</label>
+        <div class="resource-inputs">
+          <input name="system.resources.vitality.value" type="number" value="{{system.resources.vitality.value}}" min="0" step="1" aria-label="Current Vitality" />
+          <span>/</span>
+          <input name="system.resources.vitality.max" type="number" value="{{system.resources.vitality.max}}" min="0" step="1" aria-label="Maximum Vitality" />
+        </div>
+      </div>
+
+      <div class="resource-card">
+        <label>{{config.resources.ki}}</label>
+        <div class="resource-inputs">
+          <input name="system.resources.ki.value" type="number" value="{{system.resources.ki.value}}" min="0" step="1" aria-label="Current Ki Reserve" />
+          <span>/</span>
+          <input name="system.resources.ki.max" type="number" value="{{system.resources.ki.max}}" min="0" step="1" aria-label="Maximum Ki Reserve" />
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <nav class="sheet-tabs" aria-label="Character Sheet Pages">
+    <button type="button" data-action="tab" data-tab="general" class='{{#if (eq activeTab "general")}}active{{/if}}'>General</button>
+    <button type="button" data-action="tab" data-tab="techniques" class='{{#if (eq activeTab "techniques")}}active{{/if}}'>Techniques & Mikkyo</button>
+    <button type="button" data-action="tab" data-tab="equipment" class='{{#if (eq activeTab "equipment")}}active{{/if}}'>Equipment & Weapons</button>
+    <button type="button" data-action="tab" data-tab="background" class='{{#if (eq activeTab "background")}}active{{/if}}'>Background</button>
+    <button type="button" data-action="tab" data-tab="conditions" class='{{#if (eq activeTab "conditions")}}active{{/if}}'>Conditions</button>
+  </nav>
+
+  <section class="sheet-body tabbed-sheet-body">
+    {{#if (eq activeTab "general")}}
+      <section class="tab-page general-page">
+        <section class="panel attribute-skill-panel">
+          <h2>Attributes & Skills</h2>
+          <p class="hint">Click an attribute or skill name to roll it. Attribute rolls use Attribute dice; skill rolls use Attribute + Skill dice.</p>
+
+          {{#if activeConditions.length}}
+            <aside class="active-condition-summary">
+              <strong>Active Conditions:</strong>
+              {{#each activeConditions as |condition|}}
+                <span>{{condition.name}}{{#if condition.system.penalty}} ({{condition.system.penalty}}){{/if}}</span>
+              {{/each}}
+            </aside>
+          {{/if}}
+
+          <div class="attribute-skill-grid">
+            {{#each config.attributes as |attributeLabel attributeKey|}}
+              <section class="attribute-skill-column">
+                <header class="attribute-column-header">
+                  <button
+                    type="button"
+                    class="roll-name attribute-name"
+                    data-action="roll-attribute"
+                    data-attribute="{{attributeKey}}"
+                    title="Roll {{attributeLabel}}"
+                  >
+                    {{attributeLabel}}
+                  </button>
+
+                  <input
+                    name="system.attributes.{{attributeKey}}"
+                    type="number"
+                    value="{{lookup ../system.attributes attributeKey}}"
+                    min="0"
+                    step="1"
+                  />
+                </header>
+
+                <ol class="skill-list">
+                  {{#each (lookup ../config.skills attributeKey) as |skillLabel skillKey|}}
+                    <li class="skill-row">
+                      <button
+                        type="button"
+                        class="roll-name skill-name"
+                        data-action="roll-skill"
+                        data-attribute="{{attributeKey}}"
+                        data-skill="{{skillKey}}"
+                        title="Roll {{skillLabel}}"
+                      >
+                        {{skillLabel}}
+                      </button>
+
+                      <input
+                        name="system.skills.{{attributeKey}}.{{skillKey}}"
+                        type="number"
+                        value="{{lookup (lookup ../../system.skills attributeKey) skillKey}}"
+                        min="0"
+                        step="1"
+                      />
+                    </li>
+                  {{/each}}
+                </ol>
+              </section>
+            {{/each}}
+          </div>
+        </section>
+      </section>
+    {{/if}}
+
+    {{#if (eq activeTab "techniques")}}
+      <section class="tab-page techniques-page two-column-page">
+        <section class="panel item-panel">
+          <h2>Techniques</h2>
+          <p class="hint">Drag Technique items onto this sheet to add them to the character.</p>
+
+          <ol class="item-list">
+            {{#each itemsByType.technique as |item|}}
+              <li class="item-row" data-item-id="{{item.id}}">
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
+                {{#if item.system.rank}}<span class="item-detail">Rank: {{item.system.rank}}</span>{{/if}}
+                {{#if item.system.origin}}<span class="item-detail">Origin: {{item.system.origin}}</span>{{/if}}
+                <button type="button" data-action="item-open" title="Edit">⚙</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No techniques.</li>
+            {{/each}}
+          </ol>
+        </section>
+
+        <section class="panel item-panel">
+          <h2>Mikkyo</h2>
+          <p class="hint">Mikkyo has its own item type so it can later receive dedicated rules.</p>
+
+          <ol class="item-list">
+            {{#each itemsByType.mikkyo as |item|}}
+              <li class="item-row" data-item-id="{{item.id}}">
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
+                {{#if item.system.rank}}<span class="item-detail">Rank: {{item.system.rank}}</span>{{/if}}
+                {{#if item.system.origin}}<span class="item-detail">Origin: {{item.system.origin}}</span>{{/if}}
+                <span class="item-detail">Ki: {{item.system.kiCost}}</span>
+                <button type="button" data-action="item-open" title="Edit">⚙</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No mikkyo.</li>
+            {{/each}}
+          </ol>
+        </section>
+      </section>
+    {{/if}}
+
+    {{#if (eq activeTab "equipment")}}
+      <section class="tab-page equipment-page two-column-page">
+        <section class="panel item-panel">
+          <h2>Gear</h2>
+          <p class="hint">General equipment and carried items. Click Use to post a gear card to chat.</p>
+
+          <ol class="item-list equipment-list">
+            {{#each itemsByType.gear as |item|}}
+              <li class="item-row gear-row" data-item-id="{{item.id}}">
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="item-open">{{item.name}}</a>
+                <span class="item-detail">{{#if item.system.category}}{{item.system.category}}{{else}}Gear{{/if}} ×{{item.system.quantity}}</span>
+                <label class="item-inline-check" title="Equipped / carried actively">
+                  <input type="checkbox" data-action="item-toggle-equipped" {{#if item.system.equipped}}checked{{/if}} />
+                  <span>Eq.</span>
+                </label>
+                <button type="button" data-action="use-gear" title="Use Gear">Use</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No gear.</li>
+            {{/each}}
+          </ol>
+        </section>
+
+        <section class="panel item-panel">
+          <h2>Weapons</h2>
+          <p class="hint">Click Attack to roll the weapon's configured attack skill.</p>
+
+          <ol class="item-list equipment-list">
+            {{#each itemsByType.weapon as |item|}}
+              <li class="item-row weapon-row" data-item-id="{{item.id}}">
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="item-open">{{item.name}}</a>
+                <span class="item-detail">{{#if item.system.damage}}{{item.system.damage}}{{else}}Damage —{{/if}} {{#if item.system.range}}/ {{item.system.range}}{{/if}}</span>
+                <label class="item-inline-check" title="Equipped">
+                  <input type="checkbox" data-action="item-toggle-equipped" {{#if item.system.equipped}}checked{{/if}} />
+                  <span>Eq.</span>
+                </label>
+                <button type="button" data-action="roll-weapon" title="Attack with {{item.name}}">Attack</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No weapons.</li>
+            {{/each}}
+          </ol>
+        </section>
+      </section>
+    {{/if}}
+
+    {{#if (eq activeTab "background")}}
+      <section class="tab-page background-page">
+        <section class="panel notes-panel">
+          <h2>Background Info</h2>
+
+          <label class="field-block">
+            <span>Background</span>
+            <textarea name="system.details.background" rows="8">{{system.details.background}}</textarea>
+          </label>
+
+          <label class="field-block">
+            <span>Contacts / Relationships</span>
+            <textarea name="system.details.contacts" rows="6">{{system.details.contacts}}</textarea>
+          </label>
+
+          <label class="field-block">
+            <span>Notes</span>
+            <textarea name="system.details.notes" rows="8">{{system.details.notes}}</textarea>
+          </label>
+        </section>
+      </section>
+    {{/if}}
+
+    {{#if (eq activeTab "conditions")}}
+      <section class="tab-page conditions-page">
+        <section class="panel item-panel conditions-panel">
+          <h2>Conditions</h2>
+          <p class="hint">All Condition items on this character are shown here. Active conditions are shown in roll dialogs, but their penalty text is still applied manually as a bonus/penalty.</p>
+
+          <ol class="item-list condition-list">
+            {{#each itemsByType.condition as |item|}}
+              <li class="item-row condition-row" data-item-id="{{item.id}}">
+                <input type="checkbox" data-action="condition-toggle" {{#if item.system.active}}checked{{/if}} aria-label="Active condition" />
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="item-open">{{item.name}}</a>
+                <span class="item-detail">{{#if item.system.category}}{{item.system.category}} / {{/if}}Intensity: {{item.system.intensity}}{{#if item.system.penalty}} / {{item.system.penalty}}{{/if}}</span>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No conditions.</li>
+            {{/each}}
+          </ol>
+        </section>
+      </section>
+    {{/if}}
+  </section>
+</form>

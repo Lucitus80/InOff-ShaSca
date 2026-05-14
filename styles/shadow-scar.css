@@ -1,0 +1,604 @@
+/*
+ * Shadow Scar CSS
+ *
+ * Diese Datei enthält nur Layout und Optik. Spiellogik gehört nicht hierher,
+ * sondern in die .mjs-Dateien.
+ */
+
+.shadow-scar {
+  font-family: var(--font-primary, sans-serif);
+}
+
+.shadow-scar .sheet-header {
+  display: flex;
+  gap: 0.75rem;
+  align-items: flex-start;
+  margin-bottom: 0.75rem;
+}
+
+.shadow-scar .profile-img {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  object-fit: cover;
+}
+
+.shadow-scar .header-fields {
+  flex: 1;
+}
+
+.shadow-scar h1,
+.shadow-scar h2 {
+  margin: 0 0 0.5rem 0;
+}
+
+.shadow-scar h1 input {
+  width: 100%;
+}
+
+.shadow-scar .sheet-body {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.shadow-scar .panel {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.shadow-scar .field-block {
+  display: grid;
+  gap: 0.25rem;
+}
+
+.shadow-scar .attribute-grid,
+.shadow-scar .resource-grid {
+  display: grid;
+  gap: 0.5rem;
+}
+
+.shadow-scar .attribute-row,
+.shadow-scar .resource-row {
+  display: grid;
+  grid-template-columns: 1fr 5rem 5rem;
+  gap: 0.5rem;
+  align-items: center;
+}
+
+.shadow-scar .resource-row {
+  grid-template-columns: 1fr 5rem 1rem 5rem;
+}
+
+.shadow-scar textarea {
+  width: 100%;
+  resize: vertical;
+}
+
+.shadow-scar .hint {
+  opacity: 0.8;
+  margin: 0 0 0.5rem 0;
+}
+
+.shadow-scar h3 {
+  margin: 0.75rem 0 0.25rem 0;
+}
+
+.shadow-scar .item-list {
+  list-style: none;
+  margin: 0 0 0.5rem 0;
+  padding: 0;
+}
+
+.shadow-scar .item-row {
+  display: grid;
+  grid-template-columns: 1.75rem 1fr auto 2rem;
+  gap: 0.5rem;
+  align-items: center;
+  padding: 0.25rem 0;
+  border-bottom: 1px solid var(--color-border-light-tertiary, #999);
+}
+
+.shadow-scar .item-row img {
+  border: none;
+  object-fit: cover;
+}
+
+.shadow-scar .item-row a {
+  font-weight: bold;
+}
+
+.shadow-scar .item-detail,
+.shadow-scar .empty,
+.shadow-scar .item-type-label {
+  opacity: 0.8;
+}
+
+.shadow-scar .item-row button {
+  line-height: 1;
+}
+
+/* v0.4: Roll-Dialog */
+.shadow-scar.roll-dialog .roll-dialog-row {
+  display: grid;
+  grid-template-columns: 1fr 120px;
+  gap: 0.5rem;
+  align-items: center;
+  margin: 0.5rem 0;
+}
+
+.shadow-scar.roll-dialog .roll-dialog-row input {
+  text-align: center;
+}
+
+/* v0.4: Chatkarte für Attributwürfe */
+.shadow-scar.roll-card {
+  border: 1px solid #777;
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.shadow-scar.roll-card .roll-card-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  border-bottom: 1px solid #999;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+.shadow-scar.roll-card .roll-card-header h3 {
+  margin: 0;
+}
+
+.shadow-scar.roll-card .roll-card-details {
+  margin: 0;
+}
+
+.shadow-scar.roll-card .roll-card-details div {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+  margin: 0.25rem 0;
+}
+
+.shadow-scar.roll-card .roll-card-details dt {
+  font-weight: bold;
+}
+
+.shadow-scar.roll-card .roll-card-total {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-top: 0.75rem;
+  padding-top: 0.5rem;
+  border-top: 1px solid #999;
+  font-size: 1.2rem;
+}
+
+/* v0.5: Skillbereich */
+.shadow-scar .skill-groups {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.shadow-scar .skill-group {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  padding: 0.5rem;
+}
+
+.shadow-scar .skill-group h3 {
+  margin-top: 0;
+}
+
+.shadow-scar .skill-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.shadow-scar .skill-row {
+  display: grid;
+  grid-template-columns: 1fr 3.5rem 4.5rem;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.2rem 0;
+}
+
+.shadow-scar .skill-row input {
+  text-align: center;
+}
+
+/* v0.5: Chatkarte für Skillwürfe */
+.shadow-scar.chat-card {
+  border: 1px solid #777;
+  border-radius: 6px;
+  padding: 0.75rem;
+}
+
+.shadow-scar.chat-card header {
+  border-bottom: 1px solid #999;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.25rem;
+}
+
+.shadow-scar.chat-card header h2 {
+  margin: 0;
+}
+
+.shadow-scar.chat-card dl {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 0.25rem 0.75rem;
+  margin: 0.5rem 0;
+}
+
+.shadow-scar.chat-card dt {
+  font-weight: bold;
+}
+
+.shadow-scar.chat-card dd {
+  margin: 0;
+  text-align: right;
+}
+
+.shadow-scar .dice-results {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin: 0.5rem 0;
+}
+
+.shadow-scar .die-result {
+  display: inline-flex;
+  justify-content: center;
+  align-items: center;
+  min-width: 1.75rem;
+  min-height: 1.75rem;
+  border: 1px solid #777;
+  border-radius: 4px;
+  font-weight: bold;
+}
+
+.shadow-scar .roll-total,
+.shadow-scar .roll-outcome {
+  margin: 0.5rem 0 0 0;
+  font-size: 1.1rem;
+}
+
+.shadow-scar .roll-outcome.success {
+  font-weight: bold;
+}
+
+.shadow-scar .roll-outcome.failure {
+  opacity: 0.85;
+  font-weight: bold;
+}
+
+
+/* v0.5.3: Combined three-column attribute and skill layout */
+.shadow-scar .attribute-skill-panel .hint {
+  margin-bottom: 0.75rem;
+}
+
+.shadow-scar .attribute-skill-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+
+.shadow-scar .attribute-skill-column {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  padding: 0.6rem;
+}
+
+.shadow-scar .attribute-column-header {
+  display: grid;
+  grid-template-columns: 1fr 4rem;
+  gap: 0.5rem;
+  align-items: center;
+  margin-bottom: 0.5rem;
+  padding-bottom: 0.4rem;
+  border-bottom: 1px solid var(--color-border-light-tertiary, #999);
+}
+
+.shadow-scar .attribute-column-header input,
+.shadow-scar .skill-row input {
+  text-align: center;
+}
+
+.shadow-scar .skill-row {
+  display: grid;
+  grid-template-columns: 1fr 3.5rem;
+  gap: 0.35rem;
+  align-items: center;
+  padding: 0.2rem 0;
+}
+
+.shadow-scar .roll-name {
+  border: none;
+  background: transparent;
+  box-shadow: none;
+  color: inherit;
+  cursor: pointer;
+  height: auto;
+  line-height: 1.2;
+  margin: 0;
+  padding: 0.15rem 0;
+  text-align: left;
+  width: auto;
+}
+
+.shadow-scar .roll-name:hover,
+.shadow-scar .roll-name:focus {
+  text-decoration: underline;
+  text-shadow: none;
+}
+
+.shadow-scar .attribute-name {
+  font-size: 1.1rem;
+  font-weight: bold;
+}
+
+.shadow-scar .skill-name {
+  font-weight: normal;
+}
+
+
+/* v0.5.4: Cleaner character header and lower sheet layout */
+.shadow-scar .character-header {
+  display: grid;
+  grid-template-columns: 112px minmax(0, 1fr) 240px;
+  gap: 0.9rem;
+  align-items: stretch;
+}
+
+.shadow-scar .character-header .profile-img {
+  width: 112px;
+  height: 112px;
+  border-radius: 6px;
+}
+
+.shadow-scar .identity-fields {
+  display: grid;
+  gap: 0.6rem;
+  align-content: start;
+}
+
+.shadow-scar .character-name-field input {
+  font-size: 1.5rem;
+  font-weight: bold;
+  height: 2.35rem;
+}
+
+.shadow-scar .header-resources {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.shadow-scar .resource-card {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  padding: 0.55rem;
+}
+
+.shadow-scar .resource-card label {
+  display: block;
+  font-weight: bold;
+  margin-bottom: 0.35rem;
+}
+
+.shadow-scar .resource-inputs {
+  display: grid;
+  grid-template-columns: 1fr 1rem 1fr;
+  gap: 0.35rem;
+  align-items: center;
+}
+
+.shadow-scar .resource-inputs input {
+  text-align: center;
+}
+
+.shadow-scar .resource-inputs span {
+  text-align: center;
+  opacity: 0.75;
+}
+
+.shadow-scar .sheet-lower-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.35fr) minmax(240px, 0.65fr);
+  gap: 0.75rem;
+}
+
+.shadow-scar .notes-panel textarea {
+  min-height: 18rem;
+}
+
+@media (max-width: 760px) {
+  .shadow-scar .character-header,
+  .shadow-scar .attribute-skill-grid,
+  .shadow-scar .sheet-lower-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .shadow-scar .character-header .profile-img {
+    width: 96px;
+    height: 96px;
+  }
+}
+
+/* v0.5.5: Tabbed character sheet pages */
+.shadow-scar .sheet-tabs {
+  display: grid;
+  grid-template-columns: repeat(5, minmax(0, 1fr));
+  gap: 0.35rem;
+  margin: 0 0 0.75rem 0;
+}
+
+.shadow-scar .sheet-tabs button {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  padding: 0.35rem 0.5rem;
+  line-height: 1.2;
+}
+
+.shadow-scar .sheet-tabs button.active {
+  font-weight: bold;
+  box-shadow: inset 0 0 0 1px currentColor;
+}
+
+.shadow-scar .tabbed-sheet-body {
+  display: block;
+}
+
+.shadow-scar .tab-page {
+  display: grid;
+  gap: 0.75rem;
+}
+
+.shadow-scar .two-column-page {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.shadow-scar .background-page textarea {
+  min-height: 8rem;
+}
+
+.shadow-scar .condition-row {
+  grid-template-columns: 1.5rem 1.75rem 1fr auto 2rem;
+}
+
+.shadow-scar .condition-row input[type="checkbox"] {
+  justify-self: center;
+}
+
+.shadow-scar .inline-checkbox {
+  grid-template-columns: 1fr auto;
+  align-items: center;
+}
+
+@media (max-width: 760px) {
+  .shadow-scar .sheet-tabs,
+  .shadow-scar .two-column-page {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* v0.5.6: richer item sheets */
+.shadow-scar .item-sheet-body {
+  gap: 0.75rem;
+}
+
+.shadow-scar .item-field-grid {
+  display: grid;
+  gap: 0.6rem;
+  margin-bottom: 0.6rem;
+}
+
+.shadow-scar .item-field-grid.two-fields {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.shadow-scar .item-field-grid.three-fields {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.shadow-scar .item-fields-panel select,
+.shadow-scar .item-fields-panel input[type="text"],
+.shadow-scar .item-fields-panel input[type="number"] {
+  width: 100%;
+}
+
+.shadow-scar .item-fields-panel .inline-checkbox {
+  margin: 0.35rem 0 0.6rem 0;
+}
+
+@media (max-width: 760px) {
+  .shadow-scar .item-field-grid.two-fields,
+  .shadow-scar .item-field-grid.three-fields {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* v0.58: Technique/Mikkyo use dialog and chat cards */
+.shadow-scar .checkbox-line {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  margin: 0.5rem 0;
+}
+
+.shadow-scar .dialog-summary {
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 6px;
+  margin: 0.5rem 0;
+  padding: 0.5rem;
+}
+
+.shadow-scar .warning {
+  border-left: 3px solid #b75d00;
+  margin: 0.5rem 0;
+  padding-left: 0.5rem;
+}
+
+.shadow-scar.chat-card.ki-item-card .card-grid {
+  display: grid;
+  gap: 0.25rem 0.75rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  margin: 0.5rem 0;
+}
+
+.shadow-scar.chat-card.ki-item-card .card-effect {
+  border-top: 1px solid rgba(0, 0, 0, 0.15);
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+/* v0.60: Items pass - equipment actions, weapon rolls, visible conditions */
+.shadow-scar .equipment-list .item-row,
+.shadow-scar .gear-row,
+.shadow-scar .weapon-row {
+  grid-template-columns: 1.75rem minmax(8rem, 1fr) minmax(6rem, auto) auto auto 2rem;
+}
+
+.shadow-scar .condition-row {
+  grid-template-columns: 1.25rem 1.75rem minmax(8rem, 1fr) minmax(8rem, auto) 2rem;
+}
+
+.shadow-scar .item-inline-check {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.25rem;
+  white-space: nowrap;
+  font-size: 0.9em;
+}
+
+.shadow-scar .item-inline-check input {
+  margin: 0;
+}
+
+.shadow-scar .active-condition-summary {
+  border: 1px dashed var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  padding: 0.5rem;
+  margin: 0.5rem 0 0.75rem 0;
+}
+
+.shadow-scar .active-condition-summary span {
+  display: inline-block;
+  margin-left: 0.35rem;
+}
+
+.shadow-scar .card-effect {
+  border-top: 1px solid #999;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
+}
+
+.shadow-scar .card-effect p,
+.shadow-scar .card-tags {
+  margin: 0.25rem 0 0 0;
+}

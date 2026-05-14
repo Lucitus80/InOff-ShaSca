@@ -1,0 +1,45 @@
+<div class="shadow-scar chat-card attribute-roll-card">
+  <header>
+    <h2>{{attributeLabel}}</h2>
+    <p>{{actorName}}</p>
+  </header>
+
+  <dl>
+    <dt>Attribute value</dt>
+    <dd>{{attributeValue}}</dd>
+
+    <dt>Bonus/Penalty</dt>
+    <dd>{{modifier}}</dd>
+
+    <dt>Dice pool</dt>
+    <dd>{{pool}}d6</dd>
+
+    <dt>Difficulty</dt>
+    <dd>{{difficulty}}</dd>
+  </dl>
+
+  {{#if activeConditions.length}}
+    <section class="card-effect">
+      <strong>Active Conditions</strong>
+      <p>
+        {{#each activeConditions as |condition|}}
+          {{condition.name}}{{#if condition.penalty}} ({{condition.penalty}}){{/if}}{{#unless @last}}; {{/unless}}
+        {{/each}}
+      </p>
+    </section>
+  {{/if}}
+
+  <p class="dice-results">
+    {{#each dice as |die|}}
+      <span class="die-result">{{die}}</span>
+    {{/each}}
+  </p>
+
+  <p class="roll-total">
+    Successes: <strong>{{successes}}</strong>
+  </p>
+
+  <p class="roll-outcome {{#if success}}success{{else}}failure{{/if}}">
+    {{resultLabel}}
+  </p>
+</div>

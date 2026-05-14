@@ -1,0 +1,62 @@
+<div class="shadow-scar chat-card weapon-roll-card">
+  <header>
+    <h2>{{weaponName}}</h2>
+    <p>{{actorName}} · {{skillLabel}} with {{attributeLabel}}</p>
+  </header>
+
+  <dl>
+    <dt>Attribute value</dt>
+    <dd>{{attributeValue}}</dd>
+
+    <dt>Skill value</dt>
+    <dd>{{skillValue}}</dd>
+
+    <dt>Bonus/Penalty</dt>
+    <dd>{{modifier}}</dd>
+
+    <dt>Dice pool</dt>
+    <dd>{{pool}}d6</dd>
+
+    <dt>Difficulty</dt>
+    <dd>{{difficulty}}</dd>
+
+    {{#if damage}}
+      <dt>Damage</dt>
+      <dd>{{damage}}</dd>
+    {{/if}}
+
+    {{#if range}}
+      <dt>Range</dt>
+      <dd>{{range}}</dd>
+    {{/if}}
+  </dl>
+
+  <p class="dice-results">
+    {{#each dice as |die|}}
+      <span class="die-result">{{die}}</span>
+    {{/each}}
+  </p>
+
+  <p class="roll-total">
+    Successes: <strong>{{successes}}</strong>
+  </p>
+
+  <p class="roll-outcome {{#if success}}success{{else}}failure{{/if}}">
+    {{resultLabel}}
+  </p>
+
+  {{#if activeConditions.length}}
+    <section class="card-effect">
+      <strong>Active Conditions</strong>
+      <p>
+        {{#each activeConditions as |condition|}}
+          {{condition.name}}{{#if condition.penalty}} ({{condition.penalty}}){{/if}}{{#unless @last}}; {{/unless}}
+        {{/each}}
+      </p>
+    </section>
+  {{/if}}
+
+  {{#if tags}}
+    <p class="card-tags"><strong>Tags:</strong> {{tags}}</p>
+  {{/if}}
+</div>

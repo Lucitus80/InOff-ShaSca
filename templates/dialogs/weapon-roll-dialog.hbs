@@ -1,0 +1,48 @@
+<form class="shadow-scar roll-dialog weapon-roll-dialog">
+  <p>
+    <strong>{{actorName}}</strong> attacks with
+    <strong>{{weaponName}}</strong> using <strong>{{skillLabel}}</strong> with <strong>{{attributeLabel}}</strong>.
+  </p>
+
+  <dl>
+    <dt>Attribute value</dt>
+    <dd>{{attributeValue}}</dd>
+
+    <dt>Skill value</dt>
+    <dd>{{skillValue}}</dd>
+
+    <dt>Base dice pool</dt>
+    <dd>{{basePool}}d6</dd>
+
+    {{#if damage}}
+      <dt>Damage</dt>
+      <dd>{{damage}}</dd>
+    {{/if}}
+
+    {{#if range}}
+      <dt>Range</dt>
+      <dd>{{range}}</dd>
+    {{/if}}
+  </dl>
+
+  {{#if activeConditions.length}}
+    <aside class="active-condition-summary">
+      <strong>Active Conditions:</strong>
+      {{#each activeConditions as |condition|}}
+        <span>{{condition.name}}{{#if condition.penalty}} ({{condition.penalty}}){{/if}}</span>
+      {{/each}}
+    </aside>
+  {{/if}}
+
+  <label class="field-block">
+    <span>Bonus/Penalty</span>
+    <input name="modifier" type="number" value="0" step="1" autofocus />
+  </label>
+
+  <label class="field-block">
+    <span>Difficulty</span>
+    <input name="difficulty" type="number" value="1" min="0" step="1" />
+  </label>
+
+  <p class="hint">Current rule: Roll Attribute + Skill + bonus/penalty in d6. 4–5 count as 1 success, 6 counts as 2 successes. Successes ≥ difficulty means success.</p>
+</form>
