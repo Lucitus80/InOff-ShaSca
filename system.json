@@ -45,7 +45,7 @@
   "initiative": "1d6",
   "primaryTokenAttribute": "resources.vitality",
   "secondaryTokenAttribute": "resources.ki",
-  "url": "",
-  "manifest": "",
-  "download": ""
+  "url": "https://github.com/Lucitus80/InOff-ShaSca",
+  "manifest": "https://github.com/Lucitus80/InOff-ShaSca/releases/download/v0.6.0/system.json",
+  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.6.0.zip"
 }
