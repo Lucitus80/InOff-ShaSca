@@ -19,14 +19,15 @@
     <aside class="active-condition-summary">
       <strong>Active Conditions:</strong>
       {{#each activeConditions as |condition|}}
-        <span>{{condition.name}}{{#if condition.penalty}} ({{condition.penalty}}){{/if}}</span>
+        <span>{{condition.name}}{{#if condition.modifier}} ({{condition.modifier}} dice){{/if}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}</span>
       {{/each}}
+      <span><strong>Total:</strong> {{conditionModifier}}</span>
     </aside>
   {{/if}}
 
   <label class="field-block">
     <span>Bonus/Penalty</span>
-    <input name="modifier" type="number" value="0" step="1" />
+    <input name="modifier" type="number" value="{{conditionModifier}}" step="1" />
   </label>
 
   <label class="field-block">
@@ -34,5 +35,5 @@
     <input name="difficulty" type="number" value="1" min="0" step="1" />
   </label>
 
-  <p class="hint">Current rule: Roll Attribute + Skill + bonus/penalty in d6. 4–5 count as 1 success, 6 counts as 2 successes. Successes ≥ difficulty means success.</p>
+  <p class="hint">Current rule: Roll Attribute + Skill + bonus/penalty in d6. Active Condition modifiers are prefilled. 4–5 count as 1 success, 6 counts as 2 successes. Successes ≥ difficulty means success.</p>
 </form>

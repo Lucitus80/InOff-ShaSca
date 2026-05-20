@@ -14,6 +14,11 @@
     <dt>Bonus/Penalty</dt>
     <dd>{{modifier}}</dd>
 
+    {{#if conditionModifier}}
+      <dt>Condition Modifier</dt>
+      <dd>{{conditionModifier}}</dd>
+    {{/if}}
+
     <dt>Dice pool</dt>
     <dd>{{pool}}d6</dd>
 
@@ -22,7 +27,7 @@
 
     {{#if damage}}
       <dt>Damage</dt>
-      <dd>{{damage}}</dd>
+      <dd><strong>{{damage}}</strong></dd>
     {{/if}}
 
     {{#if range}}
@@ -41,6 +46,13 @@
     Successes: <strong>{{successes}}</strong>
   </p>
 
+  {{#if damage}}
+    <section class="card-effect damage-note">
+      <strong>Damage</strong>
+      <p>{{damage}}{{#if success}} — apply after defense/resistance according to your table rules.{{else}} — attack failed unless another rule applies.{{/if}}</p>
+    </section>
+  {{/if}}
+
   <p class="roll-outcome {{#if success}}success{{else}}failure{{/if}}">
     {{resultLabel}}
   </p>
@@ -50,7 +62,7 @@
       <strong>Active Conditions</strong>
       <p>
         {{#each activeConditions as |condition|}}
-          {{condition.name}}{{#if condition.penalty}} ({{condition.penalty}}){{/if}}{{#unless @last}}; {{/unless}}
+          {{condition.name}}{{#if condition.modifier}} ({{condition.modifier}} dice){{/if}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}{{#unless @last}}; {{/unless}}
         {{/each}}
       </p>
     </section>

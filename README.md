@@ -1,6 +1,6 @@
 # Shadow Scar Foundry VTT System Prototype
 
-Version: 0.6.0  
+Version: 0.6.2  
 Foundry compatibility target: v14
 
 This is an unofficial prototype system for Shadow Scar.
@@ -20,8 +20,9 @@ This is an unofficial prototype system for Shadow Scar.
 - Resources: `vitality`, `ki`.
 - Skills are grouped under their corresponding attribute.
 - Attribute and skill names are clickable and trigger d6-pool rolls.
-- Conditions can be toggled active/inactive from the Conditions tab. Active conditions are shown in roll dialogs and roll chat cards as mechanical reminders.
-- Weapon items can be rolled from the Equipment & Weapons tab.
+- Conditions can be toggled active/inactive from the Conditions tab. Active conditions are shown in roll dialogs and roll chat cards. Their structured Roll Modifier is prefilled into roll dialogs automatically.
+- Vitality and Ki have quick controls in the character header. Vitality also has Damage and Heal dialogs.
+- Weapon items can be rolled from the Equipment & Weapons tab. Weapon chat cards now call out damage more clearly for manual application.
 - Gear items can be used from the Equipment & Weapons tab to create chat output.
 - Gear and Weapon items can be toggled equipped directly from the character sheet.
 - Technique and Mikkyo items can be clicked from the character sheet to create chat output.
@@ -127,6 +128,7 @@ system.description
 system.active
 system.intensity
 system.category
+system.modifier
 system.penalty
 ```
 
@@ -176,3 +178,48 @@ Gear and Weapon rows on the character sheet now include an equipped checkbox. Th
 ### Conditions
 
 Active Condition items are now summarized in attribute, skill and weapon roll dialogs, and repeated on roll chat cards. Their `system.penalty` field is still free text, so the system does not automatically modify dice pools yet. Players can read the reminder and enter the correct bonus/penalty manually in the roll dialog.
+
+## v0.61 - Conditions Pass
+
+Version 0.61 makes Conditions mechanically useful while keeping them simple.
+
+Condition items now have a structured numeric field:
+
+```text
+system.modifier
+```
+
+This field represents a dice-pool modifier. Negative values are penalties, positive values are bonuses. Active Condition modifiers are summed and prefilled into Attribute, Skill and Weapon roll dialogs. The player can still adjust the total modifier before rolling.
+
+The older `system.penalty` field remains as a free-text mechanical note or rules reminder. Roll dialogs and chat cards now show both the numeric modifier and the text note.
+
+
+## v0.62 - Damage & Resource Pass
+
+Version 0.62 adds simple table-facing resource controls without introducing a full damage automation system yet.
+
+### Vitality controls
+
+The character header now includes quick controls for Vitality:
+
+- `-` reduces current Vitality by 1.
+- `+` increases current Vitality by 1.
+- `Max` sets current Vitality to maximum.
+- `Damage` opens a small amount dialog and subtracts that amount.
+- `Heal` opens a small amount dialog and adds that amount.
+
+All updates are clamped between 0 and the resource maximum.
+
+### Ki controls
+
+Ki Reserve now has quick header controls:
+
+- `-` spends or reduces Ki by 1.
+- `+` restores Ki by 1.
+- `Max` sets Ki to maximum.
+
+Mikkyo use still keeps its optional Ki spending flow from v0.58.
+
+### Weapon damage presentation
+
+Weapon attack chat cards now highlight the configured weapon damage and include a short reminder that damage is applied manually after any defense or resistance rules used at the table.

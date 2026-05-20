@@ -31,10 +31,13 @@ export class ShadowScarRolls {
   static async rollAttribute({ actor, attributeKey, attributeLabel }) {
     const attributeValue = actor.getAttribute(attributeKey);
 
+    const conditionModifier = this.#getActiveConditionModifier(actor);
+
     const dialogData = await this.#showAttributeRollDialog({
       actor,
       attributeLabel,
-      attributeValue
+      attributeValue,
+      conditionModifier
     });
 
     if (!dialogData) return null;
@@ -59,6 +62,7 @@ export class ShadowScarRolls {
         attributeLabel,
         attributeValue,
         modifier,
+        conditionModifier,
         difficulty,
         pool,
         dice,
@@ -91,12 +95,15 @@ export class ShadowScarRolls {
     const attributeValue = actor.getAttribute(attributeKey);
     const skillValue = actor.getSkill(attributeKey, skillKey);
 
+    const conditionModifier = this.#getActiveConditionModifier(actor);
+
     const dialogData = await this.#showSkillRollDialog({
       actor,
       attributeLabel,
       skillLabel,
       attributeValue,
-      skillValue
+      skillValue,
+      conditionModifier
     });
 
     if (!dialogData) return null;
@@ -133,6 +140,7 @@ export class ShadowScarRolls {
         skillLabel,
         skillValue,
         modifier,
+        conditionModifier,
         difficulty,
         pool,
         dice,
@@ -179,13 +187,16 @@ export class ShadowScarRolls {
     const attributeValue = actor.getAttribute(attributeKey);
     const skillValue = actor.getSkill(attributeKey, skillKey);
 
+    const conditionModifier = this.#getActiveConditionModifier(actor);
+
     const dialogData = await this.#showWeaponRollDialog({
       actor,
       item,
       attributeLabel,
       skillLabel,
       attributeValue,
-      skillValue
+      skillValue,
+      conditionModifier
     });
 
     if (!dialogData) return null;
@@ -215,6 +226,7 @@ export class ShadowScarRolls {
         skillLabel,
         skillValue,
         modifier,
+        conditionModifier,
         difficulty,
         pool,
         dice,
@@ -324,9 +336,9 @@ export class ShadowScarRolls {
 
   /**
    * Summarizes currently active Condition items for roll dialogs and chat cards.
-   * Conditions are not automatically applied yet because their penalty field is
-   * intentionally free text. The summary keeps their mechanical notes visible
-   * while the player enters the bonus/penalty manually.
+   * v0.61 adds a structured numeric modifier. The old penalty text remains as
+   * a rules note, but the numeric modifier is now automatically prefilled into
+   * roll dialogs and therefore affects rolls unless the player changes it.
    */
   static #getActiveConditionSummaries(actor) {
     return actor.items
@@ -335,8 +347,13 @@ export class ShadowScarRolls {
         name: item.name,
         intensity: item.system?.intensity,
         category: item.system?.category,
+        modifier: Number(item.system?.modifier ?? 0) || 0,
         penalty: item.system?.penalty
       }));
+  }
+
+  static #getActiveConditionModifier(actor) {
+    return this.#getActiveConditionSummaries(actor).reduce((total, condition) => total + condition.modifier, 0);
   }
 
   /**
@@ -360,7 +377,7 @@ export class ShadowScarRolls {
     return roll.dice.flatMap((die) => die.results.map((result) => Number(result.result)));
   }
 
-  static async #showWeaponRollDialog({ actor, item, attributeLabel, skillLabel, attributeValue, skillValue }) {
+  static async #showWeaponRollDialog({ actor, item, attributeLabel, skillLabel, attributeValue, skillValue, conditionModifier }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/dialogs/weapon-roll-dialog.hbs",
       {
@@ -373,6 +390,7 @@ export class ShadowScarRolls {
         attributeValue,
         skillValue,
         basePool: attributeValue + skillValue,
+        conditionModifier,
         damage: item.system?.damage,
         range: item.system?.range,
         tags: item.system?.tags,
@@ -473,7 +491,7 @@ export class ShadowScarRolls {
     });
   }
 
-  static async #showAttributeRollDialog({ actor, attributeLabel, attributeValue }) {
+  static async #showAttributeRollDialog({ actor, attributeLabel, attributeValue, conditionModifier }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/dialogs/attribute-roll-dialog.hbs",
       {
@@ -481,6 +499,7 @@ export class ShadowScarRolls {
         actorName: actor.name,
         attributeLabel,
         attributeValue,
+        conditionModifier,
         activeConditions: this.#getActiveConditionSummaries(actor)
       }
     );
@@ -532,7 +551,7 @@ export class ShadowScarRolls {
    * Der Dialog liefert nur Eingaben zurück. Er würfelt nicht selbst. Dadurch
    * bleibt die Logik zum Würfeln vollständig in rollSkill().
    */
-  static async #showSkillRollDialog({ actor, attributeLabel, skillLabel, attributeValue, skillValue }) {
+  static async #showSkillRollDialog({ actor, attributeLabel, skillLabel, attributeValue, skillValue, conditionModifier }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/dialogs/skill-roll-dialog.hbs",
       {
@@ -543,6 +562,7 @@ export class ShadowScarRolls {
         attributeValue,
         skillValue,
         basePool: attributeValue + skillValue,
+        conditionModifier,
         activeConditions: this.#getActiveConditionSummaries(actor)
       }
     );
