@@ -505,6 +505,10 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.shadow-scar .item-field-grid.four-fields {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .shadow-scar .item-fields-panel select,
 .shadow-scar .item-fields-panel input[type="text"],
 .shadow-scar .item-fields-panel input[type="number"] {
@@ -517,7 +521,8 @@
 
 @media (max-width: 760px) {
   .shadow-scar .item-field-grid.two-fields,
-  .shadow-scar .item-field-grid.three-fields {
+  .shadow-scar .item-field-grid.three-fields,
+  .shadow-scar .item-field-grid.four-fields {
     grid-template-columns: 1fr;
   }
 }
@@ -601,4 +606,24 @@
 .shadow-scar .card-effect p,
 .shadow-scar .card-tags {
   margin: 0.25rem 0 0 0;
+}
+
+/* v0.62: Resource controls */
+.shadow-scar .resource-controls {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.25rem;
+  margin-top: 0.35rem;
+}
+
+.shadow-scar .resource-controls button {
+  min-width: 2rem;
+  padding: 0.15rem 0.35rem;
+  line-height: 1.2;
+}
+
+.shadow-scar .damage-note {
+  border-top: 1px solid #999;
+  margin-top: 0.5rem;
+  padding-top: 0.5rem;
 }

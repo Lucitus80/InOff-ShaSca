@@ -13,6 +13,7 @@ export class ShadowScarConditionData extends foundry.abstract.TypeDataModel {
       active: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       intensity: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0 }),
       category: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      modifier: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0 }),
       penalty: new fields.StringField({ required: true, nullable: false, initial: "" })
     };
   }

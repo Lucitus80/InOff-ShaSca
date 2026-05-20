@@ -22,6 +22,13 @@
           <span>/</span>
           <input name="system.resources.vitality.max" type="number" value="{{system.resources.vitality.max}}" min="0" step="1" aria-label="Maximum Vitality" />
         </div>
+        <div class="resource-controls" aria-label="Vitality controls">
+          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="-1" title="Reduce Vitality by 1">−</button>
+          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="1" title="Increase Vitality by 1">+</button>
+          <button type="button" data-action="resource-set-max" data-resource="vitality" title="Set Vitality to maximum">Max</button>
+          <button type="button" data-action="resource-dialog" data-resource="vitality" data-mode="damage" title="Take damage">Damage</button>
+          <button type="button" data-action="resource-dialog" data-resource="vitality" data-mode="heal" title="Heal Vitality">Heal</button>
+        </div>
       </div>
 
       <div class="resource-card">
@@ -30,6 +37,11 @@
           <input name="system.resources.ki.value" type="number" value="{{system.resources.ki.value}}" min="0" step="1" aria-label="Current Ki Reserve" />
           <span>/</span>
           <input name="system.resources.ki.max" type="number" value="{{system.resources.ki.max}}" min="0" step="1" aria-label="Maximum Ki Reserve" />
+        </div>
+        <div class="resource-controls" aria-label="Ki controls">
+          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="-1" title="Spend 1 Ki">−</button>
+          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="1" title="Recover 1 Ki">+</button>
+          <button type="button" data-action="resource-set-max" data-resource="ki" title="Set Ki to maximum">Max</button>
         </div>
       </div>
     </section>
@@ -54,7 +66,7 @@
             <aside class="active-condition-summary">
               <strong>Active Conditions:</strong>
               {{#each activeConditions as |condition|}}
-                <span>{{condition.name}}{{#if condition.system.penalty}} ({{condition.system.penalty}}){{/if}}</span>
+                <span>{{condition.name}}{{#if condition.system.modifier}} ({{condition.system.modifier}} dice){{/if}}{{#if condition.system.penalty}} — {{condition.system.penalty}}{{/if}}</span>
               {{/each}}
             </aside>
           {{/if}}
@@ -235,7 +247,7 @@
       <section class="tab-page conditions-page">
         <section class="panel item-panel conditions-panel">
           <h2>Conditions</h2>
-          <p class="hint">All Condition items on this character are shown here. Active conditions are shown in roll dialogs, but their penalty text is still applied manually as a bonus/penalty.</p>
+          <p class="hint">All Condition items on this character are shown here. Active conditions with a Roll Modifier are prefilled into roll dialogs automatically. The text note remains a reminder.</p>
 
           <ol class="item-list condition-list">
             {{#each itemsByType.condition as |item|}}
@@ -243,7 +255,7 @@
                 <input type="checkbox" data-action="condition-toggle" {{#if item.system.active}}checked{{/if}} aria-label="Active condition" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open">{{item.name}}</a>
-                <span class="item-detail">{{#if item.system.category}}{{item.system.category}} / {{/if}}Intensity: {{item.system.intensity}}{{#if item.system.penalty}} / {{item.system.penalty}}{{/if}}</span>
+                <span class="item-detail">{{#if item.system.category}}{{item.system.category}} / {{/if}}Intensity: {{item.system.intensity}} / Mod: {{item.system.modifier}}{{#if item.system.penalty}} / {{item.system.penalty}}{{/if}}</span>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
             {{else}}

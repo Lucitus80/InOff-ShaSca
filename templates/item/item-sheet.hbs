@@ -224,7 +224,7 @@
       <section class="panel item-fields-panel">
         <h2>Condition</h2>
 
-        <div class="item-field-grid three-fields">
+        <div class="item-field-grid four-fields">
           <label class="field-block inline-checkbox">
             <span>Active</span>
             <input name="system.active" type="checkbox" {{#if system.active}}checked{{/if}} />
@@ -233,6 +233,11 @@
           <label class="field-block">
             <span>Intensity</span>
             <input name="system.intensity" type="number" value="{{system.intensity}}" min="0" step="1" />
+          </label>
+
+          <label class="field-block">
+            <span>Roll Modifier</span>
+            <input name="system.modifier" type="number" value="{{system.modifier}}" step="1" />
           </label>
 
           <label class="field-block">
@@ -248,7 +253,7 @@
 
         <label class="field-block">
           <span>Penalty / Mechanical Note</span>
-          <input name="system.penalty" type="text" value="{{system.penalty}}" />
+          <input name="system.penalty" type="text" value="{{system.penalty}}" placeholder="Rules text / reminder, e.g. -1 die on physical actions" />
         </label>
       </section>
     {{/if}}

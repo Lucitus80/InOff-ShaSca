@@ -46,7 +46,7 @@ export class ShadowScarActorSheet extends ActorSheet {
 
     context.activeConditions = activeConditions;
     context.activeConditionNotes = activeConditions
-      .map((item) => `${item.name}${item.system?.penalty ? `: ${item.system.penalty}` : ""}`)
+      .map((item) => `${item.name}${item.system?.modifier ? ` (${item.system.modifier} dice)` : ""}${item.system?.penalty ? `: ${item.system.penalty}` : ""}`)
       .join("; ");
 
     context.itemsByType = {
@@ -79,6 +79,9 @@ export class ShadowScarActorSheet extends ActorSheet {
     html.find("[data-action='item-toggle-equipped']").on("change", this._onItemToggleEquipped.bind(this));
     html.find("[data-action='item-delete']").on("click", this._onItemDelete.bind(this));
     html.find("[data-action='condition-toggle']").on("change", this._onConditionToggle.bind(this));
+    html.find("[data-action='resource-adjust']").on("click", this._onResourceAdjust.bind(this));
+    html.find("[data-action='resource-set-max']").on("click", this._onResourceSetMax.bind(this));
+    html.find("[data-action='resource-dialog']").on("click", this._onResourceDialog.bind(this));
   }
 
   /**
@@ -187,6 +190,103 @@ export class ShadowScarActorSheet extends ActorSheet {
     });
 
     if (confirmed) return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+  }
+
+  /**
+   * v0.62: quick resource controls for Vitality and Ki.
+   *
+   * These controls update actor.system.resources.<resource>.value directly and
+   * clamp the result between 0 and the resource maximum.
+   */
+  async _onResourceAdjust(event) {
+    event.preventDefault();
+
+    const resource = event.currentTarget.dataset.resource;
+    const delta = Number(event.currentTarget.dataset.delta || 0);
+
+    if (!resource || !Number.isFinite(delta)) return;
+    return this._adjustResource(resource, delta);
+  }
+
+  async _onResourceSetMax(event) {
+    event.preventDefault();
+
+    const resource = event.currentTarget.dataset.resource;
+    if (!resource) return;
+
+    const max = this._getResourceMax(resource);
+    return this.actor.update({ [`system.resources.${resource}.value`]: max });
+  }
+
+  async _onResourceDialog(event) {
+    event.preventDefault();
+
+    const resource = event.currentTarget.dataset.resource;
+    const mode = event.currentTarget.dataset.mode || "adjust";
+    if (!resource) return;
+
+    const title = mode === "damage" ? "Take Damage" : mode === "heal" ? "Heal" : "Adjust Resource";
+    const label = mode === "damage" ? "Damage amount" : mode === "heal" ? "Healing amount" : "Amount";
+
+    const amount = await new Promise((resolve) => {
+      let resolved = false;
+      const finish = (value) => {
+        if (resolved) return;
+        resolved = true;
+        resolve(value);
+      };
+
+      new Dialog({
+        title,
+        content: `
+          <form class="shadow-scar resource-dialog">
+            <div class="roll-dialog-row">
+              <label>${label}</label>
+              <input name="amount" type="number" value="1" min="0" step="1" autofocus />
+            </div>
+          </form>
+        `,
+        buttons: {
+          apply: {
+            icon: '<i class="fas fa-check"></i>',
+            label: "Apply",
+            callback: (html) => {
+              const rawAmount = html.find("[name='amount']").val();
+              const parsed = Number(rawAmount || 0);
+              finish(Number.isFinite(parsed) ? Math.max(0, parsed) : 0);
+            }
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel",
+            callback: () => finish(null)
+          }
+        },
+        default: "apply",
+        close: () => finish(null)
+      }).render(true);
+    });
+
+    if (amount === null) return;
+
+    const delta = mode === "damage" ? -amount : amount;
+    return this._adjustResource(resource, delta);
+  }
+
+  _getResourceValue(resource) {
+    return Math.max(0, Number(this.actor.system?.resources?.[resource]?.value ?? 0));
+  }
+
+  _getResourceMax(resource) {
+    return Math.max(0, Number(this.actor.system?.resources?.[resource]?.max ?? 0));
+  }
+
+  async _adjustResource(resource, delta) {
+    const current = this._getResourceValue(resource);
+    const max = this._getResourceMax(resource);
+    const next = Math.min(max, Math.max(0, current + delta));
+
+    return this.actor.update({ [`system.resources.${resource}.value`]: next });
   }
 
   /**
