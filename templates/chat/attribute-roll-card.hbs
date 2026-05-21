@@ -21,6 +21,9 @@
 
     <dt>Difficulty</dt>
     <dd>{{difficulty}}</dd>
+
+    <dt>Margin</dt>
+    <dd>{{margin}}</dd>
   </dl>
 
   {{#if activeConditions.length}}
@@ -41,7 +44,7 @@
   </p>
 
   <p class="roll-total">
-    Successes: <strong>{{successes}}</strong>
+    Successes: <strong>{{successes}}</strong> · Difficulty: <strong>{{difficulty}}</strong> · Margin: <strong>{{margin}}</strong>
   </p>
 
   <p class="roll-outcome {{#if success}}success{{else}}failure{{/if}}">
