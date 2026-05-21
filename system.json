@@ -1,15 +1,15 @@
 {
   "id": "shadow-scar",
   "title": "Shadow Scar",
-  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: tabbed character sheet, attributes and skills, item management, d6-pool rolls, resources, background page, equipment, techniques, mikkyo, conditions, expanded item sheets, usable Techniques/Mikkyo, Technique Rank/Origin, Mikkyo Ki spending, usable weapons, usable gear, equipped toggles, and active condition reminders in roll dialogs.",
-  "version": "0.6.2",
+  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: tabbed character sheet, attributes and skills, item management, d6-pool rolls, resources, background page, equipment, techniques, mikkyo, conditions, expanded item sheets, usable Techniques/Mikkyo, Technique Rank/Origin, Mikkyo Ki spending, usable weapons, usable gear, equipped toggles, active condition automatic roll modifiers, quick Vitality/Ki resource controls, and difficulty/result/margin roll evaluation.",
+  "version": "0.6.3",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
   },
   "authors": [
     {
-      "name": "Dein Name"
+      "name": "Lucitus"
     }
   ],
   "esmodules": [
@@ -46,6 +46,6 @@
   "primaryTokenAttribute": "resources.vitality",
   "secondaryTokenAttribute": "resources.ki",
   "url": "https://github.com/Lucitus80/InOff-ShaSca",
-  "manifest": "https://github.com/Lucitus80/InOff-ShaSca/releases/download/v0.6.0/system.json",
-  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.6.0.zip"
+  "manifest": "https://github.com/Lucitus80/InOff-ShaSca/releases/latest/download/system.json",
+  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.6.3.zip"
 }

@@ -144,7 +144,7 @@ The most important design choice in this prototype is separation of concerns:
 - Visual styling lives in `styles/shadow-scar.css`.
 - Shared labels and dropdown choices live in `module/config.mjs`.
 
-## v0.60 - Technique/Mikkyo Rank and Origin
+## v0.58 - Technique/Mikkyo Rank and Origin
 
 Techniques no longer use Ki Cost. The Technique data model and sheet now store `system.rank` and `system.origin`, but no longer define `system.kiCost`.
 
@@ -223,3 +223,30 @@ Mikkyo use still keeps its optional Ki spending flow from v0.58.
 ### Weapon damage presentation
 
 Weapon attack chat cards now highlight the configured weapon damage and include a short reminder that damage is applied manually after any defense or resistance rules used at the table.
+
+
+## v0.6.3 - Roll Difficulty & Result Pass
+
+Version 0.6.3 formalizes the new versioning style and adds clearer roll resolution.
+
+### Versioning and GitHub manifest
+
+The system version is now written as `0.6.3` instead of `0.63`. The manifest also includes the GitHub release fields used by Foundry:
+
+```json
+"url": "https://github.com/Lucitus80/InOff-ShaSca",
+"manifest": "https://github.com/Lucitus80/InOff-ShaSca/releases/latest/download/system.json",
+"download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.6.3.zip"
+```
+
+### Difficulty, result and margin
+
+Attribute, Skill and Weapon roll dialogs now include a Difficulty field. After rolling, the chat card compares total successes against the selected difficulty:
+
+```text
+Successes >= Difficulty = Success
+Successes < Difficulty = Failure
+Margin = Successes - Difficulty
+```
+
+Chat cards now show Successes, Difficulty, Result and Margin so the table can immediately see whether a test succeeded and by how much.

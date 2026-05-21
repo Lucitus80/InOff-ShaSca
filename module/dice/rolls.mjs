@@ -7,7 +7,7 @@
  * Wenn der Charakterbogen direkt selbst würfeln würde, müssten wir später
  * viele Stellen anfassen. Stattdessen ruft der Bogen nur diese Datei auf.
  *
- * Stand v0.51:
+ * Stand v0.6.3:
  * - Attributproben und Skillproben nutzen dieselbe d6-Erfolgsmechanik.
  * - Attributprobe: Würfelpool = Attribut + Bonus/Malus.
  * - Skillprobe: Würfelpool = Attribut + Skill + Bonus/Malus.
@@ -52,6 +52,7 @@ export class ShadowScarRolls {
     const dice = this.#getDiceResults(roll);
     const successes = this.#countSuccesses(dice);
     const success = successes >= difficulty;
+    const margin = successes - difficulty;
 
     const content = await renderTemplate(
       "systems/shadow-scar/templates/chat/attribute-roll-card.hbs",
@@ -64,6 +65,7 @@ export class ShadowScarRolls {
         modifier,
         conditionModifier,
         difficulty,
+        margin,
         pool,
         dice,
         successes,
@@ -127,6 +129,7 @@ export class ShadowScarRolls {
     const dice = this.#getDiceResults(roll);
     const successes = this.#countSuccesses(dice);
     const success = successes >= difficulty;
+    const margin = successes - difficulty;
 
     const content = await renderTemplate(
       "systems/shadow-scar/templates/chat/skill-roll-card.hbs",
@@ -142,6 +145,7 @@ export class ShadowScarRolls {
         modifier,
         conditionModifier,
         difficulty,
+        margin,
         pool,
         dice,
         successes,
@@ -211,6 +215,7 @@ export class ShadowScarRolls {
     const dice = this.#getDiceResults(roll);
     const successes = this.#countSuccesses(dice);
     const success = successes >= difficulty;
+    const margin = successes - difficulty;
 
     const content = await renderTemplate(
       "systems/shadow-scar/templates/chat/weapon-roll-card.hbs",
@@ -228,6 +233,7 @@ export class ShadowScarRolls {
         modifier,
         conditionModifier,
         difficulty,
+        margin,
         pool,
         dice,
         successes,
