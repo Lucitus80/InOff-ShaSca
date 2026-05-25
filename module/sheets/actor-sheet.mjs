@@ -1,53 +1,44 @@
 /**
  * Character sheet for Shadow Scar.
  *
- * Foundry separates data and presentation:
- * - The Actor stores the character data.
- * - This sheet class prepares data for the template.
- * - The Handlebars template builds the visible HTML sheet.
- *
- * v0.5.5 introduces a tabbed character sheet. Tabs are only UI state; they do
- * not change the Actor data structure. This keeps existing test characters safe.
+ * v0.6.4 keeps the sheet deliberately lightweight: the sheet locates the
+ * clicked item/resource, while reusable roll/action logic lives in rolls.mjs.
  */
 import { SHADOW_SCAR } from "../config.mjs";
-import { rollAttribute, rollSkill, useKiItem, rollWeapon, useGear } from "../dice/rolls.mjs";
+import {
+  changeResource,
+  getActiveConditions,
+  openVitalityChangeDialog,
+  rollAttribute,
+  rollSkill,
+  rollWeapon,
+  setResourceToMax,
+  useGearItem,
+  useKiItem
+} from "../dice/rolls.mjs";
 
 export class ShadowScarActorSheet extends ActorSheet {
-  /**
-   * A small piece of sheet-only state.
-   *
-   * Foundry re-renders sheets often. Keeping the selected tab on the sheet
-   * instance lets us return to the same page after changing a value.
-   */
   _activeTab = "general";
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
       classes: ["shadow-scar", "sheet", "actor"],
       template: "systems/shadow-scar/templates/actor/character-sheet.hbs",
-      width: 900,
-      height: 840,
+      width: 920,
+      height: 860,
       resizable: true
     });
   }
 
-  /**
-   * getData() collects all data the template needs.
-   */
   async getData(options = {}) {
     const context = await super.getData(options);
 
     context.config = SHADOW_SCAR;
     context.system = this.actor.system;
     context.activeTab = this._activeTab;
+    context.activeConditions = getActiveConditions(this.actor);
 
     const items = this.actor.items.contents;
-    const activeConditions = items.filter((item) => item.type === SHADOW_SCAR.itemTypes.condition && item.system?.active);
-
-    context.activeConditions = activeConditions;
-    context.activeConditionNotes = activeConditions
-      .map((item) => `${item.name}${item.system?.modifier ? ` (${item.system.modifier} dice)` : ""}${item.system?.penalty ? `: ${item.system.penalty}` : ""}`)
-      .join("; ");
 
     context.itemsByType = {
       gear: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.gear),
@@ -60,9 +51,6 @@ export class ShadowScarActorSheet extends ActorSheet {
     return context;
   }
 
-  /**
-   * activateListeners() runs after the sheet HTML has been rendered.
-   */
   activateListeners(html) {
     super.activateListeners(html);
 
@@ -72,25 +60,20 @@ export class ShadowScarActorSheet extends ActorSheet {
 
     html.find("[data-action='roll-attribute']").on("click", this._onRollAttribute.bind(this));
     html.find("[data-action='roll-skill']").on("click", this._onRollSkill.bind(this));
-    html.find("[data-action='item-open']").on("click", this._onItemOpen.bind(this));
-    html.find("[data-action='use-ki-item']").on("click", this._onUseKiItem.bind(this));
     html.find("[data-action='roll-weapon']").on("click", this._onRollWeapon.bind(this));
-    html.find("[data-action='use-gear']").on("click", this._onUseGear.bind(this));
-    html.find("[data-action='item-toggle-equipped']").on("change", this._onItemToggleEquipped.bind(this));
+    html.find("[data-action='item-open']").on("click", this._onItemOpen.bind(this));
+    html.find("[data-action='use-gear-item']").on("click", this._onUseGearItem.bind(this));
+    html.find("[data-action='use-ki-item']").on("click", this._onUseKiItem.bind(this));
     html.find("[data-action='item-delete']").on("click", this._onItemDelete.bind(this));
     html.find("[data-action='condition-toggle']").on("change", this._onConditionToggle.bind(this));
+    html.find("[data-action='gear-equipped-toggle']").on("change", this._onItemEquippedToggle.bind(this));
+    html.find("[data-action='weapon-equipped-toggle']").on("change", this._onItemEquippedToggle.bind(this));
     html.find("[data-action='resource-adjust']").on("click", this._onResourceAdjust.bind(this));
     html.find("[data-action='resource-set-max']").on("click", this._onResourceSetMax.bind(this));
-    html.find("[data-action='resource-dialog']").on("click", this._onResourceDialog.bind(this));
+    html.find("[data-action='resource-damage-dialog']").on("click", this._onResourceDamageDialog.bind(this));
+    html.find("[data-action='resource-heal-dialog']").on("click", this._onResourceHealDialog.bind(this));
   }
 
-  /**
-   * Switches between the five character-sheet pages.
-   *
-   * We do not need Foundry's built-in tab helper here. The sheet has only a few
-   * tabs, so storing the clicked tab key and re-rendering is straightforward and
-   * easy to understand.
-   */
   async _onTabClick(event) {
     event.preventDefault();
 
@@ -124,64 +107,44 @@ export class ShadowScarActorSheet extends ActorSheet {
     return rollSkill(this.actor, attributeKey, skillKey, attributeLabel, skillLabel);
   }
 
-  async _onItemOpen(event) {
-    event.preventDefault();
-
-    const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-
-    return item?.sheet?.render(true);
-  }
-
-  /**
-   * Uses a Technique or Mikkyo item from the character sheet.
-   *
-   * In v0.58 Techniques create chat output without Ki costs. Mikkyo still reads
-   * system.kiCost and can optionally spend Ki from the Actor.
-   */
-  async _onUseKiItem(event) {
-    event.preventDefault();
-
-    const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-    if (!item) return;
-
-    return useKiItem(this.actor, item);
-  }
-
   async _onRollWeapon(event) {
     event.preventDefault();
 
-    const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-    if (!item) return;
+    const item = this._getItemFromEvent(event);
+    if (!item) return null;
 
     return rollWeapon(this.actor, item);
   }
 
-  async _onUseGear(event) {
+  async _onItemOpen(event) {
     event.preventDefault();
 
-    const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-    if (!item) return;
-
-    return useGear(this.actor, item);
+    const item = this._getItemFromEvent(event);
+    return item?.sheet?.render(true);
   }
 
-  async _onItemToggleEquipped(event) {
-    const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-    if (!item) return;
+  async _onUseGearItem(event) {
+    event.preventDefault();
 
-    return item.update({ "system.equipped": event.currentTarget.checked });
+    const item = this._getItemFromEvent(event);
+    if (!item) return null;
+
+    return useGearItem(this.actor, item);
+  }
+
+  async _onUseKiItem(event) {
+    event.preventDefault();
+
+    const item = this._getItemFromEvent(event);
+    if (!item) return null;
+
+    return useKiItem(this.actor, item);
   }
 
   async _onItemDelete(event) {
     event.preventDefault();
 
-    const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
+    const item = this._getItemFromEvent(event);
     if (!item) return;
 
     const confirmed = await Dialog.confirm({
@@ -189,118 +152,55 @@ export class ShadowScarActorSheet extends ActorSheet {
       content: `<p>Really delete ${item.name}?</p>`
     });
 
-    if (confirmed) return this.actor.deleteEmbeddedDocuments("Item", [itemId]);
+    if (confirmed) return this.actor.deleteEmbeddedDocuments("Item", [item.id]);
   }
 
-  /**
-   * v0.62: quick resource controls for Vitality and Ki.
-   *
-   * These controls update actor.system.resources.<resource>.value directly and
-   * clamp the result between 0 and the resource maximum.
-   */
+  async _onConditionToggle(event) {
+    const item = this._getItemFromEvent(event);
+    if (!item) return;
+
+    return item.update({ "system.active": event.currentTarget.checked });
+  }
+
+  async _onItemEquippedToggle(event) {
+    const item = this._getItemFromEvent(event);
+    if (!item) return;
+
+    return item.update({ "system.equipped": event.currentTarget.checked });
+  }
+
   async _onResourceAdjust(event) {
     event.preventDefault();
 
-    const resource = event.currentTarget.dataset.resource;
-    const delta = Number(event.currentTarget.dataset.delta || 0);
+    const resourceKey = event.currentTarget.dataset.resource;
+    const delta = Number(event.currentTarget.dataset.delta ?? 0);
+    if (!resourceKey || !Number.isFinite(delta)) return null;
 
-    if (!resource || !Number.isFinite(delta)) return;
-    return this._adjustResource(resource, delta);
+    return changeResource(this.actor, resourceKey, delta);
   }
 
   async _onResourceSetMax(event) {
     event.preventDefault();
 
-    const resource = event.currentTarget.dataset.resource;
-    if (!resource) return;
+    const resourceKey = event.currentTarget.dataset.resource;
+    if (!resourceKey) return null;
 
-    const max = this._getResourceMax(resource);
-    return this.actor.update({ [`system.resources.${resource}.value`]: max });
+    return setResourceToMax(this.actor, resourceKey);
   }
 
-  async _onResourceDialog(event) {
+  async _onResourceDamageDialog(event) {
     event.preventDefault();
-
-    const resource = event.currentTarget.dataset.resource;
-    const mode = event.currentTarget.dataset.mode || "adjust";
-    if (!resource) return;
-
-    const title = mode === "damage" ? "Take Damage" : mode === "heal" ? "Heal" : "Adjust Resource";
-    const label = mode === "damage" ? "Damage amount" : mode === "heal" ? "Healing amount" : "Amount";
-
-    const amount = await new Promise((resolve) => {
-      let resolved = false;
-      const finish = (value) => {
-        if (resolved) return;
-        resolved = true;
-        resolve(value);
-      };
-
-      new Dialog({
-        title,
-        content: `
-          <form class="shadow-scar resource-dialog">
-            <div class="roll-dialog-row">
-              <label>${label}</label>
-              <input name="amount" type="number" value="1" min="0" step="1" autofocus />
-            </div>
-          </form>
-        `,
-        buttons: {
-          apply: {
-            icon: '<i class="fas fa-check"></i>',
-            label: "Apply",
-            callback: (html) => {
-              const rawAmount = html.find("[name='amount']").val();
-              const parsed = Number(rawAmount || 0);
-              finish(Number.isFinite(parsed) ? Math.max(0, parsed) : 0);
-            }
-          },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
-            callback: () => finish(null)
-          }
-        },
-        default: "apply",
-        close: () => finish(null)
-      }).render(true);
-    });
-
-    if (amount === null) return;
-
-    const delta = mode === "damage" ? -amount : amount;
-    return this._adjustResource(resource, delta);
+    return openVitalityChangeDialog(this.actor, "damage");
   }
 
-  _getResourceValue(resource) {
-    return Math.max(0, Number(this.actor.system?.resources?.[resource]?.value ?? 0));
+  async _onResourceHealDialog(event) {
+    event.preventDefault();
+    return openVitalityChangeDialog(this.actor, "heal");
   }
 
-  _getResourceMax(resource) {
-    return Math.max(0, Number(this.actor.system?.resources?.[resource]?.max ?? 0));
-  }
-
-  async _adjustResource(resource, delta) {
-    const current = this._getResourceValue(resource);
-    const max = this._getResourceMax(resource);
-    const next = Math.min(max, Math.max(0, current + delta));
-
-    return this.actor.update({ [`system.resources.${resource}.value`]: next });
-  }
-
-  /**
-   * Updates the active checkbox on an embedded Condition item.
-   *
-   * Embedded Items are separate documents inside the Actor. Because the checkbox
-   * belongs to an Item, not directly to actor.system, we update the Item document
-   * explicitly with item.update().
-   */
-  async _onConditionToggle(event) {
+  _getItemFromEvent(event) {
     const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
-    const item = this.actor.items.get(itemId);
-    if (!item) return;
-
-    return item.update({ "system.active": event.currentTarget.checked });
+    if (!itemId) return null;
+    return this.actor.items.get(itemId);
   }
 }

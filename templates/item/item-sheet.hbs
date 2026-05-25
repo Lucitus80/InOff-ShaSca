@@ -38,8 +38,8 @@
         </label>
 
         <label class="field-block">
-          <span>Use / Effect Summary</span>
-          <input name="system.effect" type="text" value="{{system.effect}}" placeholder="What happens when this gear is used?" />
+          <span>Effect Summary</span>
+          <input name="system.effect" type="text" value="{{system.effect}}" />
         </label>
 
         <label class="field-block">
@@ -103,19 +103,7 @@
       <section class="panel item-fields-panel">
         <h2>Technique</h2>
 
-        <div class="item-field-grid two-fields">
-          <label class="field-block">
-            <span>Rank</span>
-            <input name="system.rank" type="text" value="{{system.rank}}" placeholder="Rank" />
-          </label>
-
-          <label class="field-block">
-            <span>Origin</span>
-            <input name="system.origin" type="text" value="{{system.origin}}" placeholder="Origin / school / tradition" />
-          </label>
-        </div>
-
-        <div class="item-field-grid two-fields">
+        <div class="item-field-grid three-fields">
           <label class="field-block">
             <span>Attribute</span>
             <select name="system.attribute">
@@ -133,6 +121,11 @@
                 <option value="{{key}}" {{#if (eq ../system.skill key)}}selected{{/if}}>{{label}}</option>
               {{/each}}
             </select>
+          </label>
+
+          <label class="field-block">
+            <span>Ki Cost</span>
+            <input name="system.kiCost" type="number" value="{{system.kiCost}}" min="0" step="1" />
           </label>
         </div>
 
@@ -171,22 +164,10 @@
 
         <div class="item-field-grid three-fields">
           <label class="field-block">
-            <span>Rank</span>
-            <input name="system.rank" type="text" value="{{system.rank}}" placeholder="Rank" />
-          </label>
-
-          <label class="field-block">
-            <span>Origin</span>
-            <input name="system.origin" type="text" value="{{system.origin}}" placeholder="Origin / school / tradition" />
-          </label>
-
-          <label class="field-block">
             <span>Ki Cost</span>
             <input name="system.kiCost" type="number" value="{{system.kiCost}}" min="0" step="1" />
           </label>
-        </div>
 
-        <div class="item-field-grid three-fields">
           <label class="field-block">
             <span>Range</span>
             <input name="system.range" type="text" value="{{system.range}}" />
@@ -196,17 +177,17 @@
             <span>Duration</span>
             <input name="system.duration" type="text" value="{{system.duration}}" />
           </label>
-
-          <label class="field-block">
-            <span>Timing</span>
-            <select name="system.timing">
-              <option value="">Custom / Unset</option>
-              {{#each config.techniqueTiming as |label key|}}
-                <option value="{{key}}" {{#if (eq ../system.timing key)}}selected{{/if}}>{{label}}</option>
-              {{/each}}
-            </select>
-          </label>
         </div>
+
+        <label class="field-block">
+          <span>Timing</span>
+          <select name="system.timing">
+            <option value="">Custom / Unset</option>
+            {{#each config.techniqueTiming as |label key|}}
+              <option value="{{key}}" {{#if (eq ../system.timing key)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
 
         <label class="field-block">
           <span>Effect Summary</span>
@@ -224,36 +205,36 @@
       <section class="panel item-fields-panel">
         <h2>Condition</h2>
 
-        <div class="item-field-grid four-fields">
+        <div class="item-field-grid three-fields">
           <label class="field-block inline-checkbox">
             <span>Active</span>
             <input name="system.active" type="checkbox" {{#if system.active}}checked{{/if}} />
           </label>
 
           <label class="field-block">
-            <span>Intensity</span>
-            <input name="system.intensity" type="number" value="{{system.intensity}}" min="0" step="1" />
-          </label>
-
-          <label class="field-block">
-            <span>Roll Modifier</span>
+            <span>Modifier</span>
             <input name="system.modifier" type="number" value="{{system.modifier}}" step="1" />
           </label>
 
           <label class="field-block">
-            <span>Category</span>
-            <select name="system.category">
-              <option value="">Custom / Unset</option>
-              {{#each config.conditionCategories as |label key|}}
-                <option value="{{key}}" {{#if (eq ../system.category key)}}selected{{/if}}>{{label}}</option>
-              {{/each}}
-            </select>
+            <span>Intensity</span>
+            <input name="system.intensity" type="number" value="{{system.intensity}}" min="0" step="1" />
           </label>
         </div>
 
         <label class="field-block">
+          <span>Category</span>
+          <select name="system.category">
+            <option value="">Custom / Unset</option>
+            {{#each config.conditionCategories as |label key|}}
+              <option value="{{key}}" {{#if (eq ../system.category key)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
+
+        <label class="field-block">
           <span>Penalty / Mechanical Note</span>
-          <input name="system.penalty" type="text" value="{{system.penalty}}" placeholder="Rules text / reminder, e.g. -1 die on physical actions" />
+          <input name="system.penalty" type="text" value="{{system.penalty}}" />
         </label>
       </section>
     {{/if}}

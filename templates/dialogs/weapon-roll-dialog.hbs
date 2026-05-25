@@ -1,7 +1,7 @@
-<form class="shadow-scar roll-dialog weapon-roll-dialog">
+<form class="shadow-scar roll-dialog">
   <p>
     <strong>{{actorName}}</strong> attacks with
-    <strong>{{weaponName}}</strong> using <strong>{{skillLabel}}</strong> with <strong>{{attributeLabel}}</strong>.
+    <strong>{{weaponName}}</strong> using <strong>{{skillLabel}}</strong> / <strong>{{attributeLabel}}</strong>.
   </p>
 
   <dl>
@@ -14,25 +14,30 @@
     <dt>Base dice pool</dt>
     <dd>{{basePool}}d6</dd>
 
-    {{#if damage}}
-      <dt>Damage</dt>
-      <dd>{{damage}}</dd>
-    {{/if}}
+    <dt>Damage</dt>
+    <dd>{{weaponDamage}}</dd>
 
     {{#if range}}
       <dt>Range</dt>
       <dd>{{range}}</dd>
     {{/if}}
+
+    <dt>Active Condition modifier</dt>
+    <dd>{{conditionModifier}}</dd>
   </dl>
 
   {{#if activeConditions.length}}
-    <aside class="active-condition-summary">
-      <strong>Active Conditions:</strong>
-      {{#each activeConditions as |condition|}}
-        <span>{{condition.name}}{{#if condition.modifier}} ({{condition.modifier}} dice){{/if}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}</span>
-      {{/each}}
-      <span><strong>Total:</strong> {{conditionModifier}}</span>
-    </aside>
+    <section class="condition-summary">
+      <h3>Active Conditions</h3>
+      <ul>
+        {{#each activeConditions as |condition|}}
+          <li>
+            <strong>{{condition.name}}</strong>: {{condition.modifier}}
+            {{#if condition.penalty}} — {{condition.penalty}}{{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    </section>
   {{/if}}
 
   <label class="field-block">
@@ -45,7 +50,5 @@
     <input name="difficulty" type="number" value="1" min="0" step="1" />
   </label>
 
-  <p class="hint difficulty-scale">Suggested scale: 1 Easy, 2 Standard, 3 Hard, 4 Extreme, 5+ Legendary.</p>
-
-  <p class="hint">Current rule: Roll Attribute + Skill + bonus/penalty in d6. Active Condition modifiers are prefilled. 4–5 count as 1 success, 6 counts as 2 successes. Successes ≥ difficulty means success.</p>
+  <p class="hint">Current rule: Roll Attribute + Skill + bonus/penalty in d6. Defense/Resistance is handled after the roll.</p>
 </form>

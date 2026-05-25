@@ -22,12 +22,12 @@
           <span>/</span>
           <input name="system.resources.vitality.max" type="number" value="{{system.resources.vitality.max}}" min="0" step="1" aria-label="Maximum Vitality" />
         </div>
-        <div class="resource-controls" aria-label="Vitality controls">
-          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="-1" title="Reduce Vitality by 1">−</button>
-          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="1" title="Increase Vitality by 1">+</button>
-          <button type="button" data-action="resource-set-max" data-resource="vitality" title="Set Vitality to maximum">Max</button>
-          <button type="button" data-action="resource-dialog" data-resource="vitality" data-mode="damage" title="Take damage">Damage</button>
-          <button type="button" data-action="resource-dialog" data-resource="vitality" data-mode="heal" title="Heal Vitality">Heal</button>
+        <div class="resource-actions">
+          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="-1">−1</button>
+          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="1">+1</button>
+          <button type="button" data-action="resource-set-max" data-resource="vitality">Max</button>
+          <button type="button" data-action="resource-damage-dialog">Damage</button>
+          <button type="button" data-action="resource-heal-dialog">Heal</button>
         </div>
       </div>
 
@@ -38,10 +38,10 @@
           <span>/</span>
           <input name="system.resources.ki.max" type="number" value="{{system.resources.ki.max}}" min="0" step="1" aria-label="Maximum Ki Reserve" />
         </div>
-        <div class="resource-controls" aria-label="Ki controls">
-          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="-1" title="Spend 1 Ki">−</button>
-          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="1" title="Recover 1 Ki">+</button>
-          <button type="button" data-action="resource-set-max" data-resource="ki" title="Set Ki to maximum">Max</button>
+        <div class="resource-actions compact-actions">
+          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="-1">−1</button>
+          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="1">+1</button>
+          <button type="button" data-action="resource-set-max" data-resource="ki">Max</button>
         </div>
       </div>
     </section>
@@ -60,16 +60,7 @@
       <section class="tab-page general-page">
         <section class="panel attribute-skill-panel">
           <h2>Attributes & Skills</h2>
-          <p class="hint">Click an attribute or skill name to roll it. Attribute rolls use Attribute dice; skill rolls use Attribute + Skill dice.</p>
-
-          {{#if activeConditions.length}}
-            <aside class="active-condition-summary">
-              <strong>Active Conditions:</strong>
-              {{#each activeConditions as |condition|}}
-                <span>{{condition.name}}{{#if condition.system.modifier}} ({{condition.system.modifier}} dice){{/if}}{{#if condition.system.penalty}} — {{condition.system.penalty}}{{/if}}</span>
-              {{/each}}
-            </aside>
-          {{/if}}
+          <p class="hint">Click an attribute or skill name to roll it. Active Condition modifiers are prefilled in roll dialogs.</p>
 
           <div class="attribute-skill-grid">
             {{#each config.attributes as |attributeLabel attributeKey|}}
@@ -129,15 +120,14 @@
       <section class="tab-page techniques-page two-column-page">
         <section class="panel item-panel">
           <h2>Techniques</h2>
-          <p class="hint">Drag Technique items onto this sheet to add them to the character.</p>
+          <p class="hint">Click a Technique name to use it and optionally spend Ki.</p>
 
           <ol class="item-list">
             {{#each itemsByType.technique as |item|}}
-              <li class="item-row" data-item-id="{{item.id}}">
+              <li class="item-row action-item-row" data-item-id="{{item.id}}">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
-                {{#if item.system.rank}}<span class="item-detail">Rank: {{item.system.rank}}</span>{{/if}}
-                {{#if item.system.origin}}<span class="item-detail">Origin: {{item.system.origin}}</span>{{/if}}
+                <span class="item-detail">Ki: {{item.system.kiCost}}</span>
                 <button type="button" data-action="item-open" title="Edit">⚙</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
@@ -149,15 +139,13 @@
 
         <section class="panel item-panel">
           <h2>Mikkyo</h2>
-          <p class="hint">Mikkyo has its own item type so it can later receive dedicated rules.</p>
+          <p class="hint">Click a Mikkyo name to use it and optionally spend Ki.</p>
 
           <ol class="item-list">
             {{#each itemsByType.mikkyo as |item|}}
-              <li class="item-row" data-item-id="{{item.id}}">
+              <li class="item-row action-item-row" data-item-id="{{item.id}}">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
-                {{#if item.system.rank}}<span class="item-detail">Rank: {{item.system.rank}}</span>{{/if}}
-                {{#if item.system.origin}}<span class="item-detail">Origin: {{item.system.origin}}</span>{{/if}}
                 <span class="item-detail">Ki: {{item.system.kiCost}}</span>
                 <button type="button" data-action="item-open" title="Edit">⚙</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
@@ -174,19 +162,16 @@
       <section class="tab-page equipment-page two-column-page">
         <section class="panel item-panel">
           <h2>Gear</h2>
-          <p class="hint">General equipment and carried items. Click Use to post a gear card to chat.</p>
+          <p class="hint">Use gear to create a chat card. The equipped checkbox can be toggled directly here.</p>
 
-          <ol class="item-list equipment-list">
+          <ol class="item-list">
             {{#each itemsByType.gear as |item|}}
               <li class="item-row gear-row" data-item-id="{{item.id}}">
+                <input type="checkbox" data-action="gear-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped gear" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
-                <a data-action="item-open">{{item.name}}</a>
-                <span class="item-detail">{{#if item.system.category}}{{item.system.category}}{{else}}Gear{{/if}} ×{{item.system.quantity}}</span>
-                <label class="item-inline-check" title="Equipped / carried actively">
-                  <input type="checkbox" data-action="item-toggle-equipped" {{#if item.system.equipped}}checked{{/if}} />
-                  <span>Eq.</span>
-                </label>
-                <button type="button" data-action="use-gear" title="Use Gear">Use</button>
+                <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
+                <span class="item-detail">{{item.system.category}} ×{{item.system.quantity}}</span>
+                <button type="button" data-action="use-gear-item" title="Use">Use</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
             {{else}}
@@ -197,19 +182,16 @@
 
         <section class="panel item-panel">
           <h2>Weapons</h2>
-          <p class="hint">Click Attack to roll the weapon's configured attack skill.</p>
+          <p class="hint">Click a weapon name to roll with its configured attack skill. The chat card can then apply editable damage to targeted/selected token actors.</p>
 
-          <ol class="item-list equipment-list">
+          <ol class="item-list">
             {{#each itemsByType.weapon as |item|}}
               <li class="item-row weapon-row" data-item-id="{{item.id}}">
+                <input type="checkbox" data-action="weapon-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped weapon" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
-                <a data-action="item-open">{{item.name}}</a>
-                <span class="item-detail">{{#if item.system.damage}}{{item.system.damage}}{{else}}Damage —{{/if}} {{#if item.system.range}}/ {{item.system.range}}{{/if}}</span>
-                <label class="item-inline-check" title="Equipped">
-                  <input type="checkbox" data-action="item-toggle-equipped" {{#if item.system.equipped}}checked{{/if}} />
-                  <span>Eq.</span>
-                </label>
-                <button type="button" data-action="roll-weapon" title="Attack with {{item.name}}">Attack</button>
+                <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
+                <span class="item-detail">{{item.system.damage}} {{#if item.system.range}}/ {{item.system.range}}{{/if}}</span>
+                <button type="button" data-action="item-open" title="Edit">⚙</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
             {{else}}
@@ -247,7 +229,7 @@
       <section class="tab-page conditions-page">
         <section class="panel item-panel conditions-panel">
           <h2>Conditions</h2>
-          <p class="hint">All Condition items on this character are shown here. Active conditions with a Roll Modifier are prefilled into roll dialogs automatically. The text note remains a reminder.</p>
+          <p class="hint">Active Condition modifiers are summed and prefilled into Attribute, Skill, and Weapon roll dialogs.</p>
 
           <ol class="item-list condition-list">
             {{#each itemsByType.condition as |item|}}
@@ -255,7 +237,7 @@
                 <input type="checkbox" data-action="condition-toggle" {{#if item.system.active}}checked{{/if}} aria-label="Active condition" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open">{{item.name}}</a>
-                <span class="item-detail">{{#if item.system.category}}{{item.system.category}} / {{/if}}Intensity: {{item.system.intensity}} / Mod: {{item.system.modifier}}{{#if item.system.penalty}} / {{item.system.penalty}}{{/if}}</span>
+                <span class="item-detail">Modifier: {{item.system.modifier}} / Intensity: {{item.system.intensity}}{{#if item.system.penalty}} / {{item.system.penalty}}{{/if}}</span>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
             {{else}}

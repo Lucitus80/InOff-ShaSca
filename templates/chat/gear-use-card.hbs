@@ -1,23 +1,31 @@
 <div class="shadow-scar chat-card gear-use-card">
-  <header class="card-header">
-    <h3>{{itemName}}</h3>
-    <p>{{actorName}} uses Gear.</p>
+  <header>
+    <h2>{{itemName}}</h2>
+    <p>{{actorName}} uses gear</p>
   </header>
 
-  <div class="card-grid">
-    {{#if category}}<div><strong>Category:</strong> {{category}}</div>{{/if}}
-    <div><strong>Quantity:</strong> {{quantity}}</div>
-    <div><strong>Equipped:</strong> {{#if equipped}}yes{{else}}no{{/if}}</div>
-  </div>
+  <dl>
+    {{#if category}}
+      <dt>Category</dt>
+      <dd>{{category}}</dd>
+    {{/if}}
+
+    <dt>Quantity</dt>
+    <dd>{{quantity}}</dd>
+
+    <dt>Equipped</dt>
+    <dd>{{#if equipped}}Yes{{else}}No{{/if}}</dd>
+
+    {{#if tags}}
+      <dt>Tags</dt>
+      <dd>{{tags}}</dd>
+    {{/if}}
+  </dl>
 
   {{#if effect}}
     <section class="card-effect">
-      <strong>Use / Effect</strong>
+      <h3>Effect</h3>
       <p>{{effect}}</p>
     </section>
-  {{/if}}
-
-  {{#if tags}}
-    <p class="card-tags"><strong>Tags:</strong> {{tags}}</p>
   {{/if}}
 </div>

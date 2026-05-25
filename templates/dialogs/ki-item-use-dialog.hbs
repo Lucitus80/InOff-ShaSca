@@ -1,30 +1,26 @@
 <form class="shadow-scar roll-dialog ki-item-use-dialog">
   <p><strong>{{itemTypeLabel}}:</strong> {{itemName}}</p>
 
-  {{#if usesKi}}
-    <div class="dialog-summary">
-      <div><strong>Ki Cost:</strong> {{kiCost}}</div>
-      <div><strong>Current Ki Reserve:</strong> {{currentKi}} / {{maxKi}}</div>
-    </div>
+  <div class="dialog-summary">
+    <div><strong>Ki Cost:</strong> {{kiCost}}</div>
+    <div><strong>Current Ki Reserve:</strong> {{currentKi}} / {{maxKi}}</div>
+  </div>
 
-    {{#unless enoughKi}}
-      <p class="warning">Not enough Ki Reserve. You may still post the use without spending Ki, or override the warning.</p>
-    {{/unless}}
+  {{#unless enoughKi}}
+    <p class="warning">Not enough Ki Reserve. You may still post the use without spending Ki, or override the warning.</p>
+  {{/unless}}
 
+  <label class="checkbox-line">
+    <input type="checkbox" name="spendKi" {{#if hasCost}}checked{{/if}} />
+    <span>Spend Ki Cost</span>
+  </label>
+
+  {{#unless enoughKi}}
     <label class="checkbox-line">
-      <input type="checkbox" name="spendKi" {{#if hasCost}}checked{{/if}} />
-      <span>Spend Ki Cost</span>
+      <input type="checkbox" name="ignoreInsufficientKi" />
+      <span>Override insufficient Ki warning</span>
     </label>
+  {{/unless}}
 
-    {{#unless enoughKi}}
-      <label class="checkbox-line">
-        <input type="checkbox" name="ignoreInsufficientKi" />
-        <span>Override insufficient Ki warning</span>
-      </label>
-    {{/unless}}
-  {{else}}
-    <p class="hint">Techniques do not have Ki Cost in v0.60. Using this Technique only creates the chat output.</p>
-  {{/if}}
-
-  <p class="hint">v0.60 handles Technique/Mikkyo use and Mikkyo Ki spending. Technique-specific rolls and effects will be added in later versions.</p>
+  <p class="hint">This action handles Ki spending and chat output. Technique-specific rule effects are still resolved manually.</p>
 </form>

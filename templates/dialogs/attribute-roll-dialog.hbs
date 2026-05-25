@@ -10,16 +10,23 @@
 
     <dt>Base dice pool</dt>
     <dd>{{attributeValue}}d6</dd>
+
+    <dt>Active Condition modifier</dt>
+    <dd>{{conditionModifier}}</dd>
   </dl>
 
   {{#if activeConditions.length}}
-    <aside class="active-condition-summary">
-      <strong>Active Conditions:</strong>
-      {{#each activeConditions as |condition|}}
-        <span>{{condition.name}}{{#if condition.modifier}} ({{condition.modifier}} dice){{/if}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}</span>
-      {{/each}}
-      <span><strong>Total:</strong> {{conditionModifier}}</span>
-    </aside>
+    <section class="condition-summary">
+      <h3>Active Conditions</h3>
+      <ul>
+        {{#each activeConditions as |condition|}}
+          <li>
+            <strong>{{condition.name}}</strong>: {{condition.modifier}}
+            {{#if condition.penalty}} — {{condition.penalty}}{{/if}}
+          </li>
+        {{/each}}
+      </ul>
+    </section>
   {{/if}}
 
   <label class="field-block">
@@ -32,7 +39,5 @@
     <input name="difficulty" type="number" value="1" min="0" step="1" />
   </label>
 
-  <p class="hint difficulty-scale">Suggested scale: 1 Easy, 2 Standard, 3 Hard, 4 Extreme, 5+ Legendary.</p>
-
-  <p class="hint">Current rule: Roll Attribute + bonus/penalty in d6. Active Condition modifiers are prefilled. 1–3 count as 0 successes, 4–5 as 1 success, 6 as 2 successes. Successes ≥ difficulty means success.</p>
+  <p class="hint">Current rule: Roll Attribute + bonus/penalty in d6. Active Condition modifiers are prefilled but remain editable.</p>
 </form>
