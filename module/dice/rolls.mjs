@@ -1,42 +1,45 @@
 /**
- * Würfel-Hilfsfunktionen für Shadow Scar.
+ * Core dice and action helpers for Shadow Scar.
  *
- * Warum eine eigene Datei?
- * ------------------------
- * Würfelmechanik wird im Laufe der Systementwicklung oft angepasst.
- * Wenn der Charakterbogen direkt selbst würfeln würde, müssten wir später
- * viele Stellen anfassen. Stattdessen ruft der Bogen nur diese Datei auf.
- *
- * Stand v0.6.3:
- * - Attributproben und Skillproben nutzen dieselbe d6-Erfolgsmechanik.
- * - Attributprobe: Würfelpool = Attribut + Bonus/Malus.
- * - Skillprobe: Würfelpool = Attribut + Skill + Bonus/Malus.
- * - 1–3 zählt als 0 Erfolge, 4–5 zählt als 1 Erfolg, 6 zählt als 2 Erfolge.
- * - Der Dialog erlaubt eine Schwierigkeit, damit die Chatkarte Erfolg/Misserfolg
- *   anzeigen kann.
+ * v0.6.4 includes the previous roll/resource passes and adds a guided damage
+ * application workflow from weapon chat cards. The system still leaves rules
+ * judgment to the table: defense/resistance and final damage are edited before
+ * Vitality is reduced.
  */
+import { SHADOW_SCAR } from "../config.mjs";
+
 export class ShadowScarRolls {
-  /**
-   * Führt eine reine Attributprobe aus.
-   *
-   * Offizielle Shadow-Scar-Logik für reine Attributwürfe:
-   * - Würfle eine Anzahl W6 gleich dem Attributwert plus Bonus/Malus.
-   * - 1–3 zählen als 0 Erfolge.
-   * - 4–5 zählen als 1 Erfolg.
-   * - 6 zählt als 2 Erfolge.
-   *
-   * Der optionale Bonus/Malus verändert die Anzahl der Würfel, nicht das
-   * Ergebnis eines einzelnen Würfels. Negative Pools werden auf 0 begrenzt.
-   */
+  /** Returns active Condition items in a template-friendly shape. */
+  static getActiveConditions(actor) {
+    return actor.items.contents
+      .filter((item) => item.type === SHADOW_SCAR.itemTypes.condition && Boolean(item.system?.active))
+      .map((item) => ({
+        id: item.id,
+        name: item.name,
+        intensity: Number(item.system?.intensity ?? 0),
+        category: item.system?.category ?? "",
+        modifier: Number(item.system?.modifier ?? 0),
+        penalty: item.system?.penalty ?? ""
+      }));
+  }
+
+  static getActiveConditionModifier(actor) {
+    return this.getActiveConditions(actor).reduce((total, condition) => {
+      const modifier = Number(condition.modifier ?? 0);
+      return total + (Number.isFinite(modifier) ? modifier : 0);
+    }, 0);
+  }
+
   static async rollAttribute({ actor, attributeKey, attributeLabel }) {
     const attributeValue = actor.getAttribute(attributeKey);
-
-    const conditionModifier = this.#getActiveConditionModifier(actor);
+    const activeConditions = this.getActiveConditions(actor);
+    const conditionModifier = this.getActiveConditionModifier(actor);
 
     const dialogData = await this.#showAttributeRollDialog({
       actor,
       attributeLabel,
       attributeValue,
+      activeConditions,
       conditionModifier
     });
 
@@ -51,8 +54,8 @@ export class ShadowScarRolls {
 
     const dice = this.#getDiceResults(roll);
     const successes = this.#countSuccesses(dice);
-    const success = successes >= difficulty;
     const margin = successes - difficulty;
+    const success = margin >= 0;
 
     const content = await renderTemplate(
       "systems/shadow-scar/templates/chat/attribute-roll-card.hbs",
@@ -64,14 +67,14 @@ export class ShadowScarRolls {
         attributeValue,
         modifier,
         conditionModifier,
+        activeConditions,
         difficulty,
         margin,
         pool,
         dice,
         successes,
         success,
-        resultLabel: success ? "Success" : "Failure",
-        activeConditions: this.#getActiveConditionSummaries(actor)
+        resultLabel: success ? "Success" : "Failure"
       }
     );
 
@@ -82,22 +85,11 @@ export class ShadowScarRolls {
     });
   }
 
-  /**
-   * Führt eine Skillprobe aus.
-   *
-   * @param {object} options
-   * @param {Actor} options.actor - Der Actor, der würfelt.
-   * @param {string} options.attributeKey - Zugehöriges Attribut: mind/body/spirit.
-   * @param {string} options.skillKey - Technischer Skill-Schlüssel, z. B. awareness.
-   * @param {string} options.attributeLabel - Lokalisierter Attributname.
-   * @param {string} options.skillLabel - Lokalisierter Skillname.
-   * @returns {Promise<ChatMessage|null>}
-   */
   static async rollSkill({ actor, attributeKey, skillKey, attributeLabel, skillLabel }) {
     const attributeValue = actor.getAttribute(attributeKey);
     const skillValue = actor.getSkill(attributeKey, skillKey);
-
-    const conditionModifier = this.#getActiveConditionModifier(actor);
+    const activeConditions = this.getActiveConditions(actor);
+    const conditionModifier = this.getActiveConditionModifier(actor);
 
     const dialogData = await this.#showSkillRollDialog({
       actor,
@@ -105,6 +97,7 @@ export class ShadowScarRolls {
       skillLabel,
       attributeValue,
       skillValue,
+      activeConditions,
       conditionModifier
     });
 
@@ -112,24 +105,15 @@ export class ShadowScarRolls {
 
     const modifier = dialogData.modifier;
     const difficulty = dialogData.difficulty;
-
-    /**
-     * Der Würfelpool ist Attribut + Skill + situativer Bonus/Malus.
-     * Math.max(0, ...) verhindert negative Würfelpools.
-     */
     const pool = Math.max(0, attributeValue + skillValue + modifier);
 
-    /**
-     * Foundry kann beliebige Würfelformeln auswerten. Wir würfeln hier nur den
-     * Rohpool, zählen die Erfolge aber selbst, weil 6er zwei Erfolge zählen.
-     */
     const roll = new Roll(`${pool}d6`);
     await roll.evaluate();
 
     const dice = this.#getDiceResults(roll);
     const successes = this.#countSuccesses(dice);
-    const success = successes >= difficulty;
     const margin = successes - difficulty;
+    const success = margin >= 0;
 
     const content = await renderTemplate(
       "systems/shadow-scar/templates/chat/skill-roll-card.hbs",
@@ -144,14 +128,14 @@ export class ShadowScarRolls {
         skillValue,
         modifier,
         conditionModifier,
+        activeConditions,
         difficulty,
         margin,
         pool,
         dice,
         successes,
         success,
-        resultLabel: success ? "Success" : "Failure",
-        activeConditions: this.#getActiveConditionSummaries(actor)
+        resultLabel: success ? "Success" : "Failure"
       }
     );
 
@@ -162,36 +146,25 @@ export class ShadowScarRolls {
     });
   }
 
-  /**
-   * Uses a Technique or Mikkyo item.
-   *
-   * This is intentionally separate from rollSkill(). A Technique is not always
-   * a test; sometimes it is a declared ability, a passive effect, or a special
-   * action. v0.58 keeps Techniques free of Ki costs while Mikkyo can spend Ki.
-   *
-   * @param {object} options
-   * @param {Actor} options.actor - Character using the item.
-   * @param {Item} options.item - Embedded Technique or Mikkyo item.
-   * @returns {Promise<ChatMessage|null>}
-   */
-
-  /**
-   * Rolls an attack with a Weapon item.
-   *
-   * v0.60 keeps weapon attacks on the existing Shadow Scar d6-pool mechanic:
-   * Attribute + Skill + bonus/penalty. The weapon stores its attack skill as
-   * e.g. "body.melee" or "mind.marksmanship".
-   */
+  /** Rolls a weapon from the actor sheet using item.system.skill. */
   static async rollWeapon({ actor, item }) {
-    const skillPath = String(item.system?.skill || "body.melee");
-    const [attributeKey = "body", skillKey = "melee"] = skillPath.split(".");
+    const skillRef = String(item.system?.skill ?? "");
+    const resolvedSkill = this.#resolveSkillReference(skillRef);
 
-    const attributeLabel = game.shadowScar?.config?.attributes?.[attributeKey] ?? attributeKey;
-    const skillLabel = game.shadowScar?.config?.skills?.[attributeKey]?.[skillKey] ?? skillKey;
+    if (!resolvedSkill) {
+      ui.notifications?.warn(`${item.name} has no valid attack skill configured.`);
+      return null;
+    }
+
+    const { attributeKey, skillKey } = resolvedSkill;
+    const attributeLabel = SHADOW_SCAR.attributes[attributeKey] ?? attributeKey;
+    const skillLabel = SHADOW_SCAR.skills[attributeKey]?.[skillKey] ?? skillKey;
     const attributeValue = actor.getAttribute(attributeKey);
     const skillValue = actor.getSkill(attributeKey, skillKey);
-
-    const conditionModifier = this.#getActiveConditionModifier(actor);
+    const activeConditions = this.getActiveConditions(actor);
+    const conditionModifier = this.getActiveConditionModifier(actor);
+    const weaponDamage = String(item.system?.damage ?? "");
+    const numericDamage = this.#parseDamageValue(weaponDamage);
 
     const dialogData = await this.#showWeaponRollDialog({
       actor,
@@ -200,6 +173,7 @@ export class ShadowScarRolls {
       skillLabel,
       attributeValue,
       skillValue,
+      activeConditions,
       conditionModifier
     });
 
@@ -214,16 +188,23 @@ export class ShadowScarRolls {
 
     const dice = this.#getDiceResults(roll);
     const successes = this.#countSuccesses(dice);
-    const success = successes >= difficulty;
     const margin = successes - difficulty;
+    const success = margin >= 0;
 
     const content = await renderTemplate(
       "systems/shadow-scar/templates/chat/weapon-roll-card.hbs",
       {
         actor,
         actorName: actor.name,
+        actorUuid: actor.uuid,
         item,
+        itemUuid: item.uuid,
         weaponName: item.name,
+        weaponDamage,
+        numericDamage,
+        hasDamage: weaponDamage.trim().length > 0,
+        range: item.system?.range ?? "",
+        category: item.system?.category ?? "",
         attributeKey,
         attributeLabel,
         attributeValue,
@@ -232,18 +213,14 @@ export class ShadowScarRolls {
         skillValue,
         modifier,
         conditionModifier,
+        activeConditions,
         difficulty,
         margin,
         pool,
         dice,
         successes,
         success,
-        resultLabel: success ? "Success" : "Failure",
-        damage: item.system?.damage,
-        range: item.system?.range,
-        category: item.system?.category,
-        tags: item.system?.tags,
-        activeConditions: this.#getActiveConditionSummaries(actor)
+        resultLabel: success ? "Success" : "Failure"
       }
     );
 
@@ -254,13 +231,8 @@ export class ShadowScarRolls {
     });
   }
 
-  /**
-   * Posts a general Gear use card to chat.
-   *
-   * Gear does not roll by default; it may be a tool, armor-like object,
-   * consumable, clue, or other carried object.
-   */
-  static async useGear({ actor, item }) {
+  /** Creates a chat card for using a Gear item. */
+  static async useGearItem({ actor, item }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/chat/gear-use-card.hbs",
       {
@@ -268,12 +240,11 @@ export class ShadowScarRolls {
         actorName: actor.name,
         item,
         itemName: item.name,
-        category: item.system?.category,
-        quantity: item.system?.quantity,
-        equipped: item.system?.equipped,
-        tags: item.system?.tags,
-        effect: item.system?.effect,
-        description: item.system?.description
+        category: item.system?.category ?? "",
+        quantity: Number(item.system?.quantity ?? 0),
+        equipped: Boolean(item.system?.equipped),
+        effect: item.system?.effect ?? "",
+        tags: item.system?.tags ?? ""
       }
     );
 
@@ -284,17 +255,17 @@ export class ShadowScarRolls {
     });
   }
 
+  /** Uses a Technique or Mikkyo item and optionally spends Ki. */
   static async useKiItem({ actor, item }) {
-    const usesKi = item.type === "mikkyo";
-    const kiCost = usesKi ? Math.max(0, Number(item.system?.kiCost ?? 0)) : 0;
+    const kiCost = Math.max(0, Number(item.system?.kiCost ?? 0));
     const currentKi = Math.max(0, Number(actor.system?.resources?.ki?.value ?? 0));
     const maxKi = Math.max(0, Number(actor.system?.resources?.ki?.max ?? 0));
     const itemTypeLabel = item.type === "mikkyo" ? "Mikkyo" : "Technique";
 
-    const dialogData = await this.#showKiItemDialog({ actor, item, itemTypeLabel, usesKi, kiCost, currentKi, maxKi });
+    const dialogData = await this.#showKiItemDialog({ actor, item, itemTypeLabel, kiCost, currentKi, maxKi });
     if (!dialogData) return null;
 
-    const spendKi = usesKi && Boolean(dialogData.spendKi);
+    const spendKi = Boolean(dialogData.spendKi);
     const ignoreInsufficientKi = Boolean(dialogData.ignoreInsufficientKi);
 
     if (spendKi && kiCost > currentKi && !ignoreInsufficientKi) {
@@ -317,13 +288,10 @@ export class ShadowScarRolls {
         itemName: item.name,
         itemType: item.type,
         itemTypeLabel,
-        usesKi,
         kiCost,
         currentKi,
         remainingKi,
         spendKi,
-        rank: item.system?.rank,
-        origin: item.system?.origin,
         timing: item.system?.timing,
         trigger: item.system?.trigger,
         range: item.system?.range,
@@ -340,73 +308,39 @@ export class ShadowScarRolls {
     });
   }
 
-  /**
-   * Summarizes currently active Condition items for roll dialogs and chat cards.
-   * v0.61 adds a structured numeric modifier. The old penalty text remains as
-   * a rules note, but the numeric modifier is now automatically prefilled into
-   * roll dialogs and therefore affects rolls unless the player changes it.
-   */
-  static #getActiveConditionSummaries(actor) {
-    return actor.items
-      .filter((item) => item.type === "condition" && item.system?.active)
-      .map((item) => ({
-        name: item.name,
-        intensity: item.system?.intensity,
-        category: item.system?.category,
-        modifier: Number(item.system?.modifier ?? 0) || 0,
-        penalty: item.system?.penalty
-      }));
+  static async changeResource(actor, resourceKey, delta) {
+    const current = Number(foundry.utils.getProperty(actor.system, `resources.${resourceKey}.value`) ?? 0);
+    const max = Number(foundry.utils.getProperty(actor.system, `resources.${resourceKey}.max`) ?? 0);
+    const next = this.#clampResource(current + delta, max);
+
+    return actor.update({ [`system.resources.${resourceKey}.value`]: next });
   }
 
-  static #getActiveConditionModifier(actor) {
-    return this.#getActiveConditionSummaries(actor).reduce((total, condition) => total + condition.modifier, 0);
+  static async setResourceToMax(actor, resourceKey) {
+    const max = Number(foundry.utils.getProperty(actor.system, `resources.${resourceKey}.max`) ?? 0);
+    return actor.update({ [`system.resources.${resourceKey}.value`]: Math.max(0, max) });
   }
 
-  /**
-   * Zählt die Erfolge nach Shadow-Scar-Mechanik.
-   *
-   * Diese Hilfsfunktion wird von Attribut- und Skillwürfen gemeinsam benutzt,
-   * damit die Erfolgslogik nur an einer Stelle gepflegt werden muss.
-   */
-  static #countSuccesses(dice) {
-    return dice.reduce((total, die) => {
-      if (die === 6) return total + 2;
-      if (die >= 4) return total + 1;
-      return total;
-    }, 0);
-  }
+  static async openVitalityChangeDialog(actor, mode) {
+    const current = Number(actor.system?.resources?.vitality?.value ?? 0);
+    const max = Number(actor.system?.resources?.vitality?.max ?? 0);
+    const isDamage = mode === "damage";
 
-  /**
-   * Extrahiert die einzelnen Würfelergebnisse aus einem Foundry Roll-Objekt.
-   */
-  static #getDiceResults(roll) {
-    return roll.dice.flatMap((die) => die.results.map((result) => Number(result.result)));
-  }
-
-  static async #showWeaponRollDialog({ actor, item, attributeLabel, skillLabel, attributeValue, skillValue, conditionModifier }) {
     const content = await renderTemplate(
-      "systems/shadow-scar/templates/dialogs/weapon-roll-dialog.hbs",
+      "systems/shadow-scar/templates/dialogs/resource-change-dialog.hbs",
       {
         actor,
         actorName: actor.name,
-        item,
-        weaponName: item.name,
-        attributeLabel,
-        skillLabel,
-        attributeValue,
-        skillValue,
-        basePool: attributeValue + skillValue,
-        conditionModifier,
-        damage: item.system?.damage,
-        range: item.system?.range,
-        tags: item.system?.tags,
-        activeConditions: this.#getActiveConditionSummaries(actor)
+        mode,
+        title: isDamage ? "Apply Damage" : "Heal Vitality",
+        amountLabel: isDamage ? "Damage" : "Healing",
+        current,
+        max
       }
     );
 
-    return new Promise((resolve) => {
+    const dialogData = await new Promise((resolve) => {
       let resolved = false;
-
       const finish = (value) => {
         if (resolved) return;
         resolved = true;
@@ -414,23 +348,15 @@ export class ShadowScarRolls {
       };
 
       new Dialog({
-        title: `${item.name} Attack`,
+        title: isDamage ? "Apply Damage" : "Heal Vitality",
         content,
         buttons: {
-          roll: {
-            icon: '<i class="fas fa-dice-d6"></i>',
-            label: "Roll Attack",
+          apply: {
+            icon: isDamage ? '<i class="fas fa-heart-crack"></i>' : '<i class="fas fa-heart"></i>',
+            label: isDamage ? "Apply Damage" : "Heal",
             callback: (html) => {
-              const rawModifier = html.find("[name='modifier']").val();
-              const rawDifficulty = html.find("[name='difficulty']").val();
-
-              const modifier = Number(rawModifier || 0);
-              const difficulty = Number(rawDifficulty || 1);
-
-              finish({
-                modifier: Number.isFinite(modifier) ? modifier : 0,
-                difficulty: Number.isFinite(difficulty) ? Math.max(0, difficulty) : 1
-              });
+              const amount = this.#readNumber(html, "amount", 0);
+              finish({ amount: Math.max(0, amount) });
             }
           },
           cancel: {
@@ -439,13 +365,63 @@ export class ShadowScarRolls {
             callback: () => finish(null)
           }
         },
-        default: "roll",
+        default: "apply",
         close: () => finish(null)
       }).render(true);
     });
+
+    if (!dialogData) return null;
+
+    const signedDelta = isDamage ? -dialogData.amount : dialogData.amount;
+    return this.changeResource(actor, "vitality", signedDelta);
   }
 
-  static async #showKiItemDialog({ actor, item, itemTypeLabel, usesKi, kiCost, currentKi, maxKi }) {
+  /** Adds chat-card button behavior after Foundry renders a chat message. */
+  static activateChatListeners(html, _message) {
+    const root = html?.find ? html : $(html);
+    root.find("[data-action='shadow-scar-apply-damage']").on("click", this.#onApplyDamageClick.bind(this));
+  }
+
+  static #countSuccesses(dice) {
+    return dice.reduce((total, die) => {
+      if (die === 6) return total + 2;
+      if (die >= 4) return total + 1;
+      return total;
+    }, 0);
+  }
+
+  static #getDiceResults(roll) {
+    return roll.dice.flatMap((die) => die.results.map((result) => Number(result.result)));
+  }
+
+  static #resolveSkillReference(skillRef) {
+    const [attributeKey, skillKey] = String(skillRef ?? "").split(".");
+    if (!attributeKey || !skillKey) return null;
+    if (!SHADOW_SCAR.attributes[attributeKey]) return null;
+    if (!SHADOW_SCAR.skills[attributeKey]?.[skillKey]) return null;
+    return { attributeKey, skillKey };
+  }
+
+  static #parseDamageValue(damageText) {
+    const match = String(damageText ?? "").match(/-?\d+/);
+    if (!match) return 0;
+    const value = Number(match[0]);
+    return Number.isFinite(value) ? Math.max(0, value) : 0;
+  }
+
+  static #clampResource(value, max) {
+    const safeMax = Math.max(0, Number(max ?? 0));
+    const safeValue = Number(value ?? 0);
+    return Math.min(safeMax, Math.max(0, Number.isFinite(safeValue) ? safeValue : 0));
+  }
+
+  static #readNumber(html, name, fallback = 0) {
+    const raw = html.find(`[name='${name}']`).val();
+    const value = Number(raw ?? fallback);
+    return Number.isFinite(value) ? value : fallback;
+  }
+
+  static async #showKiItemDialog({ actor, item, itemTypeLabel, kiCost, currentKi, maxKi }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/dialogs/ki-item-use-dialog.hbs",
       {
@@ -454,18 +430,16 @@ export class ShadowScarRolls {
         item,
         itemName: item.name,
         itemTypeLabel,
-        usesKi,
         kiCost,
         currentKi,
         maxKi,
-        hasCost: usesKi && kiCost > 0,
-        enoughKi: !usesKi || currentKi >= kiCost
+        hasCost: kiCost > 0,
+        enoughKi: currentKi >= kiCost
       }
     );
 
     return new Promise((resolve) => {
       let resolved = false;
-
       const finish = (value) => {
         if (resolved) return;
         resolved = true;
@@ -480,7 +454,7 @@ export class ShadowScarRolls {
             icon: '<i class="fas fa-bolt"></i>',
             label: "Use",
             callback: (html) => {
-              const spendKi = usesKi && html.find("[name='spendKi']").is(":checked");
+              const spendKi = html.find("[name='spendKi']").is(":checked");
               const ignoreInsufficientKi = html.find("[name='ignoreInsufficientKi']").is(":checked");
               finish({ spendKi, ignoreInsufficientKi });
             }
@@ -497,7 +471,7 @@ export class ShadowScarRolls {
     });
   }
 
-  static async #showAttributeRollDialog({ actor, attributeLabel, attributeValue, conditionModifier }) {
+  static async #showAttributeRollDialog({ actor, attributeLabel, attributeValue, activeConditions, conditionModifier }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/dialogs/attribute-roll-dialog.hbs",
       {
@@ -505,59 +479,19 @@ export class ShadowScarRolls {
         actorName: actor.name,
         attributeLabel,
         attributeValue,
-        conditionModifier,
-        activeConditions: this.#getActiveConditionSummaries(actor)
+        activeConditions,
+        conditionModifier
       }
     );
 
-    return new Promise((resolve) => {
-      let resolved = false;
-
-      const finish = (value) => {
-        if (resolved) return;
-        resolved = true;
-        resolve(value);
-      };
-
-      new Dialog({
-        title: `${attributeLabel} Test`,
-        content,
-        buttons: {
-          roll: {
-            icon: '<i class="fas fa-dice-d6"></i>',
-            label: "Roll",
-            callback: (html) => {
-              const rawModifier = html.find("[name='modifier']").val();
-              const rawDifficulty = html.find("[name='difficulty']").val();
-
-              const modifier = Number(rawModifier || 0);
-              const difficulty = Number(rawDifficulty || 1);
-
-              finish({
-                modifier: Number.isFinite(modifier) ? modifier : 0,
-                difficulty: Number.isFinite(difficulty) ? Math.max(0, difficulty) : 1
-              });
-            }
-          },
-          cancel: {
-            icon: '<i class="fas fa-times"></i>',
-            label: "Cancel",
-            callback: () => finish(null)
-          }
-        },
-        default: "roll",
-        close: () => finish(null)
-      }).render(true);
+    return this.#showRollDialog({
+      title: `${attributeLabel} Test`,
+      content,
+      defaultModifier: conditionModifier
     });
   }
 
-  /**
-   * Zeigt den Skillwurf-Dialog.
-   *
-   * Der Dialog liefert nur Eingaben zurück. Er würfelt nicht selbst. Dadurch
-   * bleibt die Logik zum Würfeln vollständig in rollSkill().
-   */
-  static async #showSkillRollDialog({ actor, attributeLabel, skillLabel, attributeValue, skillValue, conditionModifier }) {
+  static async #showSkillRollDialog({ actor, attributeLabel, skillLabel, attributeValue, skillValue, activeConditions, conditionModifier }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/dialogs/skill-roll-dialog.hbs",
       {
@@ -568,14 +502,48 @@ export class ShadowScarRolls {
         attributeValue,
         skillValue,
         basePool: attributeValue + skillValue,
-        conditionModifier,
-        activeConditions: this.#getActiveConditionSummaries(actor)
+        activeConditions,
+        conditionModifier
       }
     );
 
+    return this.#showRollDialog({
+      title: `${skillLabel} Check`,
+      content,
+      defaultModifier: conditionModifier
+    });
+  }
+
+  static async #showWeaponRollDialog({ actor, item, attributeLabel, skillLabel, attributeValue, skillValue, activeConditions, conditionModifier }) {
+    const content = await renderTemplate(
+      "systems/shadow-scar/templates/dialogs/weapon-roll-dialog.hbs",
+      {
+        actor,
+        actorName: actor.name,
+        item,
+        weaponName: item.name,
+        weaponDamage: item.system?.damage ?? "",
+        range: item.system?.range ?? "",
+        attributeLabel,
+        skillLabel,
+        attributeValue,
+        skillValue,
+        basePool: attributeValue + skillValue,
+        activeConditions,
+        conditionModifier
+      }
+    );
+
+    return this.#showRollDialog({
+      title: `${item.name} Attack`,
+      content,
+      defaultModifier: conditionModifier
+    });
+  }
+
+  static async #showRollDialog({ title, content, defaultModifier = 0 }) {
     return new Promise((resolve) => {
       let resolved = false;
-
       const finish = (value) => {
         if (resolved) return;
         resolved = true;
@@ -583,22 +551,19 @@ export class ShadowScarRolls {
       };
 
       new Dialog({
-        title: `${skillLabel} Check`,
+        title,
         content,
         buttons: {
           roll: {
             icon: '<i class="fas fa-dice-d6"></i>',
             label: "Roll",
             callback: (html) => {
-              const rawModifier = html.find("[name='modifier']").val();
-              const rawDifficulty = html.find("[name='difficulty']").val();
-
-              const modifier = Number(rawModifier || 0);
-              const difficulty = Number(rawDifficulty || 1);
+              const modifier = this.#readNumber(html, "modifier", defaultModifier);
+              const difficulty = this.#readNumber(html, "difficulty", 1);
 
               finish({
-                modifier: Number.isFinite(modifier) ? modifier : 0,
-                difficulty: Number.isFinite(difficulty) ? Math.max(0, difficulty) : 1
+                modifier,
+                difficulty: Math.max(0, difficulty)
               });
             }
           },
@@ -613,39 +578,147 @@ export class ShadowScarRolls {
       }).render(true);
     });
   }
+
+  static #getDamageTargetActors() {
+    const targetedTokens = Array.from(game.user?.targets ?? []);
+    const controlledTokens = Array.from(canvas?.tokens?.controlled ?? []);
+    const tokens = targetedTokens.length > 0 ? targetedTokens : controlledTokens;
+    const actorsById = new Map();
+
+    for (const token of tokens) {
+      const actor = token?.actor;
+      if (!actor) continue;
+      actorsById.set(actor.id, actor);
+    }
+
+    return Array.from(actorsById.values());
+  }
+
+  static async #onApplyDamageClick(event) {
+    event.preventDefault();
+
+    const button = event.currentTarget;
+    const baseDamage = Math.max(0, Number(button.dataset.baseDamage ?? 0));
+    const damageText = button.dataset.damageText ?? "";
+    const margin = Number(button.dataset.margin ?? 0);
+    const weaponName = button.dataset.weaponName ?? "Weapon";
+    const targetActors = this.#getDamageTargetActors();
+
+    if (targetActors.length === 0) {
+      ui.notifications?.warn("Target or select one or more tokens before applying damage.");
+      return null;
+    }
+
+    const dialogData = await this.#showApplyDamageDialog({
+      weaponName,
+      targetActors,
+      baseDamage,
+      damageText,
+      margin
+    });
+
+    if (!dialogData) return null;
+
+    const finalDamage = Math.max(0, Number(dialogData.finalDamage ?? 0));
+    const results = [];
+
+    for (const actor of targetActors) {
+      const current = Number(actor.system?.resources?.vitality?.value ?? 0);
+      const max = Number(actor.system?.resources?.vitality?.max ?? 0);
+      const next = this.#clampResource(current - finalDamage, max);
+      await actor.update({ "system.resources.vitality.value": next });
+      results.push({ name: actor.name, before: current, after: next, damage: finalDamage });
+    }
+
+    const rows = results
+      .map((result) => `<li><strong>${result.name}</strong>: ${result.before} → ${result.after} Vitality (${result.damage} damage)</li>`)
+      .join("");
+
+    return ChatMessage.create({
+      speaker: ChatMessage.getSpeaker(),
+      flavor: `Damage applied from ${weaponName}`,
+      content: `<div class="shadow-scar chat-card damage-application-card"><header><h2>Damage Applied</h2><p>${weaponName}</p></header><ul>${rows}</ul></div>`
+    });
+  }
+
+  static async #showApplyDamageDialog({ weaponName, targetActors, baseDamage, damageText, margin }) {
+    const content = await renderTemplate(
+      "systems/shadow-scar/templates/dialogs/damage-application-dialog.hbs",
+      {
+        weaponName,
+        targetNames: targetActors.map((actor) => actor.name).join(", "),
+        baseDamage,
+        damageText,
+        margin,
+        finalDamage: baseDamage
+      }
+    );
+
+    return new Promise((resolve) => {
+      let resolved = false;
+      const finish = (value) => {
+        if (resolved) return;
+        resolved = true;
+        resolve(value);
+      };
+
+      new Dialog({
+        title: `Apply Damage: ${weaponName}`,
+        content,
+        buttons: {
+          apply: {
+            icon: '<i class="fas fa-heart-crack"></i>',
+            label: "Apply",
+            callback: (html) => {
+              const finalDamage = this.#readNumber(html, "finalDamage", baseDamage);
+              finish({ finalDamage });
+            }
+          },
+          cancel: {
+            icon: '<i class="fas fa-times"></i>',
+            label: "Cancel",
+            callback: () => finish(null)
+          }
+        },
+        default: "apply",
+        close: () => finish(null)
+      }).render(true);
+    });
+  }
 }
 
-/**
- * Kompatibilitätsfunktion für den bestehenden Sheet-Code.
- */
 export async function rollAttribute(actor, attributeKey, attributeLabel) {
   return ShadowScarRolls.rollAttribute({ actor, attributeKey, attributeLabel });
 }
 
-/**
- * Kleine Wrapperfunktion, damit der ActorSheet-Code kurz und lesbar bleibt.
- */
 export async function rollSkill(actor, attributeKey, skillKey, attributeLabel, skillLabel) {
   return ShadowScarRolls.rollSkill({ actor, attributeKey, skillKey, attributeLabel, skillLabel });
 }
 
-/**
- * Wrapper for using a Technique or Mikkyo item from an Actor sheet.
- */
-export async function useKiItem(actor, item) {
-  return ShadowScarRolls.useKiItem({ actor, item });
-}
-
-/**
- * Wrapper for rolling a Weapon attack from an Actor sheet.
- */
 export async function rollWeapon(actor, item) {
   return ShadowScarRolls.rollWeapon({ actor, item });
 }
 
-/**
- * Wrapper for posting Gear use from an Actor sheet.
- */
-export async function useGear(actor, item) {
-  return ShadowScarRolls.useGear({ actor, item });
+export async function useGearItem(actor, item) {
+  return ShadowScarRolls.useGearItem({ actor, item });
+}
+
+export async function useKiItem(actor, item) {
+  return ShadowScarRolls.useKiItem({ actor, item });
+}
+
+export function getActiveConditions(actor) {
+  return ShadowScarRolls.getActiveConditions(actor);
+}
+
+export async function changeResource(actor, resourceKey, delta) {
+  return ShadowScarRolls.changeResource(actor, resourceKey, delta);
+}
+
+export async function setResourceToMax(actor, resourceKey) {
+  return ShadowScarRolls.setResourceToMax(actor, resourceKey);
+}
+
+export async function openVitalityChangeDialog(actor, mode) {
+  return ShadowScarRolls.openVitalityChangeDialog(actor, mode);
 }

@@ -20,6 +20,7 @@ import { ShadowScarTechniqueData } from "./module/data-models/item-technique.mjs
 import { ShadowScarConditionData } from "./module/data-models/item-condition.mjs";
 import { ShadowScarWeaponData } from "./module/data-models/item-weapon.mjs";
 import { ShadowScarMikkyoData } from "./module/data-models/item-mikkyo.mjs";
+import { ShadowScarRolls } from "./module/dice/rolls.mjs";
 
 /**
  * Der init-Hook läuft sehr früh.
@@ -78,7 +79,8 @@ Hooks.once("init", () => {
     sheets: {
       ShadowScarActorSheet,
       ShadowScarItemSheet
-    }
+    },
+    rolls: ShadowScarRolls
   };
 });
 
@@ -89,4 +91,11 @@ Hooks.once("ready", () => {
   console.log(`${SHADOW_SCAR.id} | System bereit`);
 
   ui.notifications.info("Shadow Scar is ready.");
+});
+
+/**
+ * v0.6.4: weapon chat cards can apply damage to targeted/selected tokens.
+ */
+Hooks.on("renderChatMessage", (message, html) => {
+  ShadowScarRolls.activateChatListeners(html, message);
 });

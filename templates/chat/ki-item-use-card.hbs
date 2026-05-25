@@ -5,15 +5,11 @@
   </header>
 
   <div class="card-grid">
-    {{#if rank}}<div><strong>Rank:</strong> {{rank}}</div>{{/if}}
-    {{#if origin}}<div><strong>Origin:</strong> {{origin}}</div>{{/if}}
-    {{#if usesKi}}
-      <div><strong>Ki Cost:</strong> {{kiCost}}</div>
-      {{#if spendKi}}
-        <div><strong>Ki Reserve:</strong> {{currentKi}} → {{remainingKi}}</div>
-      {{else}}
-        <div><strong>Ki Reserve:</strong> not spent</div>
-      {{/if}}
+    <div><strong>Ki Cost:</strong> {{kiCost}}</div>
+    {{#if spendKi}}
+      <div><strong>Ki Reserve:</strong> {{currentKi}} → {{remainingKi}}</div>
+    {{else}}
+      <div><strong>Ki Reserve:</strong> not spent</div>
     {{/if}}
     {{#if timing}}<div><strong>Timing:</strong> {{timing}}</div>{{/if}}
     {{#if trigger}}<div><strong>Trigger:</strong> {{trigger}}</div>{{/if}}

@@ -1,0 +1,18 @@
+<form class="shadow-scar resource-change-dialog">
+  <p><strong>{{actorName}}</strong>: {{title}}</p>
+
+  <dl>
+    <dt>Current Vitality</dt>
+    <dd>{{current}}</dd>
+
+    <dt>Maximum Vitality</dt>
+    <dd>{{max}}</dd>
+  </dl>
+
+  <label class="field-block">
+    <span>{{amountLabel}}</span>
+    <input name="amount" type="number" value="1" min="0" step="1" autofocus />
+  </label>
+
+  <p class="hint">The final value is clamped between 0 and maximum Vitality.</p>
+</form>

@@ -1,7 +1,7 @@
 <div class="shadow-scar chat-card weapon-roll-card">
   <header>
     <h2>{{weaponName}}</h2>
-    <p>{{actorName}} · {{skillLabel}} with {{attributeLabel}}</p>
+    <p>{{actorName}} · {{skillLabel}} / {{attributeLabel}}</p>
   </header>
 
   <dl>
@@ -14,24 +14,20 @@
     <dt>Bonus/Penalty</dt>
     <dd>{{modifier}}</dd>
 
-    {{#if conditionModifier}}
-      <dt>Condition Modifier</dt>
-      <dd>{{conditionModifier}}</dd>
-    {{/if}}
-
     <dt>Dice pool</dt>
     <dd>{{pool}}d6</dd>
 
     <dt>Difficulty</dt>
     <dd>{{difficulty}}</dd>
 
+    <dt>Successes</dt>
+    <dd>{{successes}}</dd>
+
     <dt>Margin</dt>
     <dd>{{margin}}</dd>
 
-    {{#if damage}}
-      <dt>Damage</dt>
-      <dd><strong>{{damage}}</strong></dd>
-    {{/if}}
+    <dt>Damage</dt>
+    <dd><strong>{{weaponDamage}}</strong></dd>
 
     {{#if range}}
       <dt>Range</dt>
@@ -39,39 +35,39 @@
     {{/if}}
   </dl>
 
+  {{#if activeConditions.length}}
+    <section class="condition-summary">
+      <h3>Active Conditions</h3>
+      <ul>
+        {{#each activeConditions as |condition|}}
+          <li><strong>{{condition.name}}</strong>: {{condition.modifier}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}</li>
+        {{/each}}
+      </ul>
+    </section>
+  {{/if}}
+
   <p class="dice-results">
     {{#each dice as |die|}}
       <span class="die-result">{{die}}</span>
     {{/each}}
   </p>
 
-  <p class="roll-total">
-    Successes: <strong>{{successes}}</strong>
-  </p>
-
-  {{#if damage}}
-    <section class="card-effect damage-note">
-      <strong>Damage</strong>
-      <p>{{damage}}{{#if success}} — apply after defense/resistance according to your table rules.{{else}} — attack failed unless another rule applies.{{/if}}</p>
-    </section>
-  {{/if}}
-
   <p class="roll-outcome {{#if success}}success{{else}}failure{{/if}}">
     {{resultLabel}}
   </p>
 
-  {{#if activeConditions.length}}
-    <section class="card-effect">
-      <strong>Active Conditions</strong>
-      <p>
-        {{#each activeConditions as |condition|}}
-          {{condition.name}}{{#if condition.modifier}} ({{condition.modifier}} dice){{/if}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}{{#unless @last}}; {{/unless}}
-        {{/each}}
-      </p>
-    </section>
-  {{/if}}
-
-  {{#if tags}}
-    <p class="card-tags"><strong>Tags:</strong> {{tags}}</p>
-  {{/if}}
+  <section class="damage-reminder">
+    <p><strong>Damage:</strong> {{weaponDamage}}</p>
+    <p class="hint">Apply Defense/Resistance manually before reducing Vitality.</p>
+    <button
+      type="button"
+      data-action="shadow-scar-apply-damage"
+      data-base-damage="{{numericDamage}}"
+      data-damage-text="{{weaponDamage}}"
+      data-margin="{{margin}}"
+      data-weapon-name="{{weaponName}}"
+    >
+      Apply Damage
+    </button>
+  </section>
 </div>

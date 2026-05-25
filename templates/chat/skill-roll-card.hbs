@@ -14,29 +14,27 @@
     <dt>Bonus/Penalty</dt>
     <dd>{{modifier}}</dd>
 
-    {{#if conditionModifier}}
-      <dt>Condition Modifier</dt>
-      <dd>{{conditionModifier}}</dd>
-    {{/if}}
-
     <dt>Dice pool</dt>
     <dd>{{pool}}d6</dd>
 
     <dt>Difficulty</dt>
     <dd>{{difficulty}}</dd>
 
+    <dt>Successes</dt>
+    <dd>{{successes}}</dd>
+
     <dt>Margin</dt>
     <dd>{{margin}}</dd>
   </dl>
 
   {{#if activeConditions.length}}
-    <section class="card-effect">
-      <strong>Active Conditions</strong>
-      <p>
+    <section class="condition-summary">
+      <h3>Active Conditions</h3>
+      <ul>
         {{#each activeConditions as |condition|}}
-          {{condition.name}}{{#if condition.modifier}} ({{condition.modifier}} dice){{/if}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}{{#unless @last}}; {{/unless}}
+          <li><strong>{{condition.name}}</strong>: {{condition.modifier}}{{#if condition.penalty}} — {{condition.penalty}}{{/if}}</li>
         {{/each}}
-      </p>
+      </ul>
     </section>
   {{/if}}
 
@@ -44,10 +42,6 @@
     {{#each dice as |die|}}
       <span class="die-result">{{die}}</span>
     {{/each}}
-  </p>
-
-  <p class="roll-total">
-    Successes: <strong>{{successes}}</strong> · Difficulty: <strong>{{difficulty}}</strong> · Margin: <strong>{{margin}}</strong>
   </p>
 
   <p class="roll-outcome {{#if success}}success{{else}}failure{{/if}}">
