@@ -37,7 +37,7 @@
 
   <p class="dice-results">
     {{#each dice as |die|}}
-      <span class="die-result">{{die}}</span>
+      <span class="die-result {{die.cssClass}}">{{die.value}}</span>
     {{/each}}
   </p>
 

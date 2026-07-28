@@ -137,7 +137,19 @@ Hooks.once("ready", () => {
   console.log(`${SHADOW_SCAR.id} | System bereit`);
 
   ui.notifications.info("Shadow Scar is ready.");
+  updateShadowScarPauseIcon();
 });
+
+Hooks.on("renderPause", () => {
+  updateShadowScarPauseIcon();
+});
+
+/** Replaces Foundry's default pause overlay symbol with the system icon. */
+function updateShadowScarPauseIcon() {
+  const pauseIconPath = SHADOW_SCAR.icons?.pause ?? `systems/${SHADOW_SCAR.id}/assets/symbols/pause.webp`;
+  const pauseImage = document.querySelector("#pause img");
+  if (pauseImage) pauseImage.src = pauseIconPath;
+}
 
 /**
  * v0.7.0: rating symbols are available on character and NPC sheets, and
