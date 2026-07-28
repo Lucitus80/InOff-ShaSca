@@ -1,0 +1,361 @@
+<form class="{{cssClass}} shadow-scar npc-sheet" autocomplete="off">
+  <header class="sheet-header character-header npc-header">
+    <img class="profile-img" src="{{actor.img}}" data-edit="img" title="{{actor.name}}" height="112" width="112" />
+
+    <div class="header-fields identity-fields">
+      <label class="field-block character-name-field">
+        <span>Name</span>
+        <input name="name" type="text" value="{{actor.name}}" placeholder="Name" />
+      </label>
+
+      <div class="npc-identity-grid">
+        <label class="field-block">
+          <span>Role</span>
+          <input name="system.npc.role" type="text" value="{{system.npc.role}}" placeholder="Guard, Duelist, Oni, Fixer..." />
+        </label>
+
+        <label class="field-block">
+          <span>Type</span>
+          <input name="system.npc.adversaryType" type="text" value="{{system.npc.adversaryType}}" placeholder="Human, Yokai, Construct..." />
+        </label>
+
+        <label class="field-block">
+          <span>Threat Level</span>
+          <select name="system.npc.threatLevel">
+            {{#each config.npcThreatLevels as |label threatKey|}}
+              <option value="{{threatKey}}" {{#if (eq ../system.npc.threatLevel threatKey)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
+      </div>
+    </div>
+
+    <section class="header-resources" aria-label="Resources">
+      <div class="resource-card">
+        <label>{{config.resources.vitality}}</label>
+        <div class="resource-inputs">
+          <input name="system.resources.vitality.value" type="number" value="{{system.resources.vitality.value}}" min="0" step="1" aria-label="Current Vitality" />
+          <span>/</span>
+          <input name="system.resources.vitality.max" type="number" value="{{system.resources.vitality.max}}" min="0" step="1" aria-label="Maximum Vitality" />
+        </div>
+        <div class="resource-actions">
+          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="-1">−1</button>
+          <button type="button" data-action="resource-adjust" data-resource="vitality" data-delta="1">+1</button>
+          <button type="button" data-action="resource-set-max" data-resource="vitality">Max</button>
+          <button type="button" data-action="resource-damage-dialog">Damage</button>
+          <button type="button" data-action="resource-heal-dialog">Heal</button>
+        </div>
+      </div>
+
+      <div class="resource-card">
+        <label>{{config.resources.ki}}</label>
+        <div class="resource-inputs">
+          <input name="system.resources.ki.value" type="number" value="{{system.resources.ki.value}}" min="0" step="1" aria-label="Current Ki Reserve" />
+          <span>/</span>
+          <input name="system.resources.ki.max" type="number" value="{{system.resources.ki.max}}" min="0" step="1" aria-label="Maximum Ki Reserve" />
+        </div>
+        <div class="resource-actions compact-actions">
+          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="-1">−1</button>
+          <button type="button" data-action="resource-adjust" data-resource="ki" data-delta="1">+1</button>
+          <button type="button" data-action="resource-set-max" data-resource="ki">Max</button>
+        </div>
+      </div>
+    </section>
+  </header>
+
+  <section class="npc-summary-strip" aria-label="NPC Summary">
+    <span><strong>Actor:</strong> {{actorTypeLabel}}</span>
+    <span><strong>Threat:</strong> {{npcThreatLevelLabel}}</span>
+    <span><strong>Equipped Weapons:</strong> {{equippedWeapons.length}}</span>
+    <span><strong>Protection Gear:</strong> {{protectionGear.length}}</span>
+    <span><strong>Active Conditions:</strong> {{activeConditions.length}}</span>
+  </section>
+
+  <nav class="sheet-tabs npc-tabs" aria-label="NPC Sheet Pages">
+    <button type="button" data-action="tab" data-tab="combat" class='{{#if (eq activeTab "combat")}}active{{/if}}'>Combat</button>
+    <button type="button" data-action="tab" data-tab="equipment" class='{{#if (eq activeTab "equipment")}}active{{/if}}'>Equipment</button>
+    <button type="button" data-action="tab" data-tab="conditions" class='{{#if (eq activeTab "conditions")}}active{{/if}}'>Conditions</button>
+    <button type="button" data-action="tab" data-tab="notes" class='{{#if (eq activeTab "notes")}}active{{/if}}'>Notes</button>
+  </nav>
+
+  <section class="sheet-body tabbed-sheet-body npc-body">
+    {{#if (eq activeTab "combat")}}
+      <section class="tab-page npc-combat-page">
+        <section class="panel npc-attributes-panel">
+          <h2>Attributes</h2>
+          <p class="hint">Click an attribute name to roll it.</p>
+
+          <div class="npc-attribute-grid">
+            {{#each config.attributes as |attributeLabel attributeKey|}}
+              <label class="npc-stat-card">
+                <button
+                  type="button"
+                  class="roll-name attribute-name"
+                  data-action="roll-attribute"
+                  data-attribute="{{attributeKey}}"
+                  title="Roll {{attributeLabel}}"
+                >
+                  {{attributeLabel}}
+                </button>
+                <div class="rating-symbols attribute-rating npc-rating" role="group" aria-label="{{attributeLabel}} rating">
+                  {{#each (ratingDots (lookup ../system.attributes attributeKey) 5) as |dot|}}
+                    <button
+                      type="button"
+                      class="rating-symbol {{#if dot.filled}}filled{{else}}empty{{/if}}"
+                      data-action="set-rating"
+                      data-path="system.attributes.{{attributeKey}}"
+                      data-value="{{dot.value}}"
+                      data-max="5"
+                      title="Set {{attributeLabel}} rating"
+                    >
+                      <img src="{{dot.img}}" alt="{{#if dot.filled}}filled{{else}}empty{{/if}}" />
+                    </button>
+                  {{/each}}
+                </div>
+              </label>
+            {{/each}}
+          </div>
+        </section>
+
+        <section class="panel item-panel npc-key-skills-panel">
+          <h2>Key Skills</h2>
+          <p class="hint">Skills with value 1+ are shown here for fast rolling.</p>
+
+          <ol class="item-list npc-key-skill-list">
+            {{#each npcKeySkills as |skill|}}
+              <li class="item-row npc-key-skill-row">
+                <button
+                  type="button"
+                  class="roll-name skill-name"
+                  data-action="roll-skill"
+                  data-attribute="{{skill.attributeKey}}"
+                  data-skill="{{skill.skillKey}}"
+                  title="Roll {{skill.skillLabel}}"
+                >
+                  {{skill.skillLabel}}
+                </button>
+                <span class="item-detail">{{skill.attributeLabel}} linked</span>
+                <div class="rating-symbols skill-rating npc-key-rating" role="group" aria-label="{{skill.skillLabel}} rating">
+                  {{#each (ratingDots skill.skillValue 3) as |dot|}}
+                    <button
+                      type="button"
+                      class="rating-symbol {{#if dot.filled}}filled{{else}}empty{{/if}}"
+                      data-action="set-rating"
+                      data-path="{{skill.path}}"
+                      data-value="{{dot.value}}"
+                      data-max="3"
+                      title="Set {{skill.skillLabel}} rating"
+                    >
+                      <img src="{{dot.img}}" alt="{{#if dot.filled}}filled{{else}}empty{{/if}}" />
+                    </button>
+                  {{/each}}
+                </div>
+              </li>
+            {{else}}
+              <li class="empty">No key skills yet. Set skill values in the full grid below.</li>
+            {{/each}}
+          </ol>
+        </section>
+
+        <section class="panel item-panel npc-fast-weapons-panel">
+          <h2>Ready Weapons</h2>
+          <p class="hint">Equipped weapons are shown first for quick attacks.</p>
+
+          <ol class="item-list">
+            {{#each equippedWeapons as |item|}}
+              <li class="item-row weapon-row" data-item-id="{{item.id}}">
+                <input type="checkbox" data-action="weapon-equipped-toggle" checked aria-label="Equipped weapon" />
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
+                <span class="item-detail">{{item.system.damage}} {{#if item.system.range}}/ {{item.system.range}}{{/if}}</span>
+                <button type="button" data-action="item-open" title="Edit">⚙</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No equipped weapons.</li>
+            {{/each}}
+          </ol>
+        </section>
+
+        <section class="panel npc-skills-panel">
+          <h2>Full Skill Grid</h2>
+          <p class="hint">Use this to enter or adjust less common NPC skills.</p>
+
+          <div class="attribute-skill-grid npc-skill-grid">
+            {{#each config.attributes as |attributeLabel attributeKey|}}
+              <section class="attribute-skill-column">
+                <header class="attribute-column-header compact-header">
+                  <span>{{attributeLabel}}</span>
+                  <span>Skill</span>
+                </header>
+
+                <ol class="skill-list">
+                  {{#each (lookup ../config.skills attributeKey) as |skillLabel skillKey|}}
+                    <li class="skill-row">
+                      <button
+                        type="button"
+                        class="roll-name skill-name"
+                        data-action="roll-skill"
+                        data-attribute="{{attributeKey}}"
+                        data-skill="{{skillKey}}"
+                        title="Roll {{skillLabel}}"
+                      >
+                        {{skillLabel}}
+                      </button>
+
+                      <div class="rating-symbols skill-rating" role="group" aria-label="{{skillLabel}} rating">
+                        {{#each (ratingDots (lookup (lookup ../../system.skills attributeKey) skillKey) 3) as |dot|}}
+                          <button
+                            type="button"
+                            class="rating-symbol {{#if dot.filled}}filled{{else}}empty{{/if}}"
+                            data-action="set-rating"
+                            data-path="system.skills.{{attributeKey}}.{{skillKey}}"
+                            data-value="{{dot.value}}"
+                            data-max="3"
+                            title="Set {{skillLabel}} rating"
+                          >
+                            <img src="{{dot.img}}" alt="{{#if dot.filled}}filled{{else}}empty{{/if}}" />
+                          </button>
+                        {{/each}}
+                      </div>
+                    </li>
+                  {{/each}}
+                </ol>
+              </section>
+            {{/each}}
+          </div>
+        </section>
+      </section>
+    {{/if}}
+
+    {{#if (eq activeTab "equipment")}}
+      <section class="tab-page equipment-page two-column-page npc-equipment-page">
+        <section class="panel item-panel">
+          <h2>Gear & Armor</h2>
+          <p class="hint">Equipped protection gear is read by the Apply Damage dialog.</p>
+
+          <ol class="item-list">
+            {{#each itemsByType.gear as |item|}}
+              <li class="item-row gear-row" data-item-id="{{item.id}}">
+                <input type="checkbox" data-action="gear-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped gear" />
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
+                <span class="item-detail">{{item.system.category}} ×{{item.system.quantity}}{{#if item.system.armorValue}} / Armor {{item.system.armorValue}}{{/if}}{{#if item.system.resistanceValue}} / Res {{item.system.resistanceValue}}{{/if}}{{#if item.system.damageReduction}} / DR {{item.system.damageReduction}}{{/if}}</span>
+                <button type="button" data-action="use-gear-item" title="Use">Use</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No gear.</li>
+            {{/each}}
+          </ol>
+        </section>
+
+        <section class="panel item-panel">
+          <h2>Weapons</h2>
+          <p class="hint">Click a weapon name to roll with its configured attack skill.</p>
+
+          <ol class="item-list">
+            {{#each itemsByType.weapon as |item|}}
+              <li class="item-row weapon-row" data-item-id="{{item.id}}">
+                <input type="checkbox" data-action="weapon-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped weapon" />
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
+                <span class="item-detail">{{item.system.damage}} {{#if item.system.range}}/ {{item.system.range}}{{/if}}</span>
+                <button type="button" data-action="item-open" title="Edit">⚙</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No weapons.</li>
+            {{/each}}
+          </ol>
+        </section>
+
+        <section class="panel item-panel">
+          <header class="panel-heading item-panel-heading">
+            <h2>Techniques</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="technique" title="Create Technique" aria-label="Create Technique">+</button>
+          </header>
+          <ol class="item-list">
+            {{#each itemsByType.technique as |item|}}
+              <li class="item-row action-item-row" data-item-id="{{item.id}}">
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
+                <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}}</span>
+                <button type="button" data-action="item-open" title="Edit">⚙</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No techniques.</li>
+            {{/each}}
+          </ol>
+        </section>
+
+        <section class="panel item-panel">
+          <header class="panel-heading item-panel-heading">
+            <h2>Mikkyo</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="mikkyo" title="Create Mikkyo" aria-label="Create Mikkyo">+</button>
+          </header>
+          <ol class="item-list">
+            {{#each itemsByType.mikkyo as |item|}}
+              <li class="item-row action-item-row" data-item-id="{{item.id}}">
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
+                <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}} / {{mikkyoKiCost item.system}} Ki</span>
+                <button type="button" data-action="item-open" title="Edit">⚙</button>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No mikkyo.</li>
+            {{/each}}
+          </ol>
+        </section>
+      </section>
+    {{/if}}
+
+    {{#if (eq activeTab "conditions")}}
+      <section class="tab-page conditions-page">
+        <section class="panel item-panel conditions-panel">
+          <h2>Conditions</h2>
+          <p class="hint">Active Condition modifiers are summed and prefilled into Attribute, Skill, and Weapon roll dialogs.</p>
+
+          <ol class="item-list condition-list">
+            {{#each itemsByType.condition as |item|}}
+              <li class="item-row condition-row" data-item-id="{{item.id}}">
+                <input type="checkbox" data-action="condition-toggle" {{#if item.system.active}}checked{{/if}} aria-label="Active condition" />
+                <img src="{{item.img}}" alt="" width="24" height="24" />
+                <a data-action="item-open">{{item.name}}</a>
+                <span class="item-detail">Modifier: {{item.system.modifier}} / Intensity: {{item.system.intensity}}{{#if item.system.penalty}} / {{item.system.penalty}}{{/if}}</span>
+                <button type="button" data-action="item-delete" title="Delete">×</button>
+              </li>
+            {{else}}
+              <li class="empty">No conditions.</li>
+            {{/each}}
+          </ol>
+        </section>
+      </section>
+    {{/if}}
+
+    {{#if (eq activeTab "notes")}}
+      <section class="tab-page background-page npc-notes-page">
+        <section class="panel notes-panel">
+          <h2>Tactics & Notes</h2>
+
+          <label class="field-block">
+            <span>Tactics</span>
+            <textarea name="system.npc.tactics" rows="7" placeholder="Opening move, morale, preferred targets, special reactions...">{{system.npc.tactics}}</textarea>
+          </label>
+
+          <label class="field-block">
+            <span>Background</span>
+            <textarea name="system.details.background" rows="6">{{system.details.background}}</textarea>
+          </label>
+
+          <label class="field-block">
+            <span>Notes</span>
+            <textarea name="system.details.notes" rows="8">{{system.details.notes}}</textarea>
+          </label>
+        </section>
+      </section>
+    {{/if}}
+  </section>
+</form>

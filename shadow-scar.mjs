@@ -21,6 +21,13 @@ import { ShadowScarConditionData } from "./module/data-models/item-condition.mjs
 import { ShadowScarWeaponData } from "./module/data-models/item-weapon.mjs";
 import { ShadowScarMikkyoData } from "./module/data-models/item-mikkyo.mjs";
 import { ShadowScarRolls } from "./module/dice/rolls.mjs";
+import {
+  STARTER_ADVERSARIES,
+  STARTER_ITEMS,
+  importStarterAdversaries,
+  importStarterContent,
+  importStarterItems
+} from "./module/starter-content.mjs";
 
 /**
  * Der init-Hook läuft sehr früh.
@@ -44,9 +51,41 @@ Hooks.once("init", () => {
   CONFIG.Item.dataModels.mikkyo = ShadowScarMikkyoData;
   CONFIG.Item.dataModels.condition = ShadowScarConditionData;
 
-  // Kleiner Handlebars-Helfer für einfache Vergleiche im Template.
+  // Kleine Handlebars-Helfer für einfache Template-Logik.
   // Nutzung im Template: {{#if (eq item.type "gear")}} ... {{/if}}
   Handlebars.registerHelper("eq", (left, right) => left === right);
+  Handlebars.registerHelper("or", (...args) => args.slice(0, -1).some(Boolean));
+  Handlebars.registerHelper("clanLabel", (system) => {
+    const clan = system?.clan || system?.techniqueType || "general";
+    return SHADOW_SCAR.clans?.[clan] ?? clan;
+  });
+  Handlebars.registerHelper("rankLabel", (system) => {
+    const rank = system?.rank || "genin";
+    return SHADOW_SCAR.ranks?.[rank] ?? rank;
+  });
+  Handlebars.registerHelper("mikkyoKiCost", (system) => {
+    const rank = system?.rank || "genin";
+    return SHADOW_SCAR.mikkyoKiCosts?.[rank] ?? 1;
+  });
+
+  // v0.7.0: Attribute and skills are displayed as clickable diamond symbols.
+  // The stored actor data remains numeric so the existing roll logic continues
+  // to work unchanged.
+  Handlebars.registerHelper("ratingDots", (value, max) => {
+    const currentValue = Math.max(0, Number(value ?? 0));
+    const maximum = Math.max(0, Number(max ?? 0));
+
+    return Array.from({ length: maximum }, (_entry, index) => {
+      const dotValue = index + 1;
+      const filled = dotValue <= currentValue;
+
+      return {
+        value: dotValue,
+        filled,
+        img: `systems/${SHADOW_SCAR.id}/assets/symbols/${filled ? "full" : "empty"}.png`
+      };
+    });
+  });
 
   // Standardsheet abmelden und unser Shadow-Scar-Sheet als Default setzen.
   Actors.unregisterSheet("core", ActorSheet);
@@ -80,7 +119,14 @@ Hooks.once("init", () => {
       ShadowScarActorSheet,
       ShadowScarItemSheet
     },
-    rolls: ShadowScarRolls
+    rolls: ShadowScarRolls,
+    starterContent: {
+      items: STARTER_ITEMS,
+      adversaries: STARTER_ADVERSARIES,
+      importItems: importStarterItems,
+      importAdversaries: importStarterAdversaries,
+      importAll: importStarterContent
+    }
   };
 });
 
@@ -94,7 +140,8 @@ Hooks.once("ready", () => {
 });
 
 /**
- * v0.6.4: weapon chat cards can apply damage to targeted/selected tokens.
+ * v0.7.0: rating symbols are available on character and NPC sheets, and
+ * weapon chat cards can still apply armor-aware damage to targeted/selected tokens.
  */
 Hooks.on("renderChatMessage", (message, html) => {
   ShadowScarRolls.activateChatListeners(html, message);

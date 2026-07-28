@@ -76,13 +76,21 @@
                     {{attributeLabel}}
                   </button>
 
-                  <input
-                    name="system.attributes.{{attributeKey}}"
-                    type="number"
-                    value="{{lookup ../system.attributes attributeKey}}"
-                    min="0"
-                    step="1"
-                  />
+                  <div class="rating-symbols attribute-rating" role="group" aria-label="{{attributeLabel}} rating">
+                    {{#each (ratingDots (lookup ../system.attributes attributeKey) 5) as |dot|}}
+                      <button
+                        type="button"
+                        class="rating-symbol {{#if dot.filled}}filled{{else}}empty{{/if}}"
+                        data-action="set-rating"
+                        data-path="system.attributes.{{attributeKey}}"
+                        data-value="{{dot.value}}"
+                        data-max="5"
+                        title="Set {{attributeLabel}} rating"
+                      >
+                        <img src="{{dot.img}}" alt="{{#if dot.filled}}filled{{else}}empty{{/if}}" />
+                      </button>
+                    {{/each}}
+                  </div>
                 </header>
 
                 <ol class="skill-list">
@@ -99,13 +107,21 @@
                         {{skillLabel}}
                       </button>
 
-                      <input
-                        name="system.skills.{{attributeKey}}.{{skillKey}}"
-                        type="number"
-                        value="{{lookup (lookup ../../system.skills attributeKey) skillKey}}"
-                        min="0"
-                        step="1"
-                      />
+                      <div class="rating-symbols skill-rating" role="group" aria-label="{{skillLabel}} rating">
+                        {{#each (ratingDots (lookup (lookup ../../system.skills attributeKey) skillKey) 3) as |dot|}}
+                          <button
+                            type="button"
+                            class="rating-symbol {{#if dot.filled}}filled{{else}}empty{{/if}}"
+                            data-action="set-rating"
+                            data-path="system.skills.{{attributeKey}}.{{skillKey}}"
+                            data-value="{{dot.value}}"
+                            data-max="3"
+                            title="Set {{skillLabel}} rating"
+                          >
+                            <img src="{{dot.img}}" alt="{{#if dot.filled}}filled{{else}}empty{{/if}}" />
+                          </button>
+                        {{/each}}
+                      </div>
                     </li>
                   {{/each}}
                 </ol>
@@ -119,15 +135,18 @@
     {{#if (eq activeTab "techniques")}}
       <section class="tab-page techniques-page two-column-page">
         <section class="panel item-panel">
-          <h2>Techniques</h2>
-          <p class="hint">Click a Technique name to use it and optionally spend Ki.</p>
+          <header class="panel-heading item-panel-heading">
+            <h2>Techniques</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="technique" title="Create Technique" aria-label="Create Technique">+</button>
+          </header>
+          <p class="hint">Click a Technique name to post its rules text to chat.</p>
 
           <ol class="item-list">
             {{#each itemsByType.technique as |item|}}
               <li class="item-row action-item-row" data-item-id="{{item.id}}">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
-                <span class="item-detail">Ki: {{item.system.kiCost}}</span>
+                <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}}</span>
                 <button type="button" data-action="item-open" title="Edit">⚙</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
@@ -138,15 +157,18 @@
         </section>
 
         <section class="panel item-panel">
-          <h2>Mikkyo</h2>
-          <p class="hint">Click a Mikkyo name to use it and optionally spend Ki.</p>
+          <header class="panel-heading item-panel-heading">
+            <h2>Mikkyo</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="mikkyo" title="Create Mikkyo" aria-label="Create Mikkyo">+</button>
+          </header>
+          <p class="hint">Click a Mikkyo name to post its rules text to chat.</p>
 
           <ol class="item-list">
             {{#each itemsByType.mikkyo as |item|}}
               <li class="item-row action-item-row" data-item-id="{{item.id}}">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
-                <span class="item-detail">Ki: {{item.system.kiCost}}</span>
+                <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}} / {{mikkyoKiCost item.system}} Ki</span>
                 <button type="button" data-action="item-open" title="Edit">⚙</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
@@ -162,7 +184,7 @@
       <section class="tab-page equipment-page two-column-page">
         <section class="panel item-panel">
           <h2>Gear</h2>
-          <p class="hint">Use gear to create a chat card. The equipped checkbox can be toggled directly here.</p>
+          <p class="hint">Use gear to create a chat card. Equipped armor/protection gear is read by the Apply Damage dialog.</p>
 
           <ol class="item-list">
             {{#each itemsByType.gear as |item|}}
@@ -170,7 +192,7 @@
                 <input type="checkbox" data-action="gear-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped gear" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
-                <span class="item-detail">{{item.system.category}} ×{{item.system.quantity}}</span>
+                <span class="item-detail">{{item.system.category}} ×{{item.system.quantity}}{{#if item.system.armorValue}} / Armor {{item.system.armorValue}}{{/if}}{{#if item.system.resistanceValue}} / Res {{item.system.resistanceValue}}{{/if}}{{#if item.system.damageReduction}} / DR {{item.system.damageReduction}}{{/if}}</span>
                 <button type="button" data-action="use-gear-item" title="Use">Use</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>

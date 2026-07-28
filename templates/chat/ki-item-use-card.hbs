@@ -5,26 +5,23 @@
   </header>
 
   <div class="card-grid">
-    <div><strong>Ki Cost:</strong> {{kiCost}}</div>
-    {{#if spendKi}}
-      <div><strong>Ki Reserve:</strong> {{currentKi}} → {{remainingKi}}</div>
-    {{else}}
-      <div><strong>Ki Reserve:</strong> not spent</div>
+    {{#if clanLabel}}<div><strong>Clan:</strong> {{clanLabel}}</div>{{/if}}
+    {{#if rankLabel}}<div><strong>Rank:</strong> {{rankLabel}}</div>{{/if}}
+
+    {{#if hasCost}}
+      <div><strong>Ki Cost:</strong> {{kiCost}}</div>
+      {{#if spendKi}}
+        <div><strong>Ki Reserve:</strong> {{currentKi}} → {{remainingKi}}</div>
+      {{else}}
+        <div><strong>Ki Reserve:</strong> not spent</div>
+      {{/if}}
     {{/if}}
-    {{#if timing}}<div><strong>Timing:</strong> {{timing}}</div>{{/if}}
-    {{#if trigger}}<div><strong>Trigger:</strong> {{trigger}}</div>{{/if}}
-    {{#if range}}<div><strong>Range:</strong> {{range}}</div>{{/if}}
-    {{#if duration}}<div><strong>Duration:</strong> {{duration}}</div>{{/if}}
   </div>
 
-  {{#if effect}}
+  {{#if description}}
     <section class="card-effect">
-      <strong>Effect</strong>
-      <p>{{effect}}</p>
+      <strong>Text</strong>
+      <div>{{{description}}}</div>
     </section>
-  {{/if}}
-
-  {{#if tags}}
-    <p class="card-tags"><strong>Tags:</strong> {{tags}}</p>
   {{/if}}
 </div>

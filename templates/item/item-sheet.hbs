@@ -42,6 +42,33 @@
           <input name="system.effect" type="text" value="{{system.effect}}" />
         </label>
 
+        <div class="item-field-grid four-fields protection-fields">
+          <label class="field-block">
+            <span>Armor</span>
+            <input name="system.armorValue" type="number" value="{{system.armorValue}}" min="0" step="1" />
+          </label>
+
+          <label class="field-block">
+            <span>Resistance</span>
+            <input name="system.resistanceValue" type="number" value="{{system.resistanceValue}}" min="0" step="1" />
+          </label>
+
+          <label class="field-block">
+            <span>Defense Bonus</span>
+            <input name="system.defenseBonus" type="number" value="{{system.defenseBonus}}" step="1" />
+          </label>
+
+          <label class="field-block">
+            <span>Damage Reduction</span>
+            <input name="system.damageReduction" type="number" value="{{system.damageReduction}}" min="0" step="1" />
+          </label>
+        </div>
+
+        <label class="field-block">
+          <span>Protection Notes</span>
+          <input name="system.notes" type="text" value="{{system.notes}}" placeholder="armor traits, resistance notes, defense conditions" />
+        </label>
+
         <label class="field-block">
           <span>Tags</span>
           <input name="system.tags" type="text" value="{{system.tags}}" placeholder="comma-separated tags" />
@@ -102,58 +129,31 @@
     {{#if (eq item.type "technique")}}
       <section class="panel item-fields-panel">
         <h2>Technique</h2>
-
-        <div class="item-field-grid three-fields">
-          <label class="field-block">
-            <span>Attribute</span>
-            <select name="system.attribute">
-              {{#each config.attributes as |label key|}}
-                <option value="{{key}}" {{#if (eq ../system.attribute key)}}selected{{/if}}>{{label}}</option>
-              {{/each}}
-            </select>
-          </label>
-
-          <label class="field-block">
-            <span>Skill</span>
-            <select name="system.skill">
-              <option value="">None</option>
-              {{#each config.flatSkills as |label key|}}
-                <option value="{{key}}" {{#if (eq ../system.skill key)}}selected{{/if}}>{{label}}</option>
-              {{/each}}
-            </select>
-          </label>
-
-          <label class="field-block">
-            <span>Ki Cost</span>
-            <input name="system.kiCost" type="number" value="{{system.kiCost}}" min="0" step="1" />
-          </label>
-        </div>
+        <p class="hint">Techniques use Clan, Rank and editable rules text.</p>
 
         <div class="item-field-grid two-fields">
           <label class="field-block">
-            <span>Timing</span>
-            <select name="system.timing">
-              <option value="">Custom / Unset</option>
-              {{#each config.techniqueTiming as |label key|}}
-                <option value="{{key}}" {{#if (eq ../system.timing key)}}selected{{/if}}>{{label}}</option>
+            <span>Clan</span>
+            <select name="system.clan">
+              {{#each config.clans as |label key|}}
+                <option value="{{key}}" {{#if (eq ../clan key)}}selected{{/if}}>{{label}}</option>
               {{/each}}
             </select>
           </label>
 
           <label class="field-block">
-            <span>Trigger</span>
-            <input name="system.trigger" type="text" value="{{system.trigger}}" />
+            <span>Rank</span>
+            <select name="system.rank">
+              {{#each config.ranks as |label key|}}
+                <option value="{{key}}" {{#if (eq ../rank key)}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
           </label>
         </div>
 
         <label class="field-block">
-          <span>Effect Summary</span>
-          <input name="system.effect" type="text" value="{{system.effect}}" />
-        </label>
-
-        <label class="field-block">
-          <span>Tags</span>
-          <input name="system.tags" type="text" value="{{system.tags}}" placeholder="comma-separated tags" />
+          <span>Text</span>
+          <textarea name="system.description" rows="10" placeholder="Describe the Technique rules, limitations and narrative effect here.">{{{system.description}}}</textarea>
         </label>
       </section>
     {{/if}}
@@ -161,42 +161,37 @@
     {{#if (eq item.type "mikkyo")}}
       <section class="panel item-fields-panel">
         <h2>Mikkyo</h2>
+        <p class="hint">Mikkyo uses Clan, Rank, fixed Ki cost by Rank, and editable rules text.</p>
 
         <div class="item-field-grid three-fields">
           <label class="field-block">
+            <span>Clan</span>
+            <select name="system.clan">
+              {{#each config.clans as |label key|}}
+                <option value="{{key}}" {{#if (eq ../clan key)}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
+          </label>
+
+          <label class="field-block">
+            <span>Rank</span>
+            <select name="system.rank" data-action="mikkyo-rank-change">
+              {{#each config.ranks as |label key|}}
+                <option value="{{key}}" {{#if (eq ../rank key)}}selected{{/if}}>{{label}}</option>
+              {{/each}}
+            </select>
+          </label>
+
+          <label class="field-block">
             <span>Ki Cost</span>
-            <input name="system.kiCost" type="number" value="{{system.kiCost}}" min="0" step="1" />
-          </label>
-
-          <label class="field-block">
-            <span>Range</span>
-            <input name="system.range" type="text" value="{{system.range}}" />
-          </label>
-
-          <label class="field-block">
-            <span>Duration</span>
-            <input name="system.duration" type="text" value="{{system.duration}}" />
+            <input class="readonly-box" data-field="mikkyo-ki-cost" type="text" value="{{mikkyoKiCost}} Ki" readonly />
+            <input name="system.kiCost" type="hidden" value="{{mikkyoKiCost}}" />
           </label>
         </div>
 
         <label class="field-block">
-          <span>Timing</span>
-          <select name="system.timing">
-            <option value="">Custom / Unset</option>
-            {{#each config.techniqueTiming as |label key|}}
-              <option value="{{key}}" {{#if (eq ../system.timing key)}}selected{{/if}}>{{label}}</option>
-            {{/each}}
-          </select>
-        </label>
-
-        <label class="field-block">
-          <span>Effect Summary</span>
-          <input name="system.effect" type="text" value="{{system.effect}}" />
-        </label>
-
-        <label class="field-block">
-          <span>Tags</span>
-          <input name="system.tags" type="text" value="{{system.tags}}" placeholder="comma-separated tags" />
+          <span>Text</span>
+          <textarea name="system.description" rows="10" placeholder="Describe the Mikkyo prayer, limitations, range, duration and effect here.">{{{system.description}}}</textarea>
         </label>
       </section>
     {{/if}}
@@ -239,9 +234,11 @@
       </section>
     {{/if}}
 
-    <section class="panel">
-      <h2>Description</h2>
-      {{editor system.description target="system.description" button=true editable=editable engine="prosemirror"}}
-    </section>
+    {{#unless (or (eq item.type "technique") (eq item.type "mikkyo"))}}
+      <section class="panel">
+        <h2>Description</h2>
+        {{editor system.description target="system.description" button=true editable=editable engine="prosemirror"}}
+      </section>
+    {{/unless}}
   </section>
 </form>

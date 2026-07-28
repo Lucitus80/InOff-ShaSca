@@ -2,9 +2,6 @@
   <p>Apply damage from <strong>{{weaponName}}</strong>.</p>
 
   <dl>
-    <dt>Target(s)</dt>
-    <dd>{{targetNames}}</dd>
-
     <dt>Configured damage</dt>
     <dd>{{damageText}}</dd>
 
@@ -15,10 +12,54 @@
     <dd>{{margin}}</dd>
   </dl>
 
-  <label class="field-block">
-    <span>Final damage after Defense/Resistance</span>
-    <input name="finalDamage" type="number" value="{{finalDamage}}" min="0" step="1" autofocus />
-  </label>
+  <section class="protection-summary">
+    <h3>Targets, Armor & Resistance</h3>
 
-  <p class="hint">Edit this value manually after applying the table's Defense/Resistance rules. This will reduce Vitality on the targeted or selected token actor(s).</p>
+    {{#each targetSummaries as |target|}}
+      <article class="target-protection-block">
+        <header>
+          <strong>{{target.name}}</strong>
+          <span>Vitality {{target.currentVitality}} / {{target.maxVitality}}</span>
+        </header>
+
+        <dl>
+          <dt>Armor</dt>
+          <dd>{{target.armorValue}}</dd>
+
+          <dt>Resistance</dt>
+          <dd>{{target.resistanceValue}}</dd>
+
+          <dt>Damage Reduction</dt>
+          <dd>{{target.damageReduction}}</dd>
+
+          <dt>Defense Bonus</dt>
+          <dd>{{target.defenseBonus}}</dd>
+
+          <dt>Suggested final damage</dt>
+          <dd>{{target.suggestedDamage}}</dd>
+        </dl>
+
+        {{#if target.protectionItems.length}}
+          <ul class="protection-items">
+            {{#each target.protectionItems as |gear|}}
+              <li>
+                <strong>{{gear.name}}</strong>
+                <span>Armor {{gear.armorValue}}, Resistance {{gear.resistanceValue}}, DR {{gear.damageReduction}}, Defense {{gear.defenseBonus}}</span>
+                {{#if gear.notes}}<em>{{gear.notes}}</em>{{/if}}
+              </li>
+            {{/each}}
+          </ul>
+        {{else}}
+          <p class="hint">No equipped armor/protection gear found.</p>
+        {{/if}}
+
+        <label class="field-block">
+          <span>Final damage for {{target.name}}</span>
+          <input name="finalDamage-{{target.index}}" type="number" value="{{target.suggestedDamage}}" min="0" step="1" />
+        </label>
+      </article>
+    {{/each}}
+  </section>
+
+  <p class="hint">Armor, Resistance and Damage Reduction are used for the suggested value. Defense Bonus is listed as a rules reminder and is not automatically added to the reduction. Edit final damage manually after table rulings.</p>
 </form>

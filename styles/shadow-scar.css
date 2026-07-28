@@ -505,10 +505,18 @@
   grid-template-columns: repeat(3, minmax(0, 1fr));
 }
 
+.shadow-scar .item-field-grid.four-fields {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
 .shadow-scar .item-fields-panel select,
 .shadow-scar .item-fields-panel input[type="text"],
 .shadow-scar .item-fields-panel input[type="number"] {
   width: 100%;
+}
+
+.shadow-scar .protection-fields input[type="number"] {
+  text-align: center;
 }
 
 .shadow-scar .item-fields-panel .inline-checkbox {
@@ -517,7 +525,8 @@
 
 @media (max-width: 760px) {
   .shadow-scar .item-field-grid.two-fields,
-  .shadow-scar .item-field-grid.three-fields {
+  .shadow-scar .item-field-grid.three-fields,
+  .shadow-scar .item-field-grid.four-fields {
     grid-template-columns: 1fr;
   }
 }
@@ -557,7 +566,7 @@
   padding-top: 0.5rem;
 }
 
-/* v0.6.0-v0.6.4: resource controls, direct equipment actions, conditions and damage cards */
+/* v0.6.0-v0.6.5: resource controls, direct equipment actions, conditions, armor and damage cards */
 .shadow-scar .resource-actions {
   display: flex;
   flex-wrap: wrap;
@@ -626,10 +635,267 @@
   padding: 0;
 }
 
+.shadow-scar.damage-application-dialog .protection-summary {
+  display: grid;
+  gap: 0.6rem;
+  margin: 0.6rem 0;
+}
+
+.shadow-scar.damage-application-dialog .target-protection-block {
+  border: 1px solid rgba(0, 0, 0, 0.18);
+  border-radius: 6px;
+  padding: 0.55rem;
+}
+
+.shadow-scar.damage-application-dialog .target-protection-block header {
+  align-items: baseline;
+  display: flex;
+  justify-content: space-between;
+  gap: 0.75rem;
+  margin-bottom: 0.35rem;
+}
+
+.shadow-scar.damage-application-dialog .target-protection-block dl {
+  display: grid;
+  gap: 0.2rem 0.75rem;
+  grid-template-columns: 1fr auto;
+  margin: 0.35rem 0;
+}
+
+.shadow-scar.damage-application-dialog .target-protection-block dd {
+  margin: 0;
+  text-align: right;
+}
+
+.shadow-scar.damage-application-dialog .protection-items {
+  margin: 0.35rem 0 0.5rem 1rem;
+  padding: 0;
+}
+
+.shadow-scar.damage-application-dialog .protection-items li {
+  display: grid;
+  gap: 0.1rem;
+  margin: 0.2rem 0;
+}
+
+.shadow-scar.damage-application-dialog .protection-items em {
+  opacity: 0.85;
+}
+
 @media (max-width: 760px) {
   .shadow-scar .gear-row,
   .shadow-scar .weapon-row,
   .shadow-scar .action-item-row {
     grid-template-columns: 1.5rem 1.75rem 1fr;
   }
+}
+
+/* v0.6.6: Compact NPC / Adversary sheet */
+.shadow-scar.npc-sheet .npc-header {
+  grid-template-columns: 112px minmax(0, 1fr) 260px;
+}
+
+.shadow-scar .npc-identity-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.shadow-scar .npc-summary-strip {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem 0.85rem;
+  margin: 0 0 0.75rem 0;
+  padding: 0.45rem 0.65rem;
+}
+
+.shadow-scar .npc-summary-strip span {
+  white-space: nowrap;
+}
+
+.shadow-scar .npc-tabs {
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.shadow-scar .npc-combat-page {
+  grid-template-columns: minmax(0, 0.8fr) minmax(0, 1.2fr);
+}
+
+.shadow-scar .npc-combat-page .npc-skills-panel {
+  grid-column: 1 / -1;
+}
+
+.shadow-scar .npc-attribute-grid {
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.shadow-scar .npc-stat-card {
+  border: 1px solid var(--color-border-light-tertiary, #999);
+  border-radius: 6px;
+  display: grid;
+  gap: 0.35rem;
+  padding: 0.5rem;
+}
+
+.shadow-scar .npc-stat-card input {
+  font-size: 1.15rem;
+  font-weight: bold;
+  text-align: center;
+}
+
+.shadow-scar .npc-key-skill-row {
+  grid-template-columns: 1fr auto 4rem;
+}
+
+.shadow-scar .npc-key-skill-row input {
+  text-align: center;
+}
+
+.shadow-scar .compact-header {
+  font-weight: bold;
+  grid-template-columns: 1fr 3.5rem;
+}
+
+.shadow-scar .npc-equipment-page {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+@media (max-width: 760px) {
+  .shadow-scar.npc-sheet .npc-header,
+  .shadow-scar .npc-identity-grid,
+  .shadow-scar .npc-tabs,
+  .shadow-scar .npc-combat-page,
+  .shadow-scar .npc-attribute-grid,
+  .shadow-scar .npc-equipment-page {
+    grid-template-columns: 1fr;
+  }
+
+  .shadow-scar .npc-combat-page .npc-skills-panel {
+    grid-column: auto;
+  }
+
+  .shadow-scar .npc-key-skill-row {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* v0.7.0: Attribute and skill ratings use Shadow Scar diamond symbols instead of number boxes. */
+.shadow-scar .attribute-column-header {
+  grid-template-columns: 1fr auto;
+}
+
+.shadow-scar .skill-row {
+  grid-template-columns: minmax(0, 1fr) auto;
+}
+
+.shadow-scar .rating-symbols {
+  align-items: center;
+  display: inline-flex;
+  flex-wrap: nowrap;
+  gap: 0.12rem;
+  justify-content: flex-end;
+}
+
+.shadow-scar .rating-symbol {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  cursor: pointer;
+  height: auto;
+  line-height: 0;
+  margin: 0;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+}
+
+.shadow-scar .rating-symbol:hover,
+.shadow-scar .rating-symbol:focus {
+  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.45));
+  outline: none;
+}
+
+.shadow-scar .rating-symbol img {
+  border: none;
+  display: block;
+  height: 1.35rem;
+  object-fit: contain;
+  width: 1.35rem;
+}
+
+.shadow-scar .attribute-rating .rating-symbol img {
+  height: 1.65rem;
+  width: 1.65rem;
+}
+
+.shadow-scar .npc-stat-card .attribute-rating {
+  justify-content: center;
+}
+
+.shadow-scar .npc-key-skill-row {
+  grid-template-columns: minmax(0, 1fr) auto auto;
+}
+
+.shadow-scar .npc-key-rating {
+  min-width: 4.4rem;
+}
+
+.shadow-scar .compact-header {
+  grid-template-columns: 1fr auto;
+}
+
+@media (max-width: 760px) {
+  .shadow-scar .npc-key-skill-row {
+    grid-template-columns: 1fr;
+  }
+
+  .shadow-scar .rating-symbols {
+    justify-content: flex-start;
+  }
+}
+
+/* v0.7.1: simplified Technique/Mikkyo text-first item sheets */
+.shadow-scar .item-fields-panel textarea[name="system.description"] {
+  min-height: 12rem;
+  width: 100%;
+}
+
+/* v0.7.2: Mikkyo Ki cost is a derived, non-editable Rank value. */
+.shadow-scar input.readonly-box[readonly] {
+  cursor: default;
+  opacity: 0.85;
+  text-align: center;
+}
+
+
+/* v0.7.3-v0.7.4: inline create buttons for Techniques and Mikkyo on actor sheets. */
+.shadow-scar .panel-heading {
+  align-items: center;
+  display: flex;
+  gap: 0.5rem;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.shadow-scar .panel-heading h2 {
+  margin: 0;
+}
+
+.shadow-scar .item-create-button {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 0.85rem;
+  font-weight: 700;
+  height: 1.45rem;
+  justify-content: center;
+  line-height: 1;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  width: 1.45rem;
 }
