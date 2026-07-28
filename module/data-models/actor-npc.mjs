@@ -1,9 +1,24 @@
 /**
- * Datenmodell für Actor vom Typ "npc".
+ * Data model for Actor type "npc".
  *
- * Für v0.2 nutzen NSC dieselben Grundfelder wie Charaktere. Später können wir
- * daraus ein eigenes, schlankeres NSC-/Yokai-Modell machen.
+ * v0.6.6 keeps NPCs compatible with characters for rolls, resources, gear,
+ * weapons and conditions, but adds a small adversary block for GM-facing data.
  */
 import { ShadowScarCharacterData } from "./actor-character.mjs";
 
-export class ShadowScarNPCData extends ShadowScarCharacterData {}
+const fields = foundry.data.fields;
+
+export class ShadowScarNPCData extends ShadowScarCharacterData {
+  static defineSchema() {
+    const schema = super.defineSchema();
+
+    schema.npc = new fields.SchemaField({
+      role: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      adversaryType: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      threatLevel: new fields.StringField({ required: true, nullable: false, initial: "standard" }),
+      tactics: new fields.StringField({ required: true, nullable: false, initial: "" })
+    });
+
+    return schema;
+  }
+}

@@ -1,8 +1,8 @@
 {
   "id": "shadow-scar",
   "title": "Shadow Scar",
-  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: tabbed character sheet, attributes and skills, item management, d6-pool rolls with difficulty/margin, active condition modifiers, resource quick controls, weapon rolls, gear use, and guided damage application.",
-  "version": "0.6.4",
+  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: polished character and NPC sheets with symbolic attribute/skill ratings, Clan/Rank Technique and Mikkyo sheets, stable rank-based Mikkyo Ki costs, compact actor-sheet creation controls for Techniques/Mikkyo, item management, d6-pool rolls with difficulty/margin, active condition modifiers, resource quick controls, weapon rolls, gear use, armor-aware guided damage application, and starter content packs.",
+  "version": "0.7.4",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
@@ -47,5 +47,31 @@
   "secondaryTokenAttribute": "resources.ki",
   "url": "https://github.com/Lucitus80/InOff-ShaSca",
   "manifest": "https://github.com/Lucitus80/InOff-ShaSca/releases/latest/download/system.json",
-  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.6.4.zip"
+  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.7.4.zip",
+  "packs": [
+    {
+      "name": "starter-items",
+      "label": "Shadow Scar Starter Items",
+      "system": "shadow-scar",
+      "path": "./packs/starter-items.db",
+      "type": "Item",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    },
+    {
+      "name": "starter-adversaries",
+      "label": "Shadow Scar Starter Adversaries",
+      "system": "shadow-scar",
+      "path": "./packs/starter-adversaries.db",
+      "type": "Actor",
+      "ownership": {
+        "PLAYER": "OBSERVER",
+        "TRUSTED": "OBSERVER",
+        "ASSISTANT": "OWNER"
+      }
+    }
+  ]
 }

@@ -25,9 +25,8 @@ function resourceField({ value = 0, max = 0 } = {}) {
 /**
  * Hilfsfunktion für Skill-Werte.
  *
- * Shadow Scar benutzt numerische Skillwerte. Wir begrenzen im Datenmodell noch
- * nicht hart auf einen Maximalwert, damit Hausregeln oder spätere Korrekturen
- * nicht sofort Datenmigrationen erzwingen.
+ * Shadow Scar stores skill ratings numerically, but v0.7.0 displays them as
+ * symbols on the sheet. Skills are capped at 3 filled symbols.
  */
 function skillField(initial = 0) {
   return new fields.NumberField({
@@ -35,7 +34,8 @@ function skillField(initial = 0) {
     nullable: false,
     integer: true,
     initial,
-    min: 0
+    min: 0,
+    max: 3
   });
 }
 
@@ -47,9 +47,9 @@ export class ShadowScarCharacterData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
       attributes: new fields.SchemaField({
-        mind: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0 }),
-        body: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0 }),
-        spirit: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0 })
+        mind: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0, max: 5 }),
+        body: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0, max: 5 }),
+        spirit: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0, max: 5 })
       }),
 
       /**

@@ -21,6 +21,11 @@ export const SHADOW_SCAR = {
     npc: "npc"
   },
 
+  actorTypeLabels: {
+    character: "Character",
+    npc: "NPC / Adversary"
+  },
+
   itemTypes: {
     gear: "gear",
     weapon: "weapon",
@@ -35,6 +40,13 @@ export const SHADOW_SCAR = {
     technique: "Technique",
     mikkyo: "Mikkyo",
     condition: "Condition"
+  },
+
+  ratings: {
+    attributeMax: 5,
+    skillMax: 3,
+    emptySymbol: "systems/shadow-scar/assets/symbols/empty.png",
+    fullSymbol: "systems/shadow-scar/assets/symbols/full.png"
   },
 
   /**
@@ -97,16 +109,49 @@ export const SHADOW_SCAR = {
   },
 
   /**
-   * Reusable item-sheet choices.
+   * Clan and Rank choices for Techniques and Mikkyo.
    *
-   * These are UI helper lists only. The underlying data fields are still simple
-   * strings, which keeps the prototype flexible while we refine the rules.
+   * v0.7.2 renames the old Technique "Type" classifier to "Clan" and
+   * uses the same Clan + Rank dropdowns for both Techniques and Mikkyo.
    */
-  techniqueTiming: {
-    action: "Action",
-    reaction: "Reaction",
-    passive: "Passive",
-    special: "Special"
+  clans: {
+    general: "General",
+    arashi: "Arashi",
+    futsumashi: "Futsumashi",
+    hibana: "Hibana",
+    kuromaku: "Kuromaku",
+    tantei: "Tantei",
+    wanami: "Wanami"
+  },
+
+  // Backward-compatible alias for older v0.7.1 templates/macros.
+  techniqueTypes: {
+    general: "General",
+    arashi: "Arashi",
+    futsumashi: "Futsumashi",
+    hibana: "Hibana",
+    kuromaku: "Kuromaku",
+    tantei: "Tantei",
+    wanami: "Wanami"
+  },
+
+  ranks: {
+    genin: "Genin",
+    chunin: "Chunin",
+    jounin: "Jounin"
+  },
+
+  // Backward-compatible alias for older v0.7.1 templates/macros.
+  techniqueRanks: {
+    genin: "Genin",
+    chunin: "Chunin",
+    jounin: "Jounin"
+  },
+
+  mikkyoKiCosts: {
+    genin: 1,
+    chunin: 3,
+    jounin: 5
   },
 
   gearCategories: {
@@ -130,6 +175,13 @@ export const SHADOW_SCAR = {
     spiritual: "Spiritual",
     situational: "Situational",
     other: "Other"
+  },
+
+  npcThreatLevels: {
+    minor: "Minor",
+    standard: "Standard",
+    elite: "Elite",
+    boss: "Boss"
   },
 
   /**

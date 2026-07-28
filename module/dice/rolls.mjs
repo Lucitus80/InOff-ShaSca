@@ -1,10 +1,10 @@
 /**
  * Core dice and action helpers for Shadow Scar.
  *
- * v0.6.4 includes the previous roll/resource passes and adds a guided damage
- * application workflow from weapon chat cards. The system still leaves rules
- * judgment to the table: defense/resistance and final damage are edited before
- * Vitality is reduced.
+ * v0.6.5 includes the previous roll/resource passes and adds an armor-aware
+ * damage application workflow from weapon chat cards. The system still leaves
+ * rules judgment to the table: defense/resistance and final damage are edited
+ * before Vitality is reduced.
  */
 import { SHADOW_SCAR } from "../config.mjs";
 
@@ -244,6 +244,11 @@ export class ShadowScarRolls {
         quantity: Number(item.system?.quantity ?? 0),
         equipped: Boolean(item.system?.equipped),
         effect: item.system?.effect ?? "",
+        armorValue: Math.max(0, Number(item.system?.armorValue ?? 0)),
+        resistanceValue: Math.max(0, Number(item.system?.resistanceValue ?? 0)),
+        defenseBonus: Number(item.system?.defenseBonus ?? 0),
+        damageReduction: Math.max(0, Number(item.system?.damageReduction ?? 0)),
+        notes: item.system?.notes ?? "",
         tags: item.system?.tags ?? ""
       }
     );
@@ -255,28 +260,38 @@ export class ShadowScarRolls {
     });
   }
 
-  /** Uses a Technique or Mikkyo item and optionally spends Ki. */
+  /** Uses a Technique or Mikkyo item and posts its rules text to chat. */
   static async useKiItem({ actor, item }) {
-    const kiCost = Math.max(0, Number(item.system?.kiCost ?? 0));
+    const rank = item.system?.rank || "genin";
+    const clan = item.system?.clan || item.system?.techniqueType || "general";
+    const kiCost = item.type === "mikkyo"
+      ? this.#getMikkyoKiCost(rank)
+      : Math.max(0, Number(item.system?.kiCost ?? 0));
     const currentKi = Math.max(0, Number(actor.system?.resources?.ki?.value ?? 0));
     const maxKi = Math.max(0, Number(actor.system?.resources?.ki?.max ?? 0));
     const itemTypeLabel = item.type === "mikkyo" ? "Mikkyo" : "Technique";
 
-    const dialogData = await this.#showKiItemDialog({ actor, item, itemTypeLabel, kiCost, currentKi, maxKi });
-    if (!dialogData) return null;
-
-    const spendKi = Boolean(dialogData.spendKi);
-    const ignoreInsufficientKi = Boolean(dialogData.ignoreInsufficientKi);
-
-    if (spendKi && kiCost > currentKi && !ignoreInsufficientKi) {
-      ui.notifications?.warn(`${actor.name} does not have enough Ki Reserve for ${item.name}.`);
-      return null;
-    }
-
+    let spendKi = false;
     let remainingKi = currentKi;
-    if (spendKi) {
-      remainingKi = Math.max(0, currentKi - kiCost);
-      await actor.update({ "system.resources.ki.value": remainingKi });
+
+    // v0.7.2: Mikkyo cost is fixed by Rank. Techniques still keep the old
+    // hidden kiCost branch only for legacy items that already had a cost.
+    if (kiCost > 0) {
+      const dialogData = await this.#showKiItemDialog({ actor, item, itemTypeLabel, kiCost, currentKi, maxKi });
+      if (!dialogData) return null;
+
+      spendKi = Boolean(dialogData.spendKi);
+      const ignoreInsufficientKi = Boolean(dialogData.ignoreInsufficientKi);
+
+      if (spendKi && kiCost > currentKi && !ignoreInsufficientKi) {
+        ui.notifications?.warn(`${actor.name} does not have enough Ki Reserve for ${item.name}.`);
+        return null;
+      }
+
+      if (spendKi) {
+        remainingKi = Math.max(0, currentKi - kiCost);
+        await actor.update({ "system.resources.ki.value": remainingKi });
+      }
     }
 
     const content = await renderTemplate(
@@ -289,15 +304,15 @@ export class ShadowScarRolls {
         itemType: item.type,
         itemTypeLabel,
         kiCost,
+        hasCost: kiCost > 0,
         currentKi,
         remainingKi,
         spendKi,
-        timing: item.system?.timing,
-        trigger: item.system?.trigger,
-        range: item.system?.range,
-        duration: item.system?.duration,
-        effect: item.system?.effect,
-        tags: item.system?.tags
+        clan,
+        clanLabel: SHADOW_SCAR.clans?.[clan] ?? clan,
+        rank,
+        rankLabel: SHADOW_SCAR.ranks?.[rank] ?? rank,
+        description: item.system?.description ?? ""
       }
     );
 
@@ -419,6 +434,11 @@ export class ShadowScarRolls {
     const raw = html.find(`[name='${name}']`).val();
     const value = Number(raw ?? fallback);
     return Number.isFinite(value) ? value : fallback;
+  }
+
+  static #getMikkyoKiCost(rank) {
+    const key = rank || "genin";
+    return Math.max(0, Number(SHADOW_SCAR.mikkyoKiCosts?.[key] ?? SHADOW_SCAR.mikkyoKiCosts?.genin ?? 1));
   }
 
   static async #showKiItemDialog({ actor, item, itemTypeLabel, kiCost, currentKi, maxKi }) {
@@ -583,15 +603,88 @@ export class ShadowScarRolls {
     const targetedTokens = Array.from(game.user?.targets ?? []);
     const controlledTokens = Array.from(canvas?.tokens?.controlled ?? []);
     const tokens = targetedTokens.length > 0 ? targetedTokens : controlledTokens;
-    const actorsById = new Map();
+    const actorsByUuid = new Map();
 
     for (const token of tokens) {
       const actor = token?.actor;
       if (!actor) continue;
-      actorsById.set(actor.id, actor);
+      actorsByUuid.set(actor.uuid ?? actor.id, actor);
     }
 
-    return Array.from(actorsById.values());
+    return Array.from(actorsByUuid.values());
+  }
+
+  static #getEquippedProtection(actor) {
+    const protectionItems = actor.items.contents
+      .filter((item) => item.type === SHADOW_SCAR.itemTypes.gear && Boolean(item.system?.equipped))
+      .map((item) => {
+        const armorValue = Math.max(0, Number(item.system?.armorValue ?? 0));
+        const resistanceValue = Math.max(0, Number(item.system?.resistanceValue ?? 0));
+        const defenseBonus = Number(item.system?.defenseBonus ?? 0);
+        const damageReduction = Math.max(0, Number(item.system?.damageReduction ?? 0));
+        const notes = String(item.system?.notes ?? "");
+        const category = String(item.system?.category ?? "");
+        const hasProtection =
+          armorValue > 0 ||
+          resistanceValue > 0 ||
+          damageReduction > 0 ||
+          defenseBonus !== 0 ||
+          notes.trim().length > 0 ||
+          category === "armor";
+
+        return {
+          id: item.id,
+          name: item.name,
+          armorValue,
+          resistanceValue,
+          defenseBonus: Number.isFinite(defenseBonus) ? defenseBonus : 0,
+          damageReduction,
+          notes,
+          hasProtection
+        };
+      })
+      .filter((item) => item.hasProtection);
+
+    return protectionItems.reduce(
+      (totals, item) => {
+        totals.armorValue += item.armorValue;
+        totals.resistanceValue += item.resistanceValue;
+        totals.defenseBonus += item.defenseBonus;
+        totals.damageReduction += item.damageReduction;
+        totals.protectionItems.push(item);
+        return totals;
+      },
+      {
+        armorValue: 0,
+        resistanceValue: 0,
+        defenseBonus: 0,
+        damageReduction: 0,
+        protectionItems: []
+      }
+    );
+  }
+
+  static #buildTargetDamageSummary(actor, index, baseDamage) {
+    const protection = this.#getEquippedProtection(actor);
+    const currentVitality = Number(actor.system?.resources?.vitality?.value ?? 0);
+    const maxVitality = Number(actor.system?.resources?.vitality?.max ?? 0);
+    const automaticReduction = protection.armorValue + protection.resistanceValue + protection.damageReduction;
+    const suggestedDamage = Math.max(0, baseDamage - automaticReduction);
+
+    return {
+      index,
+      actor,
+      name: actor.name,
+      currentVitality,
+      maxVitality,
+      armorValue: protection.armorValue,
+      resistanceValue: protection.resistanceValue,
+      defenseBonus: protection.defenseBonus,
+      damageReduction: protection.damageReduction,
+      automaticReduction,
+      suggestedDamage,
+      protectionItems: protection.protectionItems
+    };
   }
 
   static async #onApplyDamageClick(event) {
@@ -609,9 +702,11 @@ export class ShadowScarRolls {
       return null;
     }
 
+    const targetSummaries = targetActors.map((actor, index) => this.#buildTargetDamageSummary(actor, index, baseDamage));
+
     const dialogData = await this.#showApplyDamageDialog({
       weaponName,
-      targetActors,
+      targetSummaries,
       baseDamage,
       damageText,
       margin
@@ -619,38 +714,49 @@ export class ShadowScarRolls {
 
     if (!dialogData) return null;
 
-    const finalDamage = Math.max(0, Number(dialogData.finalDamage ?? 0));
     const results = [];
 
-    for (const actor of targetActors) {
+    for (const target of targetSummaries) {
+      const actor = target.actor;
+      const finalDamage = Math.max(0, Number(dialogData.finalDamageByIndex?.[target.index] ?? target.suggestedDamage));
       const current = Number(actor.system?.resources?.vitality?.value ?? 0);
       const max = Number(actor.system?.resources?.vitality?.max ?? 0);
       const next = this.#clampResource(current - finalDamage, max);
       await actor.update({ "system.resources.vitality.value": next });
-      results.push({ name: actor.name, before: current, after: next, damage: finalDamage });
+      results.push({
+        name: actor.name,
+        before: current,
+        after: next,
+        baseDamage,
+        automaticReduction: target.automaticReduction,
+        defenseBonus: target.defenseBonus,
+        damage: finalDamage
+      });
     }
 
     const rows = results
-      .map((result) => `<li><strong>${result.name}</strong>: ${result.before} → ${result.after} Vitality (${result.damage} damage)</li>`)
+      .map((result) => {
+        const name = this.#escapeHtml(result.name);
+        return `<li><strong>${name}</strong>: Base ${result.baseDamage}, Armor/Resistance/DR -${result.automaticReduction}, Defense Bonus ${result.defenseBonus}, Final ${result.damage}; Vitality ${result.before} → ${result.after}</li>`;
+      })
       .join("");
 
     return ChatMessage.create({
       speaker: ChatMessage.getSpeaker(),
       flavor: `Damage applied from ${weaponName}`,
-      content: `<div class="shadow-scar chat-card damage-application-card"><header><h2>Damage Applied</h2><p>${weaponName}</p></header><ul>${rows}</ul></div>`
+      content: `<div class="shadow-scar chat-card damage-application-card"><header><h2>Damage Applied</h2><p>${this.#escapeHtml(weaponName)}</p></header><ul>${rows}</ul></div>`
     });
   }
 
-  static async #showApplyDamageDialog({ weaponName, targetActors, baseDamage, damageText, margin }) {
+  static async #showApplyDamageDialog({ weaponName, targetSummaries, baseDamage, damageText, margin }) {
     const content = await renderTemplate(
       "systems/shadow-scar/templates/dialogs/damage-application-dialog.hbs",
       {
         weaponName,
-        targetNames: targetActors.map((actor) => actor.name).join(", "),
+        targetSummaries,
         baseDamage,
         damageText,
-        margin,
-        finalDamage: baseDamage
+        margin
       }
     );
 
@@ -670,8 +776,13 @@ export class ShadowScarRolls {
             icon: '<i class="fas fa-heart-crack"></i>',
             label: "Apply",
             callback: (html) => {
-              const finalDamage = this.#readNumber(html, "finalDamage", baseDamage);
-              finish({ finalDamage });
+              const finalDamageByIndex = {};
+
+              for (const target of targetSummaries) {
+                finalDamageByIndex[target.index] = this.#readNumber(html, `finalDamage-${target.index}`, target.suggestedDamage);
+              }
+
+              finish({ finalDamageByIndex });
             }
           },
           cancel: {
@@ -684,6 +795,12 @@ export class ShadowScarRolls {
         close: () => finish(null)
       }).render(true);
     });
+  }
+
+  static #escapeHtml(value) {
+    const div = document.createElement("div");
+    div.textContent = String(value ?? "");
+    return div.innerHTML;
   }
 }
 

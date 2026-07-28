@@ -16,6 +16,18 @@
     <dt>Equipped</dt>
     <dd>{{#if equipped}}Yes{{else}}No{{/if}}</dd>
 
+    <dt>Armor</dt>
+    <dd>{{armorValue}}</dd>
+
+    <dt>Resistance</dt>
+    <dd>{{resistanceValue}}</dd>
+
+    <dt>Damage Reduction</dt>
+    <dd>{{damageReduction}}</dd>
+
+    <dt>Defense Bonus</dt>
+    <dd>{{defenseBonus}}</dd>
+
     {{#if tags}}
       <dt>Tags</dt>
       <dd>{{tags}}</dd>
@@ -26,6 +38,13 @@
     <section class="card-effect">
       <h3>Effect</h3>
       <p>{{effect}}</p>
+    </section>
+  {{/if}}
+
+  {{#if notes}}
+    <section class="card-effect">
+      <h3>Protection Notes</h3>
+      <p>{{notes}}</p>
     </section>
   {{/if}}
 </div>

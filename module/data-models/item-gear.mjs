@@ -14,6 +14,11 @@ export class ShadowScarGearData extends foundry.abstract.TypeDataModel {
       category: new fields.StringField({ required: true, nullable: false, initial: "" }),
       equipped: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       effect: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      armorValue: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: 0 }),
+      resistanceValue: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: 0 }),
+      defenseBonus: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0 }),
+      damageReduction: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: 0 }),
+      notes: new fields.StringField({ required: true, nullable: false, initial: "" }),
       tags: new fields.StringField({ required: true, nullable: false, initial: "" })
     };
   }
