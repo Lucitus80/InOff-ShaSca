@@ -49,6 +49,10 @@ export const SHADOW_SCAR = {
     fullSymbol: "systems/shadow-scar/assets/symbols/full.png"
   },
 
+  icons: {
+    pause: "systems/shadow-scar/assets/symbols/pause.webp"
+  },
+
   /**
    * Technische Schlüssel links, sichtbare Labels rechts.
    * Datenpfade bleiben unverändert:

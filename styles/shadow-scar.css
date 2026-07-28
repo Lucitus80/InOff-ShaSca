@@ -258,6 +258,20 @@
   border: 1px solid #777;
   border-radius: 4px;
   font-weight: bold;
+  transition: opacity 120ms ease, background-color 120ms ease, border-color 120ms ease;
+}
+
+.shadow-scar .die-result.failure-face {
+  opacity: 0.35;
+}
+
+.shadow-scar .die-result.success-face {
+  opacity: 0.95;
+}
+
+.shadow-scar .die-result.critical-face {
+  border-color: #444;
+  box-shadow: inset 0 0 0 1px rgba(0, 0, 0, 0.12);
 }
 
 .shadow-scar .roll-total,
@@ -361,9 +375,15 @@
 }
 
 .shadow-scar .identity-fields {
-  display: grid;
-  gap: 0.6rem;
   align-content: start;
+  display: grid;
+  gap: 0.5rem 0.65rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.shadow-scar .identity-fields .character-name-field,
+.shadow-scar .identity-fields .special-senses-field {
+  grid-column: 1 / -1;
 }
 
 .shadow-scar .character-name-field input {
@@ -414,6 +434,27 @@
 .shadow-scar .notes-panel textarea {
   min-height: 18rem;
 }
+.shadow-scar .identity-fields input[type="text"] {
+  width: 100%;
+}
+
+.shadow-scar .inyo-field {
+  align-content: start;
+}
+
+.shadow-scar .inyo-label {
+  font-weight: 600;
+}
+
+.shadow-scar .inyo-rating {
+  justify-content: flex-start;
+}
+
+.shadow-scar .inyo-rating .rating-symbol img {
+  height: 1.65rem;
+  width: 1.65rem;
+}
+
 
 @media (max-width: 760px) {
   .shadow-scar .character-header,
@@ -426,6 +467,7 @@
     width: 96px;
     height: 96px;
   }
+
 }
 
 /* v0.5.5: Tabbed character sheet pages */
@@ -898,4 +940,10 @@
   min-width: 0;
   padding: 0;
   width: 1.45rem;
+}
+
+/* v0.7.6: use the Shadow Scar pause symbol for Foundry's pause overlay. */
+#pause img {
+  content: url("../assets/symbols/pause.webp");
+  object-fit: contain;
 }

@@ -399,14 +399,26 @@ export class ShadowScarRolls {
 
   static #countSuccesses(dice) {
     return dice.reduce((total, die) => {
-      if (die === 6) return total + 2;
-      if (die >= 4) return total + 1;
+      const dieValue = Number(typeof die === "object" ? die?.value : die);
+      if (dieValue === 6) return total + 2;
+      if (dieValue >= 4) return total + 1;
       return total;
     }, 0);
   }
 
   static #getDiceResults(roll) {
-    return roll.dice.flatMap((die) => die.results.map((result) => Number(result.result)));
+    return roll.dice.flatMap((die) => die.results.map((result) => {
+      const value = Number(result.result);
+      const successCount = value === 6 ? 2 : value >= 4 ? 1 : 0;
+
+      return {
+        value,
+        successCount,
+        isSuccess: successCount > 0,
+        isFailureFace: successCount === 0,
+        cssClass: successCount === 0 ? "failure-face" : successCount === 2 ? "critical-face" : "success-face"
+      };
+    }));
   }
 
   static #resolveSkillReference(skillRef) {
