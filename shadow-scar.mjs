@@ -20,6 +20,8 @@ import { ShadowScarTechniqueData } from "./module/data-models/item-technique.mjs
 import { ShadowScarConditionData } from "./module/data-models/item-condition.mjs";
 import { ShadowScarWeaponData } from "./module/data-models/item-weapon.mjs";
 import { ShadowScarMikkyoData } from "./module/data-models/item-mikkyo.mjs";
+import { ShadowScarQuirkData } from "./module/data-models/item-quirk.mjs";
+import { ShadowScarHomelandAbilityData } from "./module/data-models/item-homeland-ability.mjs";
 import { ShadowScarRolls } from "./module/dice/rolls.mjs";
 import {
   STARTER_ADVERSARIES,
@@ -50,6 +52,8 @@ Hooks.once("init", () => {
   CONFIG.Item.dataModels.technique = ShadowScarTechniqueData;
   CONFIG.Item.dataModels.mikkyo = ShadowScarMikkyoData;
   CONFIG.Item.dataModels.condition = ShadowScarConditionData;
+  CONFIG.Item.dataModels.quirk = ShadowScarQuirkData;
+  CONFIG.Item.dataModels.homelandAbility = ShadowScarHomelandAbilityData;
 
   // Kleine Handlebars-Helfer für einfache Template-Logik.
   // Nutzung im Template: {{#if (eq item.type "gear")}} ... {{/if}}
@@ -102,7 +106,9 @@ Hooks.once("init", () => {
       SHADOW_SCAR.itemTypes.weapon,
       SHADOW_SCAR.itemTypes.technique,
       SHADOW_SCAR.itemTypes.mikkyo,
-      SHADOW_SCAR.itemTypes.condition
+      SHADOW_SCAR.itemTypes.condition,
+      SHADOW_SCAR.itemTypes.quirk,
+      SHADOW_SCAR.itemTypes.homelandAbility
     ],
     makeDefault: true
   });

@@ -31,7 +31,9 @@ export const SHADOW_SCAR = {
     weapon: "weapon",
     technique: "technique",
     mikkyo: "mikkyo",
-    condition: "condition"
+    condition: "condition",
+    quirk: "quirk",
+    homelandAbility: "homelandAbility"
   },
 
   itemTypeLabels: {
@@ -39,7 +41,9 @@ export const SHADOW_SCAR = {
     weapon: "Weapon",
     technique: "Technique",
     mikkyo: "Mikkyo",
-    condition: "Condition"
+    condition: "Condition",
+    quirk: "Quirk",
+    homelandAbility: "Homeland Ability"
   },
 
   ratings: {

@@ -231,7 +231,10 @@
     {{#if (eq activeTab "equipment")}}
       <section class="tab-page equipment-page two-column-page npc-equipment-page">
         <section class="panel item-panel">
-          <h2>Gear & Armor</h2>
+          <header class="panel-heading item-panel-heading">
+            <h2>Gear & Armor</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="gear" title="Create Gear" aria-label="Create Gear">+</button>
+          </header>
           <p class="hint">Equipped protection gear is read by the Apply Damage dialog.</p>
 
           <ol class="item-list">
@@ -251,7 +254,10 @@
         </section>
 
         <section class="panel item-panel">
-          <h2>Weapons</h2>
+          <header class="panel-heading item-panel-heading">
+            <h2>Weapons</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="weapon" title="Create Weapon" aria-label="Create Weapon">+</button>
+          </header>
           <p class="hint">Click a weapon name to roll with its configured attack skill.</p>
 
           <ol class="item-list">

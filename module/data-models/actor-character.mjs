@@ -99,6 +99,7 @@ export class ShadowScarCharacterData extends foundry.abstract.TypeDataModel {
         speed: new fields.StringField({ required: true, nullable: false, initial: "" }),
         specialSenses: new fields.StringField({ required: true, nullable: false, initial: "" }),
         inyo: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: 0, max: 1 }),
+        quirks: new fields.StringField({ required: true, nullable: false, initial: "" }),
         background: new fields.StringField({ required: true, nullable: false, initial: "" }),
         contacts: new fields.StringField({ required: true, nullable: false, initial: "" }),
         notes: new fields.StringField({ required: true, nullable: false, initial: "" })
