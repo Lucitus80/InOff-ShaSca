@@ -65,7 +65,9 @@ export class ShadowScarActorSheet extends ActorSheet {
       weapon: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.weapon),
       technique: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.technique),
       mikkyo: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.mikkyo),
-      condition: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.condition)
+      condition: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.condition),
+      quirk: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.quirk),
+      homelandAbility: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.homelandAbility)
     };
 
     context.equippedWeapons = context.itemsByType.weapon.filter((item) => Boolean(item.system?.equipped));
@@ -348,6 +350,11 @@ export class ShadowScarActorSheet extends ActorSheet {
           category: "other",
           modifier: 0,
           penalty: ""
+        };
+      case SHADOW_SCAR.itemTypes.quirk:
+      case SHADOW_SCAR.itemTypes.homelandAbility:
+        return {
+          description: ""
         };
       default:
         return {};

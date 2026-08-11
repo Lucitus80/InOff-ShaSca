@@ -196,6 +196,31 @@
       </section>
     {{/if}}
 
+
+    {{#if (eq item.type "quirk")}}
+      <section class="panel item-fields-panel">
+        <h2>Quirk</h2>
+        <p class="hint">Quirks are character traits, habits, flaws, or narrative hooks.</p>
+
+        <label class="field-block">
+          <span>Text</span>
+          <textarea name="system.description" rows="10" placeholder="Describe the quirk here.">{{{system.description}}}</textarea>
+        </label>
+      </section>
+    {{/if}}
+
+    {{#if (eq item.type "homelandAbility")}}
+      <section class="panel item-fields-panel">
+        <h2>Homeland Ability</h2>
+        <p class="hint">This is the special ability granted by the character's homeland/origin.</p>
+
+        <label class="field-block">
+          <span>Text</span>
+          <textarea name="system.description" rows="10" placeholder="Describe the homeland special ability here.">{{{system.description}}}</textarea>
+        </label>
+      </section>
+    {{/if}}
+
     {{#if (eq item.type "condition")}}
       <section class="panel item-fields-panel">
         <h2>Condition</h2>
@@ -234,7 +259,7 @@
       </section>
     {{/if}}
 
-    {{#unless (or (eq item.type "technique") (eq item.type "mikkyo"))}}
+    {{#unless (or (eq item.type "technique") (eq item.type "mikkyo") (eq item.type "quirk") (eq item.type "homelandAbility"))}}
       <section class="panel">
         <h2>Description</h2>
         {{editor system.description target="system.description" button=true editable=editable engine="prosemirror"}}

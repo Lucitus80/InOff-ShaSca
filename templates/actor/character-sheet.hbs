@@ -51,6 +51,42 @@
           {{/each}}
         </div>
       </div>
+
+      <div class="field-block header-item-block homeland-ability-field">
+        <div class="header-inline-heading">
+          <span>Homeland Ability</span>
+          <button type="button" class="item-create-button" data-action="item-create" data-item-type="homelandAbility" title="Create Homeland Ability" aria-label="Create Homeland Ability">+</button>
+        </div>
+
+        <ol class="item-list header-item-list">
+          {{#each itemsByType.homelandAbility as |item|}}
+            <li class="header-item-row item-row" data-item-id="{{item.id}}">
+              <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
+              <button type="button" data-action="item-delete" title="Delete">×</button>
+            </li>
+          {{else}}
+            <li class="empty">No homeland ability.</li>
+          {{/each}}
+        </ol>
+      </div>
+
+      <div class="field-block header-item-block quirks-field">
+        <div class="header-inline-heading">
+          <span>Quirks</span>
+          <button type="button" class="item-create-button" data-action="item-create" data-item-type="quirk" title="Create Quirk" aria-label="Create Quirk">+</button>
+        </div>
+
+        <ol class="item-list header-item-list">
+          {{#each itemsByType.quirk as |item|}}
+            <li class="header-item-row item-row" data-item-id="{{item.id}}">
+              <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
+              <button type="button" data-action="item-delete" title="Delete">×</button>
+            </li>
+          {{else}}
+            <li class="empty">No quirks.</li>
+          {{/each}}
+        </ol>
+      </div>
     </div>
 
     <section class="header-resources" aria-label="Resources">
@@ -222,7 +258,10 @@
     {{#if (eq activeTab "equipment")}}
       <section class="tab-page equipment-page two-column-page">
         <section class="panel item-panel">
-          <h2>Gear</h2>
+          <header class="panel-heading item-panel-heading">
+            <h2>Gear</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="gear" title="Create Gear" aria-label="Create Gear">+</button>
+          </header>
           <p class="hint">Use gear to create a chat card. Equipped armor/protection gear is read by the Apply Damage dialog.</p>
 
           <ol class="item-list">
@@ -242,7 +281,10 @@
         </section>
 
         <section class="panel item-panel">
-          <h2>Weapons</h2>
+          <header class="panel-heading item-panel-heading">
+            <h2>Weapons</h2>
+            <button type="button" class="item-create-button" data-action="item-create" data-item-type="weapon" title="Create Weapon" aria-label="Create Weapon">+</button>
+          </header>
           <p class="hint">Click a weapon name to roll with its configured attack skill. The chat card can then apply editable damage to targeted/selected token actors.</p>
 
           <ol class="item-list">
