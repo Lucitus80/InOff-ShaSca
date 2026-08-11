@@ -1,0 +1,5 @@
+2026/08/11-21:42:51.372 821c Delete type=3 #1
+2026/08/11-21:43:32.651 5224 Level-0 table #5: started
+2026/08/11-21:43:32.656 5224 Level-0 table #5: 13752 bytes OK
+2026/08/11-21:43:32.660 5224 Delete type=0 #3
+2026/08/11-21:43:32.663 5224 Manual compaction at level-0 from '!items!ScBaton00000003' @ 72057594037927935 : 1 .. '!items!null' @ 0 : 0; will stop at (end)
