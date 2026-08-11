@@ -33,22 +33,46 @@
         <input name="system.details.specialSenses" type="text" value="{{system.details.specialSenses}}" placeholder="Special Senses" />
       </label>
 
-      <div class="field-block inyo-field">
-        <span class="inyo-label">Inyo</span>
-        <div class="rating-symbols inyo-rating" role="group" aria-label="Inyo">
-          {{#each (ratingDots system.details.inyo 1) as |dot|}}
-            <button
-              type="button"
-              class="rating-symbol {{#if dot.filled}}filled{{else}}empty{{/if}}"
-              data-action="set-rating"
-              data-path="system.details.inyo"
-              data-value="{{dot.value}}"
-              data-max="1"
-              title="Toggle Inyo"
-            >
-              <img src="{{dot.img}}" alt="{{#if dot.filled}}filled{{else}}empty{{/if}}" />
-            </button>
-          {{/each}}
+      <div class="field-block inyo-meta-field">
+        <div class="inyo-meta-row">
+          <div class="inyo-field">
+            <span class="inyo-label">Inyo</span>
+            <div class="rating-symbols inyo-rating" role="group" aria-label="Inyo">
+              {{#each (ratingDots system.details.inyo 1) as |dot|}}
+                <button
+                  type="button"
+                  class="rating-symbol {{#if dot.filled}}filled{{else}}empty{{/if}}"
+                  data-action="set-rating"
+                  data-path="system.details.inyo"
+                  data-value="{{dot.value}}"
+                  data-max="1"
+                  title="Toggle Inyo"
+                >
+                  <img src="{{dot.img}}" alt="{{#if dot.filled}}filled{{else}}empty{{/if}}" />
+                </button>
+              {{/each}}
+            </div>
+          </div>
+
+          <label class="field-block compact-header-field">
+            <span>Rank</span>
+            <input name="system.details.rank" type="text" value="{{system.details.rank}}" placeholder="Rank" />
+          </label>
+
+          <label class="field-block compact-header-field">
+            <span>RP</span>
+            <input name="system.details.rp" type="text" value="{{system.details.rp}}" placeholder="RP" />
+          </label>
+
+          <label class="field-block compact-header-field">
+            <span>Wealth</span>
+            <input name="system.details.wealth" type="text" value="{{system.details.wealth}}" placeholder="Wealth" />
+          </label>
+
+          <label class="field-block compact-header-field">
+            <span>DI</span>
+            <input name="system.details.di" type="text" value="{{system.details.di}}" placeholder="DI" />
+          </label>
         </div>
       </div>
 
