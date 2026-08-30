@@ -143,7 +143,8 @@ export const SHADOW_SCAR = {
     hibana: "Hibana",
     kuromaku: "Kuromaku",
     tantei: "Tantei",
-    wanami: "Wanami"
+    wanami: "Wanami",
+    kokoro: "Kokoro"
   },
 
   // Backward-compatible alias for older v0.7.1 templates/macros.
@@ -154,7 +155,8 @@ export const SHADOW_SCAR = {
     hibana: "Hibana",
     kuromaku: "Kuromaku",
     tantei: "Tantei",
-    wanami: "Wanami"
+    wanami: "Wanami",
+    kokoro: "Kokoro"
   },
 
   ranks: {
