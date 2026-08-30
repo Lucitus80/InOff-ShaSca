@@ -200,7 +200,16 @@
     {{#if (eq item.type "quirk")}}
       <section class="panel item-fields-panel">
         <h2>Quirk</h2>
-        <p class="hint">Quirks are character traits, habits, flaws, or narrative hooks.</p>
+        <p class="hint">Quirks are split into Advantages and Disadvantages on the character sheet.</p>
+
+        <label class="field-block">
+          <span>Category</span>
+          <select name="system.quirkType">
+            {{#each config.quirkTypes as |label key|}}
+              <option value="{{key}}" {{#if (eq ../system.quirkType key)}}selected{{/if}}>{{label}}</option>
+            {{/each}}
+          </select>
+        </label>
 
         <label class="field-block">
           <span>Text</span>

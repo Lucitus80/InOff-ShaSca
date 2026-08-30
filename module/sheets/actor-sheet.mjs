@@ -70,6 +70,8 @@ export class ShadowScarActorSheet extends ActorSheet {
       homelandAbility: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.homelandAbility)
     };
 
+    context.advantages = context.itemsByType.quirk.filter((item) => (item.system?.quirkType || "advantage") === "advantage");
+    context.disadvantages = context.itemsByType.quirk.filter((item) => (item.system?.quirkType || "advantage") === "disadvantage");
     context.equippedWeapons = context.itemsByType.weapon.filter((item) => Boolean(item.system?.equipped));
     context.equippedGear = context.itemsByType.gear.filter((item) => Boolean(item.system?.equipped));
     context.protectionGear = context.equippedGear.filter((item) => this.#hasProtection(item));
@@ -160,11 +162,15 @@ export class ShadowScarActorSheet extends ActorSheet {
     const type = event.currentTarget.dataset.itemType;
     if (!type || !Object.values(SHADOW_SCAR.itemTypes).includes(type)) return null;
 
+    const itemSystem = this.#getDefaultItemSystem(type, event.currentTarget.dataset);
     const label = SHADOW_SCAR.itemTypeLabels[type] ?? type;
+    const name = type === SHADOW_SCAR.itemTypes.quirk
+      ? `New ${itemSystem.quirkType === "disadvantage" ? "Disadvantage" : "Advantage"}`
+      : `New ${label}`;
     const data = {
-      name: `New ${label}`,
+      name,
       type,
-      system: this.#getDefaultItemSystem(type)
+      system: itemSystem
     };
 
     const created = await this.actor.createEmbeddedDocuments("Item", [data]);
@@ -303,7 +309,7 @@ export class ShadowScarActorSheet extends ActorSheet {
   }
 
 
-  #getDefaultItemSystem(type) {
+  #getDefaultItemSystem(type, dataset = {}) {
     switch (type) {
       case SHADOW_SCAR.itemTypes.technique:
         return {
@@ -352,6 +358,10 @@ export class ShadowScarActorSheet extends ActorSheet {
           penalty: ""
         };
       case SHADOW_SCAR.itemTypes.quirk:
+        return {
+          quirkType: dataset.quirkType === "disadvantage" ? "disadvantage" : "advantage",
+          description: ""
+        };
       case SHADOW_SCAR.itemTypes.homelandAbility:
         return {
           description: ""

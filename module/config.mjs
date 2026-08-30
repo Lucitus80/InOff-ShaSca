@@ -185,6 +185,11 @@ export const SHADOW_SCAR = {
     other: "Other"
   },
 
+  quirkTypes: {
+    advantage: "Advantage",
+    disadvantage: "Disadvantage"
+  },
+
   npcThreatLevels: {
     minor: "Minor",
     standard: "Standard",
