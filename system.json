@@ -1,8 +1,8 @@
 {
   "id": "shadow-scar",
   "title": "Shadow Scar",
-  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: visually polished character and NPC sheets with symbolic ratings, movable item cards, RP costs for weapons/gear, improved item icons, editable item descriptions, expanded character header fields, Clan/Rank Technique and Mikkyo sheets, resource controls, weapon rolls, armor-aware guided damage application, and starter content packs.",
-  "version": "0.7.15",
+  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: visually polished character and NPC sheets with symbolic ratings, movable item cards, RP costs for weapons/gear, improved item icons, editable item descriptions, expanded character header fields, Clan/Rank Technique and Mikkyo sheets, resource controls, weapon rolls, armor-aware guided damage application, and starter content packs, and Kokoro clan support.",
+  "version": "0.7.16",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
@@ -49,7 +49,7 @@
   "secondaryTokenAttribute": "resources.ki",
   "url": "https://github.com/Lucitus80/InOff-ShaSca",
   "manifest": "https://github.com/Lucitus80/InOff-ShaSca/releases/latest/download/system.json",
-  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.7.15.zip",
+  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.7.16.zip",
   "packs": [
     {
       "name": "starter-items",
