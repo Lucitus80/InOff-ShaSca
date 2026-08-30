@@ -1,7 +1,7 @@
 /**
  * Actor sheet for Shadow Scar.
  *
- * v0.7.0 adds clickable rating symbols for attributes and skills while reusing
+ * v0.7.13 adds drag-and-drop movement for embedded Items while reusing
  * the same roll, item, resource and condition handlers as before.
  */
 import { SHADOW_SCAR } from "../config.mjs";
@@ -104,6 +104,7 @@ export class ShadowScarActorSheet extends ActorSheet {
     html.find("[data-action='resource-damage-dialog']").on("click", this._onResourceDamageDialog.bind(this));
     html.find("[data-action='resource-heal-dialog']").on("click", this._onResourceHealDialog.bind(this));
     html.find("[data-action='set-rating']").on("click", this._onSetRating.bind(this));
+    this.#activateItemDragAndDrop(html);
   }
 
   async _onTabClick(event) {
@@ -270,6 +271,201 @@ export class ShadowScarActorSheet extends ActorSheet {
     const nextValue = Math.max(0, Math.min(maximum, unclampedValue));
 
     return this.actor.update({ [path]: nextValue });
+  }
+
+  #activateItemDragAndDrop(html) {
+    const itemRows = html.find(".item-row[data-item-id]");
+    itemRows.attr("draggable", true);
+    itemRows.on("dragstart", this._onItemDragStart.bind(this));
+    itemRows.on("dragend", (event) => {
+      event.currentTarget.classList.remove("dragging");
+      html.find(".item-drop-zone.drag-over").removeClass("drag-over");
+    });
+
+    const dropZones = html.find(".item-drop-zone[data-drop-type]");
+    dropZones.on("dragenter dragover", this._onItemDragOver.bind(this));
+    dropZones.on("dragleave", this._onItemDragLeave.bind(this));
+    dropZones.on("drop", this._onItemDrop.bind(this));
+  }
+
+  _onItemDragStart(event) {
+    const dragEvent = event.originalEvent ?? event;
+    const item = this._getItemFromEvent(event);
+    if (!item) return;
+
+    const dragData = {
+      type: "Item",
+      uuid: item.uuid,
+      itemId: item.id,
+      actorUuid: this.actor.uuid,
+      shadowScar: {
+        sourceActorUuid: this.actor.uuid,
+        sourceItemId: item.id
+      }
+    };
+
+    dragEvent.dataTransfer?.setData("text/plain", JSON.stringify(dragData));
+    dragEvent.dataTransfer?.setData("application/json", JSON.stringify(dragData));
+    if (dragEvent.dataTransfer) dragEvent.dataTransfer.effectAllowed = "copyMove";
+    event.currentTarget.classList.add("dragging");
+  }
+
+  _onItemDragOver(event) {
+    const dragEvent = event.originalEvent ?? event;
+    event.preventDefault();
+    const dropZone = event.currentTarget;
+    dropZone.classList.add("drag-over");
+    if (dragEvent.dataTransfer) dragEvent.dataTransfer.dropEffect = dragEvent.altKey || dragEvent.ctrlKey ? "copy" : "move";
+  }
+
+  _onItemDragLeave(event) {
+    const relatedTarget = event.relatedTarget ?? event.originalEvent?.relatedTarget;
+    if (relatedTarget && event.currentTarget.contains(relatedTarget)) return;
+    event.currentTarget.classList.remove("drag-over");
+  }
+
+  async _onItemDrop(event) {
+    const dragEvent = event.originalEvent ?? event;
+    event.preventDefault();
+    event.stopPropagation();
+
+    const dropZone = event.currentTarget.closest?.(".item-drop-zone[data-drop-type]") ?? event.currentTarget;
+    dropZone.classList.remove("drag-over");
+
+    const data = this.#getDropData(dragEvent);
+    if (!data || data.type !== "Item") return null;
+
+    const item = await this.#getDroppedItem(data);
+    if (!item) {
+      ui.notifications?.warn("Dropped item could not be resolved.");
+      return null;
+    }
+
+    const targetType = dropZone.dataset.dropType;
+    const targetQuirkType = dropZone.dataset.quirkType;
+    const setEquipped = dropZone.dataset.setEquipped === "true";
+
+    if (!this.#isCompatibleDrop(item, targetType)) {
+      const targetLabel = SHADOW_SCAR.itemTypeLabels?.[targetType] ?? targetType;
+      ui.notifications?.warn(`${item.name} is a ${item.type} item and cannot be dropped into ${targetLabel}.`);
+      return null;
+    }
+
+    const sourceActor = await this.#getSourceActor(data, item);
+    const sourceItem = this.#getSourceItem(data, item, sourceActor);
+    const isSameActor = sourceActor?.uuid === this.actor.uuid;
+
+    if (isSameActor) {
+      const updateData = this.#buildDropUpdateData({ item, targetType, targetQuirkType, setEquipped });
+      if (Object.keys(updateData).length) {
+        await sourceItem.update(updateData);
+        ui.notifications?.info(`${sourceItem.name} moved.`);
+      }
+      return this.render(false);
+    }
+
+    const itemData = this.#buildDroppedItemData({ item, targetType, targetQuirkType, setEquipped });
+    const created = await this.actor.createEmbeddedDocuments("Item", [itemData]);
+
+    const shouldCopy = dragEvent.altKey || dragEvent.ctrlKey || !sourceActor || !sourceItem || !sourceActor.isOwner;
+    if (!shouldCopy) {
+      await sourceActor.deleteEmbeddedDocuments("Item", [sourceItem.id]);
+      ui.notifications?.info(`${item.name} moved to ${this.actor.name}.`);
+    } else if (created?.length) {
+      ui.notifications?.info(`${item.name} copied to ${this.actor.name}.`);
+    }
+
+    return this.render(false);
+  }
+
+  #getDropData(dragEvent) {
+    try {
+      if (TextEditor?.getDragEventData) return TextEditor.getDragEventData(dragEvent);
+    } catch (_error) {
+      // Fall back to plain JSON below.
+    }
+
+    const raw = dragEvent.dataTransfer?.getData("application/json") || dragEvent.dataTransfer?.getData("text/plain");
+    if (!raw) return null;
+
+    try {
+      return JSON.parse(raw);
+    } catch (_error) {
+      return null;
+    }
+  }
+
+  async #getDroppedItem(data) {
+    if (data.uuid) {
+      const item = await fromUuid(data.uuid);
+      if (item) return item;
+    }
+
+    const sourceActor = await this.#getSourceActor(data, null);
+    if (sourceActor && data.itemId) return sourceActor.items.get(data.itemId) ?? null;
+
+    if (Item?.implementation?.fromDropData) {
+      try {
+        return await Item.implementation.fromDropData(data);
+      } catch (_error) {
+        return null;
+      }
+    }
+
+    return null;
+  }
+
+  async #getSourceActor(data, item) {
+    const sourceActorUuid = data.actorUuid || data.actorId || data.shadowScar?.sourceActorUuid || item?.parent?.uuid;
+    if (!sourceActorUuid) return item?.parent instanceof Actor ? item.parent : null;
+
+    if (String(sourceActorUuid).startsWith("Actor.")) {
+      return await fromUuid(sourceActorUuid);
+    }
+
+    return game.actors?.get(sourceActorUuid) ?? null;
+  }
+
+  #getSourceItem(data, item, sourceActor) {
+    const itemId = data.itemId || data.shadowScar?.sourceItemId || item?.id;
+    return sourceActor?.items?.get(itemId) ?? item;
+  }
+
+  #isCompatibleDrop(item, targetType) {
+    if (!targetType) return true;
+    if (!item?.type) return false;
+    return item.type === targetType;
+  }
+
+  #buildDropUpdateData({ item, targetType, targetQuirkType, setEquipped }) {
+    const updateData = {};
+
+    if (targetType === SHADOW_SCAR.itemTypes.quirk && targetQuirkType) {
+      const nextType = targetQuirkType === "disadvantage" ? "disadvantage" : "advantage";
+      if ((item.system?.quirkType || "advantage") !== nextType) updateData["system.quirkType"] = nextType;
+    }
+
+    if (setEquipped && item.type === SHADOW_SCAR.itemTypes.weapon && !item.system?.equipped) {
+      updateData["system.equipped"] = true;
+    }
+
+    return updateData;
+  }
+
+  #buildDroppedItemData({ item, targetType, targetQuirkType, setEquipped }) {
+    const itemData = item.toObject ? item.toObject() : foundry.utils.duplicate(item);
+    delete itemData._id;
+    itemData.system = foundry.utils.duplicate(itemData.system ?? {});
+
+    if (targetType === SHADOW_SCAR.itemTypes.quirk && targetQuirkType) {
+      itemData.system.quirkType = targetQuirkType === "disadvantage" ? "disadvantage" : "advantage";
+    }
+
+    if (setEquipped && itemData.type === SHADOW_SCAR.itemTypes.weapon) {
+      itemData.system.equipped = true;
+    }
+
+    return itemData;
   }
 
   _getItemFromEvent(event) {

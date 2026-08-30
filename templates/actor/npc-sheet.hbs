@@ -161,9 +161,9 @@
           <h2>Weaponry</h2>
           <p class="hint">Equipped weapons are shown first for quick attacks.</p>
 
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="weapon" data-set-equipped="true">
             {{#each equippedWeapons as |item|}}
-              <li class="item-row weapon-row" data-item-id="{{item.id}}">
+              <li class="item-row weapon-row" data-item-id="{{item.id}}" draggable="true">
                 <input type="checkbox" data-action="weapon-equipped-toggle" checked aria-label="Equipped weapon" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
@@ -237,9 +237,9 @@
           </header>
           <p class="hint">Equipped protection gear is read by the Apply Damage dialog.</p>
 
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="gear">
             {{#each itemsByType.gear as |item|}}
-              <li class="item-row gear-row" data-item-id="{{item.id}}">
+              <li class="item-row gear-row" data-item-id="{{item.id}}" draggable="true">
                 <input type="checkbox" data-action="gear-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped gear" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
@@ -260,9 +260,9 @@
           </header>
           <p class="hint">Click a weapon name to roll with its configured attack skill.</p>
 
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="weapon">
             {{#each itemsByType.weapon as |item|}}
-              <li class="item-row weapon-row" data-item-id="{{item.id}}">
+              <li class="item-row weapon-row" data-item-id="{{item.id}}" draggable="true">
                 <input type="checkbox" data-action="weapon-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped weapon" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
@@ -281,9 +281,9 @@
             <h2>Techniques</h2>
             <button type="button" class="item-create-button" data-action="item-create" data-item-type="technique" title="Create Technique" aria-label="Create Technique">+</button>
           </header>
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="technique">
             {{#each itemsByType.technique as |item|}}
-              <li class="item-row action-item-row" data-item-id="{{item.id}}">
+              <li class="item-row action-item-row" data-item-id="{{item.id}}" draggable="true">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
                 <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}}</span>
@@ -301,9 +301,9 @@
             <h2>Mikkyo</h2>
             <button type="button" class="item-create-button" data-action="item-create" data-item-type="mikkyo" title="Create Mikkyo" aria-label="Create Mikkyo">+</button>
           </header>
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="mikkyo">
             {{#each itemsByType.mikkyo as |item|}}
-              <li class="item-row action-item-row" data-item-id="{{item.id}}">
+              <li class="item-row action-item-row" data-item-id="{{item.id}}" draggable="true">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
                 <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}} / {{mikkyoKiCost item.system}} Ki</span>
@@ -324,9 +324,9 @@
           <h2>Conditions</h2>
           <p class="hint">Active Condition modifiers are summed and prefilled into Attribute, Skill, and Weapon roll dialogs.</p>
 
-          <ol class="item-list condition-list">
+          <ol class="item-list condition-list item-drop-zone" data-drop-type="condition">
             {{#each itemsByType.condition as |item|}}
-              <li class="item-row condition-row" data-item-id="{{item.id}}">
+              <li class="item-row condition-row" data-item-id="{{item.id}}" draggable="true">
                 <input type="checkbox" data-action="condition-toggle" {{#if item.system.active}}checked{{/if}} aria-label="Active condition" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open">{{item.name}}</a>
