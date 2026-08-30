@@ -42,6 +42,11 @@
           <input name="system.effect" type="text" value="{{system.effect}}" />
         </label>
 
+        <label class="field-block item-description-field">
+          <span>Description</span>
+          <textarea name="system.description" rows="6" placeholder="Describe this gear item, its use, limits and narrative details here.">{{{system.description}}}</textarea>
+        </label>
+
         <div class="item-field-grid four-fields protection-fields">
           <label class="field-block">
             <span>Armor</span>
@@ -119,6 +124,11 @@
           <input name="system.equipped" type="checkbox" {{#if system.equipped}}checked{{/if}} />
         </label>
 
+        <label class="field-block item-description-field">
+          <span>Description</span>
+          <textarea name="system.description" rows="6" placeholder="Describe this weapon, its handling, traits and special rules here.">{{{system.description}}}</textarea>
+        </label>
+
         <label class="field-block">
           <span>Tags</span>
           <input name="system.tags" type="text" value="{{system.tags}}" placeholder="comma-separated traits/tags" />
@@ -151,8 +161,8 @@
           </label>
         </div>
 
-        <label class="field-block">
-          <span>Text</span>
+        <label class="field-block item-description-field">
+          <span>Description</span>
           <textarea name="system.description" rows="10" placeholder="Describe the Technique rules, limitations and narrative effect here.">{{{system.description}}}</textarea>
         </label>
       </section>
@@ -189,8 +199,8 @@
           </label>
         </div>
 
-        <label class="field-block">
-          <span>Text</span>
+        <label class="field-block item-description-field">
+          <span>Description</span>
           <textarea name="system.description" rows="10" placeholder="Describe the Mikkyo prayer, limitations, range, duration and effect here.">{{{system.description}}}</textarea>
         </label>
       </section>
@@ -211,8 +221,8 @@
           </select>
         </label>
 
-        <label class="field-block">
-          <span>Text</span>
+        <label class="field-block item-description-field">
+          <span>Description</span>
           <textarea name="system.description" rows="10" placeholder="Describe the quirk here.">{{{system.description}}}</textarea>
         </label>
       </section>
@@ -223,8 +233,8 @@
         <h2>Homeland Ability</h2>
         <p class="hint">This is the special ability granted by the character's homeland/origin.</p>
 
-        <label class="field-block">
-          <span>Text</span>
+        <label class="field-block item-description-field">
+          <span>Description</span>
           <textarea name="system.description" rows="10" placeholder="Describe the homeland special ability here.">{{{system.description}}}</textarea>
         </label>
       </section>
@@ -265,14 +275,12 @@
           <span>Penalty / Mechanical Note</span>
           <input name="system.penalty" type="text" value="{{system.penalty}}" />
         </label>
+
+        <label class="field-block item-description-field">
+          <span>Description</span>
+          <textarea name="system.description" rows="8" placeholder="Describe the condition, its rules and narrative effects here.">{{{system.description}}}</textarea>
+        </label>
       </section>
     {{/if}}
-
-    {{#unless (or (eq item.type "technique") (eq item.type "mikkyo") (eq item.type "quirk") (eq item.type "homelandAbility"))}}
-      <section class="panel">
-        <h2>Description</h2>
-        {{editor system.description target="system.description" button=true editable=editable engine="prosemirror"}}
-      </section>
-    {{/unless}}
   </section>
 </form>

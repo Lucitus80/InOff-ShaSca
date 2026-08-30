@@ -1,16 +1,16 @@
 # Shadow Scar Foundry VTT System Prototype
 
-## 0.7.13 - Mikkyo Ki Cost Stability & Compact Create Buttons
+## 0.7.14 - Mikkyo Ki Cost Stability & Compact Create Buttons
 
 - Fixed the Mikkyo Rank/Ki Cost update flow so changing Rank no longer jumps the Ki Cost display back to 1 Ki.
 - The Mikkyo sheet now updates the readonly Ki Cost field before Foundry submits the form change.
 - Mikkyo form submission also enforces `system.kiCost` from the selected Rank as a safety fallback.
 - Actor-sheet Technique/Mikkyo creation buttons are now compact square **+** buttons with tooltip labels instead of large text buttons.
 
-Version: 0.7.13  
+Version: 0.7.14  
 Foundry compatibility target: v14
 
-## 0.7.13 - Technique/Mikkyo Creation & Ki Cost Display Fix
+## 0.7.14 - Technique/Mikkyo Creation & Ki Cost Display Fix
 
 - Fixed the Mikkyo item sheet Ki Cost display so it updates immediately when the Rank dropdown changes.
 - Mikkyo now also carries a derived `system.kiCost` value for display/compatibility, still controlled by Rank and not manually editable.
@@ -18,10 +18,10 @@ Foundry compatibility target: v14
 - NPC sheets now have **+ Technique** and **+ Mikkyo** buttons in the Equipment tab.
 - New Technique/Mikkyo items open their item sheet immediately after creation.
 
-Version: 0.7.13  
+Version: 0.7.14  
 Foundry compatibility target: v14
 
-## 0.7.13 - Techniques & Mikkyo Clan/Rank Pass
+## 0.7.14 - Techniques & Mikkyo Clan/Rank Pass
 
 - The old Technique **Type** field is renamed to **Clan**.
 - Technique sheets now show: Clan dropdown, Rank dropdown, and editable rules text.
@@ -36,9 +36,9 @@ Foundry compatibility target: v14
 - Mikkyo use again opens the Ki spending dialog and can subtract Ki from the actor.
 - Technique/Mikkyo chat cards show Clan and Rank; Mikkyo cards also show fixed Ki Cost and Ki Reserve changes.
 - Starter Technique/Mikkyo content and compendium entries were migrated to `system.clan` and `system.rank`.
-- Old 0.7.13 `system.techniqueType` is still read as a compatibility fallback for existing Technique items.
+- Old 0.7.14 `system.techniqueType` is still read as a compatibility fallback for existing Technique items.
 
-Version: 0.7.13  
+Version: 0.7.14  
 Foundry compatibility target: v14
 
 This is an unofficial prototype system for Shadow Scar.
@@ -192,7 +192,7 @@ system.clan
 system.rank
 ```
 
-Legacy fallback for older 0.7.13 items:
+Legacy fallback for older 0.7.14 items:
 
 ```text
 system.techniqueType

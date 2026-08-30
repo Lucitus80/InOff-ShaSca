@@ -1434,3 +1434,19 @@
 .shadow-scar .header-item-list.item-drop-zone.drag-over {
   background: rgba(255, 255, 255, 0.9);
 }
+
+/* v0.7.14: all Item descriptions use direct editable textareas. */
+.shadow-scar .item-description-field textarea {
+  background: #fff;
+  border: 1px solid #111;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: inherit;
+  min-height: 6rem;
+  padding: 0.45rem;
+  width: 100%;
+}
+
+.shadow-scar .item-description-field span {
+  font-weight: 600;
+}
