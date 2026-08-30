@@ -82,9 +82,9 @@
           <button type="button" class="item-create-button" data-action="item-create" data-item-type="homelandAbility" title="Create Homeland Ability" aria-label="Create Homeland Ability">+</button>
         </div>
 
-        <ol class="item-list header-item-list">
+        <ol class="item-list header-item-list item-drop-zone" data-drop-type="homelandAbility">
           {{#each itemsByType.homelandAbility as |item|}}
-            <li class="header-item-row item-row" data-item-id="{{item.id}}">
+            <li class="header-item-row item-row" data-item-id="{{item.id}}" draggable="true">
               <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
               <button type="button" data-action="item-delete" title="Delete">×</button>
             </li>
@@ -102,9 +102,9 @@
               <button type="button" class="item-create-button" data-action="item-create" data-item-type="quirk" data-quirk-type="advantage" title="Create Advantage" aria-label="Create Advantage">+</button>
             </div>
 
-            <ol class="item-list header-item-list">
+            <ol class="item-list header-item-list item-drop-zone" data-drop-type="quirk" data-quirk-type="advantage">
               {{#each advantages as |item|}}
-                <li class="header-item-row item-row" data-item-id="{{item.id}}">
+                <li class="header-item-row item-row" data-item-id="{{item.id}}" draggable="true">
                   <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
                   <button type="button" data-action="item-delete" title="Delete">×</button>
                 </li>
@@ -120,9 +120,9 @@
               <button type="button" class="item-create-button" data-action="item-create" data-item-type="quirk" data-quirk-type="disadvantage" title="Create Disadvantage" aria-label="Create Disadvantage">+</button>
             </div>
 
-            <ol class="item-list header-item-list">
+            <ol class="item-list header-item-list item-drop-zone" data-drop-type="quirk" data-quirk-type="disadvantage">
               {{#each disadvantages as |item|}}
-                <li class="header-item-row item-row" data-item-id="{{item.id}}">
+                <li class="header-item-row item-row" data-item-id="{{item.id}}" draggable="true">
                   <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
                   <button type="button" data-action="item-delete" title="Delete">×</button>
                 </li>
@@ -262,9 +262,9 @@
           </header>
           <p class="hint">Click a Technique name to post its rules text to chat.</p>
 
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="technique">
             {{#each itemsByType.technique as |item|}}
-              <li class="item-row action-item-row" data-item-id="{{item.id}}">
+              <li class="item-row action-item-row" data-item-id="{{item.id}}" draggable="true">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
                 <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}}</span>
@@ -284,9 +284,9 @@
           </header>
           <p class="hint">Click a Mikkyo name to post its rules text to chat.</p>
 
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="mikkyo">
             {{#each itemsByType.mikkyo as |item|}}
-              <li class="item-row action-item-row" data-item-id="{{item.id}}">
+              <li class="item-row action-item-row" data-item-id="{{item.id}}" draggable="true">
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="use-ki-item" title="Use {{item.name}}">{{item.name}}</a>
                 <span class="item-detail">{{clanLabel item.system}} / {{rankLabel item.system}} / {{mikkyoKiCost item.system}} Ki</span>
@@ -310,9 +310,9 @@
           </header>
           <p class="hint">Use gear to create a chat card. Equipped armor/protection gear is read by the Apply Damage dialog.</p>
 
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="gear">
             {{#each itemsByType.gear as |item|}}
-              <li class="item-row gear-row" data-item-id="{{item.id}}">
+              <li class="item-row gear-row" data-item-id="{{item.id}}" draggable="true">
                 <input type="checkbox" data-action="gear-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped gear" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
@@ -333,9 +333,9 @@
           </header>
           <p class="hint">Click a weapon name to roll with its configured attack skill. The chat card can then apply editable damage to targeted/selected token actors.</p>
 
-          <ol class="item-list">
+          <ol class="item-list item-drop-zone" data-drop-type="weapon">
             {{#each itemsByType.weapon as |item|}}
-              <li class="item-row weapon-row" data-item-id="{{item.id}}">
+              <li class="item-row weapon-row" data-item-id="{{item.id}}" draggable="true">
                 <input type="checkbox" data-action="weapon-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped weapon" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
@@ -380,9 +380,9 @@
           <h2>Conditions</h2>
           <p class="hint">Active Condition modifiers are summed and prefilled into Attribute, Skill, and Weapon roll dialogs.</p>
 
-          <ol class="item-list condition-list">
+          <ol class="item-list condition-list item-drop-zone" data-drop-type="condition">
             {{#each itemsByType.condition as |item|}}
-              <li class="item-row condition-row" data-item-id="{{item.id}}">
+              <li class="item-row condition-row" data-item-id="{{item.id}}" draggable="true">
                 <input type="checkbox" data-action="condition-toggle" {{#if item.system.active}}checked{{/if}} aria-label="Active condition" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open">{{item.name}}</a>

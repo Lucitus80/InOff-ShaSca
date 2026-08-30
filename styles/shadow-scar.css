@@ -1409,3 +1409,28 @@
     border-radius: 6px;
   }
 }
+
+
+/* v0.7.13: movable embedded items. */
+.shadow-scar .item-row[draggable="true"] {
+  cursor: grab;
+}
+
+.shadow-scar .item-row.dragging {
+  opacity: 0.55;
+}
+
+.shadow-scar .item-drop-zone {
+  min-height: 2.25rem;
+  transition: outline-color 120ms ease, background-color 120ms ease;
+}
+
+.shadow-scar .item-drop-zone.drag-over {
+  background: rgba(255, 255, 255, 0.72);
+  outline: 2px dashed var(--ss-sheet-border, #111);
+  outline-offset: -4px;
+}
+
+.shadow-scar .header-item-list.item-drop-zone.drag-over {
+  background: rgba(255, 255, 255, 0.9);
+}
