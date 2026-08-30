@@ -996,6 +996,17 @@
   min-width: 0;
 }
 
+.shadow-scar .quirks-split-grid {
+  display: grid;
+  gap: 0.55rem;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.shadow-scar .quirk-column {
+  min-width: 0;
+}
+
+
 .shadow-scar .header-item-list {
   border: 1px solid var(--color-border-light-tertiary, #999);
   border-radius: 5px;
@@ -1027,4 +1038,374 @@
   line-height: 1;
   min-height: 0;
   padding: 0.05rem 0.2rem;
+}
+
+
+/* v0.7.11: Quirks are split into Advantages and Disadvantages columns. */
+@media (max-width: 760px) {
+  .shadow-scar .quirks-split-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+
+/* v0.7.12: Shadow Scar character-sheet inspired title bars and framed panels.
+ * The official fillable sheet uses charcoal header ribbons, white content
+ * boxes, black outlines, and tight rectangular fields; the VTT sheet now mirrors
+ * that visual language without changing the data paths or existing handlers. */
+.shadow-scar {
+  --ss-sheet-title-bg: #444;
+  --ss-sheet-title-bg-dark: #333;
+  --ss-sheet-title-fg: #f4f4f4;
+  --ss-sheet-border: #111;
+  --ss-sheet-border-soft: #777;
+  --ss-sheet-fill: rgba(255, 255, 255, 0.94);
+  --ss-sheet-fill-muted: rgba(235, 235, 235, 0.88);
+}
+
+.shadow-scar.character-sheet .sheet-header,
+.shadow-scar.npc-sheet .sheet-header {
+  background: linear-gradient(180deg, rgba(255,255,255,0.94), rgba(238,238,238,0.94));
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px #fff, inset 0 0 0 3px var(--ss-sheet-border-soft);
+  padding: 0.7rem;
+}
+
+.shadow-scar.character-sheet .profile-img,
+.shadow-scar.npc-sheet .profile-img {
+  background: var(--ss-sheet-fill);
+  border: 2px solid var(--ss-sheet-border);
+  box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px var(--ss-sheet-border-soft);
+}
+
+.shadow-scar.character-sheet .identity-fields {
+  align-content: start;
+  display: grid;
+  gap: 0.5rem;
+  grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+.shadow-scar.character-sheet .character-name-field,
+.shadow-scar.character-sheet .special-senses-field,
+.shadow-scar.character-sheet .inyo-meta-field,
+.shadow-scar.character-sheet .homeland-ability-field,
+.shadow-scar.character-sheet .quirks-field {
+  grid-column: 1 / -1;
+}
+
+.shadow-scar.character-sheet .character-name-field {
+  display: grid;
+  gap: 0;
+  grid-template-columns: auto minmax(0, 1fr);
+}
+
+.shadow-scar.character-sheet .identity-fields > label.field-block:not(.character-name-field),
+.shadow-scar.character-sheet .compact-header-field,
+.shadow-scar.character-sheet .inyo-field,
+.shadow-scar .resource-card {
+  background: var(--ss-sheet-fill);
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 6px;
+  box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--ss-sheet-border-soft);
+  gap: 0;
+  overflow: hidden;
+}
+
+.shadow-scar.character-sheet .identity-fields > label.field-block > span,
+.shadow-scar.character-sheet .compact-header-field > span,
+.shadow-scar.character-sheet .inyo-label,
+.shadow-scar .resource-card > label {
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg), var(--ss-sheet-title-bg-dark));
+  border-bottom: 2px solid var(--ss-sheet-border);
+  color: var(--ss-sheet-title-fg);
+  display: block;
+  font-weight: 700;
+  letter-spacing: 0.01em;
+  margin: 0;
+  padding: 0.25rem 0.4rem;
+  text-align: center;
+  text-shadow: 0 1px 0 #000;
+}
+
+.shadow-scar.character-sheet .character-name-field > span {
+  align-items: center;
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg), var(--ss-sheet-title-bg-dark));
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 6px 0 0 6px;
+  color: var(--ss-sheet-title-fg);
+  display: flex;
+  font-size: 1.15rem;
+  font-weight: 700;
+  justify-content: center;
+  letter-spacing: 0.01em;
+  padding: 0 0.7rem;
+  text-shadow: 0 1px 0 #000;
+}
+
+.shadow-scar.character-sheet .character-name-field input {
+  border: 2px solid var(--ss-sheet-border);
+  border-left: none;
+  border-radius: 0 6px 6px 0;
+  min-height: 2.55rem;
+}
+
+.shadow-scar.character-sheet .identity-fields input,
+.shadow-scar.character-sheet .resource-inputs input {
+  background: #fff;
+  border: none;
+  box-shadow: none;
+  min-height: 1.9rem;
+  text-align: center;
+}
+
+.shadow-scar.character-sheet .special-senses-field input {
+  min-height: 2.4rem;
+  text-align: left;
+}
+
+.shadow-scar.character-sheet .inyo-meta-row {
+  align-items: stretch;
+  display: grid;
+  gap: 0.45rem;
+  grid-template-columns: 74px repeat(4, minmax(58px, 1fr));
+}
+
+.shadow-scar.character-sheet .inyo-field {
+  align-items: center;
+  display: grid;
+  justify-items: center;
+}
+
+.shadow-scar.character-sheet .inyo-label {
+  width: 100%;
+}
+
+.shadow-scar.character-sheet .inyo-rating {
+  justify-content: center;
+  padding: 0.35rem;
+}
+
+.shadow-scar.character-sheet .header-inline-heading {
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg), var(--ss-sheet-title-bg-dark));
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 6px 6px 0 0;
+  color: var(--ss-sheet-title-fg);
+  min-height: 1.7rem;
+  padding: 0.15rem 0.35rem;
+  text-align: center;
+  text-shadow: 0 1px 0 #000;
+}
+
+.shadow-scar.character-sheet .header-inline-heading > span {
+  flex: 1;
+  font-weight: 700;
+  text-align: center;
+}
+
+.shadow-scar.character-sheet .header-item-list {
+  background: var(--ss-sheet-fill);
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 0 0 6px 6px;
+  border-top: none;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+
+.shadow-scar.character-sheet .quirk-column {
+  min-width: 0;
+}
+
+.shadow-scar.character-sheet .panel,
+.shadow-scar.npc-sheet .panel {
+  background: var(--ss-sheet-fill);
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 8px;
+  box-shadow: inset 0 0 0 2px #fff, 0 0 0 1px var(--ss-sheet-border-soft);
+  overflow: hidden;
+  padding: 0.65rem;
+}
+
+.shadow-scar.character-sheet .panel > h2,
+.shadow-scar.npc-sheet .panel > h2,
+.shadow-scar.character-sheet .panel-heading,
+.shadow-scar.npc-sheet .panel-heading {
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg), var(--ss-sheet-title-bg-dark));
+  border-bottom: 2px solid var(--ss-sheet-border);
+  color: var(--ss-sheet-title-fg);
+  justify-content: center;
+  margin: -0.65rem -0.65rem 0.55rem -0.65rem;
+  min-height: 1.9rem;
+  padding: 0.3rem 0.5rem;
+  text-align: center;
+  text-shadow: 0 1px 0 #000;
+}
+
+.shadow-scar.character-sheet .panel-heading h2,
+.shadow-scar.npc-sheet .panel-heading h2 {
+  color: inherit;
+  flex: 1;
+  font-weight: 700;
+  margin: 0;
+  text-align: center;
+}
+
+.shadow-scar.character-sheet .panel-heading .item-create-button,
+.shadow-scar.npc-sheet .panel-heading .item-create-button,
+.shadow-scar.character-sheet .header-inline-heading .item-create-button {
+  background: #efefef;
+  border: 1px solid #111;
+  border-radius: 3px;
+  color: #111;
+  text-shadow: none;
+}
+
+.shadow-scar.character-sheet .hint,
+.shadow-scar.npc-sheet .hint {
+  color: #555;
+  font-size: 0.9em;
+  margin-bottom: 0.55rem;
+  opacity: 0.9;
+}
+
+.shadow-scar.character-sheet .attribute-skill-column,
+.shadow-scar.npc-sheet .attribute-skill-column,
+.shadow-scar.npc-sheet .npc-stat-card {
+  background: #fff;
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 7px;
+  box-shadow: inset 0 0 0 1px #fff, 0 0 0 1px var(--ss-sheet-border-soft);
+  overflow: hidden;
+  padding: 0;
+}
+
+.shadow-scar.character-sheet .attribute-column-header,
+.shadow-scar.npc-sheet .attribute-column-header,
+.shadow-scar.npc-sheet .npc-stat-card .attribute-name {
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg), var(--ss-sheet-title-bg-dark));
+  border-bottom: 2px solid var(--ss-sheet-border);
+  color: var(--ss-sheet-title-fg);
+  margin: 0;
+  padding: 0.35rem 0.45rem;
+  text-shadow: 0 1px 0 #000;
+}
+
+.shadow-scar.character-sheet .attribute-column-header .roll-name,
+.shadow-scar.npc-sheet .attribute-column-header .roll-name,
+.shadow-scar.npc-sheet .npc-stat-card .attribute-name {
+  color: var(--ss-sheet-title-fg);
+  font-weight: 700;
+  text-align: center;
+}
+
+.shadow-scar.character-sheet .attribute-column-header .rating-symbol img,
+.shadow-scar.npc-sheet .attribute-column-header .rating-symbol img {
+  background: rgba(255, 255, 255, 0.92);
+}
+
+.shadow-scar.character-sheet .skill-list,
+.shadow-scar.npc-sheet .skill-list {
+  background: #fff;
+}
+
+.shadow-scar.character-sheet .skill-row,
+.shadow-scar.npc-sheet .skill-row,
+.shadow-scar .item-row {
+  border-bottom: 1px solid var(--ss-sheet-border);
+}
+
+.shadow-scar.character-sheet .skill-row:last-child,
+.shadow-scar.npc-sheet .skill-row:last-child,
+.shadow-scar .item-row:last-child {
+  border-bottom: none;
+}
+
+.shadow-scar.character-sheet .skill-row,
+.shadow-scar.npc-sheet .skill-row {
+  padding: 0.25rem 0.45rem;
+}
+
+.shadow-scar.character-sheet .item-list,
+.shadow-scar.npc-sheet .item-list {
+  background: #fff;
+  border: 1px solid var(--ss-sheet-border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.shadow-scar.character-sheet .item-list .empty,
+.shadow-scar.npc-sheet .item-list .empty {
+  display: block;
+  padding: 0.35rem 0.5rem;
+}
+
+.shadow-scar.character-sheet textarea,
+.shadow-scar.npc-sheet textarea {
+  background: #fff;
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 5px;
+  box-shadow: inset 0 0 0 1px #fff;
+}
+
+.shadow-scar.character-sheet .notes-panel label.field-block > span,
+.shadow-scar.npc-sheet .notes-panel label.field-block > span,
+.shadow-scar.character-sheet .background-page label.field-block > span {
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg), var(--ss-sheet-title-bg-dark));
+  border: 2px solid var(--ss-sheet-border);
+  border-bottom: none;
+  border-radius: 6px 6px 0 0;
+  color: var(--ss-sheet-title-fg);
+  display: block;
+  font-weight: 700;
+  padding: 0.25rem 0.45rem;
+  text-align: center;
+  text-shadow: 0 1px 0 #000;
+}
+
+.shadow-scar.character-sheet .background-page label.field-block textarea {
+  border-radius: 0 0 6px 6px;
+}
+
+.shadow-scar.character-sheet .sheet-tabs button,
+.shadow-scar.npc-sheet .sheet-tabs button {
+  background: var(--ss-sheet-fill-muted);
+  border: 2px solid var(--ss-sheet-border);
+  border-radius: 5px;
+}
+
+.shadow-scar.character-sheet .sheet-tabs button.active,
+.shadow-scar.npc-sheet .sheet-tabs button.active {
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg), var(--ss-sheet-title-bg-dark));
+  color: var(--ss-sheet-title-fg);
+  text-shadow: 0 1px 0 #000;
+}
+
+@media (max-width: 860px) {
+  .shadow-scar.character-sheet .identity-fields {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shadow-scar.character-sheet .inyo-meta-row {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shadow-scar.character-sheet .inyo-field {
+    grid-column: 1 / -1;
+  }
+}
+
+@media (max-width: 760px) {
+  .shadow-scar.character-sheet .identity-fields,
+  .shadow-scar.character-sheet .inyo-meta-row {
+    grid-template-columns: 1fr;
+  }
+
+  .shadow-scar.character-sheet .character-name-field {
+    grid-template-columns: 1fr;
+  }
+
+  .shadow-scar.character-sheet .character-name-field > span,
+  .shadow-scar.character-sheet .character-name-field input {
+    border: 2px solid var(--ss-sheet-border);
+    border-radius: 6px;
+  }
 }

@@ -8,7 +8,8 @@ const fields = foundry.data.fields;
 export class ShadowScarQuirkData extends foundry.abstract.TypeDataModel {
   static defineSchema() {
     return {
-      description: new fields.HTMLField({ required: true, nullable: false, initial: "" })
+      description: new fields.HTMLField({ required: true, nullable: false, initial: "" }),
+      quirkType: new fields.StringField({ required: true, nullable: false, initial: "advantage" })
     };
   }
 }

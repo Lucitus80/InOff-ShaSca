@@ -1,8 +1,8 @@
 {
   "id": "shadow-scar",
   "title": "Shadow Scar",
-  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: visually polished character and NPC sheets with symbolic attribute/skill ratings, improved dice-result readability, always-visible character detail fields including Rank/RP/Wealth/DI beside Inyo, item-based Quirks and Homeland Abilities, Clan/Rank Technique and Mikkyo sheets, stable rank-based Mikkyo Ki costs, compact actor-sheet creation controls for Techniques/Mikkyo/Gear/Weapons, item management, d6-pool rolls with difficulty/margin, active condition modifiers, resource quick controls, weapon rolls, gear use, armor-aware guided damage application, and starter content packs.",
-  "version": "0.7.10",
+  "description": "Unofficial Foundry VTT system prototype for Shadow Scar. Development state: visually polished character and NPC sheets with symbolic attribute/skill ratings, Shadow Scar character-sheet inspired dark section headers and framed panels, improved dice-result readability, always-visible character detail fields including Rank/RP/Wealth/DI beside Inyo, item-based Quirks split into Advantages and Disadvantages, item-based Homeland Abilities, Clan/Rank Technique and Mikkyo sheets, stable rank-based Mikkyo Ki costs, compact actor-sheet creation controls for Techniques/Mikkyo/Gear/Weapons, item management, d6-pool rolls with difficulty/margin, active condition modifiers, resource quick controls, weapon rolls, gear use, armor-aware guided damage application, and starter content packs.",
+  "version": "0.7.12",
   "compatibility": {
     "minimum": "14",
     "verified": "14"
@@ -49,7 +49,7 @@
   "secondaryTokenAttribute": "resources.ki",
   "url": "https://github.com/Lucitus80/InOff-ShaSca",
   "manifest": "https://github.com/Lucitus80/InOff-ShaSca/releases/latest/download/system.json",
-  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.7.10.zip",
+  "download": "https://github.com/Lucitus80/InOff-ShaSca/archive/refs/tags/v0.7.12.zip",
   "packs": [
     {
       "name": "starter-items",

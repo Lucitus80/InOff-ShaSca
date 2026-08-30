@@ -8,22 +8,22 @@
         <input name="name" type="text" value="{{actor.name}}" placeholder="Name" />
       </label>
 
-      <label class="field-block">
+      <label class="field-block homeland-field">
         <span>Homeland</span>
         <input name="system.details.homeland" type="text" value="{{system.details.homeland}}" placeholder="Homeland" />
       </label>
 
-      <label class="field-block">
+      <label class="field-block shinobi-clan-field">
         <span>Shinobi Clan</span>
         <input name="system.details.shinobiClan" type="text" value="{{system.details.shinobiClan}}" placeholder="Shinobi Clan" />
       </label>
 
-      <label class="field-block">
+      <label class="field-block armor-field">
         <span>Armor</span>
         <input name="system.details.armor" type="text" value="{{system.details.armor}}" placeholder="Armor" />
       </label>
 
-      <label class="field-block">
+      <label class="field-block speed-field">
         <span>Speed</span>
         <input name="system.details.speed" type="text" value="{{system.details.speed}}" placeholder="Speed" />
       </label>
@@ -95,21 +95,43 @@
       </div>
 
       <div class="field-block header-item-block quirks-field">
-        <div class="header-inline-heading">
-          <span>Quirks</span>
-          <button type="button" class="item-create-button" data-action="item-create" data-item-type="quirk" title="Create Quirk" aria-label="Create Quirk">+</button>
-        </div>
+        <div class="quirks-split-grid">
+          <section class="quirk-column advantages-column" aria-label="Advantages">
+            <div class="header-inline-heading">
+              <span>Advantages</span>
+              <button type="button" class="item-create-button" data-action="item-create" data-item-type="quirk" data-quirk-type="advantage" title="Create Advantage" aria-label="Create Advantage">+</button>
+            </div>
 
-        <ol class="item-list header-item-list">
-          {{#each itemsByType.quirk as |item|}}
-            <li class="header-item-row item-row" data-item-id="{{item.id}}">
-              <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
-              <button type="button" data-action="item-delete" title="Delete">×</button>
-            </li>
-          {{else}}
-            <li class="empty">No quirks.</li>
-          {{/each}}
-        </ol>
+            <ol class="item-list header-item-list">
+              {{#each advantages as |item|}}
+                <li class="header-item-row item-row" data-item-id="{{item.id}}">
+                  <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
+                  <button type="button" data-action="item-delete" title="Delete">×</button>
+                </li>
+              {{else}}
+                <li class="empty">No advantages.</li>
+              {{/each}}
+            </ol>
+          </section>
+
+          <section class="quirk-column disadvantages-column" aria-label="Disadvantages">
+            <div class="header-inline-heading">
+              <span>Disadvantages</span>
+              <button type="button" class="item-create-button" data-action="item-create" data-item-type="quirk" data-quirk-type="disadvantage" title="Create Disadvantage" aria-label="Create Disadvantage">+</button>
+            </div>
+
+            <ol class="item-list header-item-list">
+              {{#each disadvantages as |item|}}
+                <li class="header-item-row item-row" data-item-id="{{item.id}}">
+                  <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
+                  <button type="button" data-action="item-delete" title="Delete">×</button>
+                </li>
+              {{else}}
+                <li class="empty">No disadvantages.</li>
+              {{/each}}
+            </ol>
+          </section>
+        </div>
       </div>
     </div>
 
@@ -283,7 +305,7 @@
       <section class="tab-page equipment-page two-column-page">
         <section class="panel item-panel">
           <header class="panel-heading item-panel-heading">
-            <h2>Gear</h2>
+            <h2>Personal Inventory</h2>
             <button type="button" class="item-create-button" data-action="item-create" data-item-type="gear" title="Create Gear" aria-label="Create Gear">+</button>
           </header>
           <p class="hint">Use gear to create a chat card. Equipped armor/protection gear is read by the Apply Damage dialog.</p>
@@ -306,7 +328,7 @@
 
         <section class="panel item-panel">
           <header class="panel-heading item-panel-heading">
-            <h2>Weapons</h2>
+            <h2>Weaponry</h2>
             <button type="button" class="item-create-button" data-action="item-create" data-item-type="weapon" title="Create Weapon" aria-label="Create Weapon">+</button>
           </header>
           <p class="hint">Click a weapon name to roll with its configured attack skill. The chat card can then apply editable damage to targeted/selected token actors.</p>
@@ -332,7 +354,7 @@
     {{#if (eq activeTab "background")}}
       <section class="tab-page background-page">
         <section class="panel notes-panel">
-          <h2>Background Info</h2>
+          <h2>Personal History</h2>
 
           <label class="field-block">
             <span>Background</span>
