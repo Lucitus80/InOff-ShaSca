@@ -13,6 +13,7 @@ export class ShadowScarWeaponData extends foundry.abstract.TypeDataModel {
       skill: new fields.StringField({ required: true, nullable: false, initial: "body.melee" }),
       damage: new fields.StringField({ required: true, nullable: false, initial: "" }),
       range: new fields.StringField({ required: true, nullable: false, initial: "" }),
+      rpCost: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: 0 }),
       category: new fields.StringField({ required: true, nullable: false, initial: "" }),
       equipped: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       tags: new fields.StringField({ required: true, nullable: false, initial: "" })

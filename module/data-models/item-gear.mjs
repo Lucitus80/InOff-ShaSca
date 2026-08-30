@@ -11,6 +11,7 @@ export class ShadowScarGearData extends foundry.abstract.TypeDataModel {
     return {
       description: new fields.HTMLField({ required: true, nullable: false, initial: "" }),
       quantity: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 1, min: 0 }),
+      rpCost: new fields.NumberField({ required: true, nullable: false, integer: true, initial: 0, min: 0 }),
       category: new fields.StringField({ required: true, nullable: false, initial: "" }),
       equipped: new fields.BooleanField({ required: true, nullable: false, initial: false }),
       effect: new fields.StringField({ required: true, nullable: false, initial: "" }),

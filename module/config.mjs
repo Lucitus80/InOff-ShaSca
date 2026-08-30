@@ -46,6 +46,20 @@ export const SHADOW_SCAR = {
     homelandAbility: "Homeland Ability"
   },
 
+  /**
+   * Foundry core icon paths used for newly created embedded items.
+   * These avoid the generic item-bag icon where a clearer stock symbol exists.
+   */
+  itemDefaultIcons: {
+    gear: "icons/svg/chest.svg",
+    weapon: "icons/svg/sword.svg",
+    technique: "icons/svg/book.svg",
+    mikkyo: "icons/svg/aura.svg",
+    condition: "icons/svg/terror.svg",
+    quirk: "icons/svg/upgrade.svg",
+    homelandAbility: "icons/svg/book.svg"
+  },
+
   ratings: {
     attributeMax: 5,
     skillMax: 3,
