@@ -15,7 +15,7 @@
       <section class="panel item-fields-panel">
         <h2>Gear</h2>
 
-        <div class="item-field-grid two-fields">
+        <div class="item-field-grid three-fields">
           <label class="field-block">
             <span>Category</span>
             <select name="system.category">
@@ -29,6 +29,11 @@
           <label class="field-block">
             <span>Quantity</span>
             <input name="system.quantity" type="number" value="{{system.quantity}}" min="0" step="1" />
+          </label>
+
+          <label class="field-block">
+            <span>RP Cost</span>
+            <input name="system.rpCost" type="number" value="{{system.rpCost}}" min="0" step="1" />
           </label>
         </div>
 
@@ -107,7 +112,7 @@
           </label>
         </div>
 
-        <div class="item-field-grid two-fields">
+        <div class="item-field-grid three-fields">
           <label class="field-block">
             <span>Damage</span>
             <input name="system.damage" type="text" value="{{system.damage}}" />
@@ -116,6 +121,11 @@
           <label class="field-block">
             <span>Range</span>
             <input name="system.range" type="text" value="{{system.range}}" />
+          </label>
+
+          <label class="field-block">
+            <span>RP Cost</span>
+            <input name="system.rpCost" type="number" value="{{system.rpCost}}" min="0" step="1" />
           </label>
         </div>
 

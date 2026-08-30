@@ -171,6 +171,7 @@ export class ShadowScarActorSheet extends ActorSheet {
     const data = {
       name,
       type,
+      img: this.#getDefaultItemImage(type),
       system: itemSystem
     };
 
@@ -505,6 +506,10 @@ export class ShadowScarActorSheet extends ActorSheet {
   }
 
 
+  #getDefaultItemImage(type) {
+    return SHADOW_SCAR.itemDefaultIcons?.[type] ?? "icons/svg/item-bag.svg";
+  }
+
   #getDefaultItemSystem(type, dataset = {}) {
     switch (type) {
       case SHADOW_SCAR.itemTypes.technique:
@@ -526,6 +531,7 @@ export class ShadowScarActorSheet extends ActorSheet {
           skill: "body.melee",
           damage: "1",
           range: "",
+          rpCost: 0,
           category: "melee",
           equipped: false,
           tags: ""
@@ -534,6 +540,7 @@ export class ShadowScarActorSheet extends ActorSheet {
         return {
           description: "",
           quantity: 1,
+          rpCost: 0,
           category: "general",
           equipped: false,
           effect: "",

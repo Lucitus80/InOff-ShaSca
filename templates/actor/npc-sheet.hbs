@@ -167,7 +167,7 @@
                 <input type="checkbox" data-action="weapon-equipped-toggle" checked aria-label="Equipped weapon" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
-                <span class="item-detail">{{item.system.damage}} {{#if item.system.range}}/ {{item.system.range}}{{/if}}</span>
+                <span class="item-detail">{{item.system.damage}} {{#if item.system.range}}/ {{item.system.range}}{{/if}} / RP {{item.system.rpCost}}</span>
                 <button type="button" data-action="item-open" title="Edit">⚙</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
@@ -243,7 +243,7 @@
                 <input type="checkbox" data-action="gear-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped gear" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="item-open" title="Edit {{item.name}}">{{item.name}}</a>
-                <span class="item-detail">{{item.system.category}} ×{{item.system.quantity}}{{#if item.system.armorValue}} / Armor {{item.system.armorValue}}{{/if}}{{#if item.system.resistanceValue}} / Res {{item.system.resistanceValue}}{{/if}}{{#if item.system.damageReduction}} / DR {{item.system.damageReduction}}{{/if}}</span>
+                <span class="item-detail">{{item.system.category}} ×{{item.system.quantity}} / RP {{item.system.rpCost}}{{#if item.system.armorValue}} / Armor {{item.system.armorValue}}{{/if}}{{#if item.system.resistanceValue}} / Res {{item.system.resistanceValue}}{{/if}}{{#if item.system.damageReduction}} / DR {{item.system.damageReduction}}{{/if}}</span>
                 <button type="button" data-action="use-gear-item" title="Use">Use</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>
@@ -266,7 +266,7 @@
                 <input type="checkbox" data-action="weapon-equipped-toggle" {{#if item.system.equipped}}checked{{/if}} aria-label="Equipped weapon" />
                 <img src="{{item.img}}" alt="" width="24" height="24" />
                 <a data-action="roll-weapon" title="Roll {{item.name}}">{{item.name}}</a>
-                <span class="item-detail">{{item.system.damage}} {{#if item.system.range}}/ {{item.system.range}}{{/if}}</span>
+                <span class="item-detail">{{item.system.damage}} {{#if item.system.range}}/ {{item.system.range}}{{/if}} / RP {{item.system.rpCost}}</span>
                 <button type="button" data-action="item-open" title="Edit">⚙</button>
                 <button type="button" data-action="item-delete" title="Delete">×</button>
               </li>

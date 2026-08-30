@@ -19,7 +19,8 @@ export const STARTER_ITEMS = [
       "range": "Close",
       "category": "melee",
       "equipped": false,
-      "tags": "light, concealable, blade"
+      "tags": "light, concealable, blade",
+      "rpCost": 1
     },
     "effects": [],
     "folder": null,
@@ -30,7 +31,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -46,7 +47,8 @@ export const STARTER_ITEMS = [
       "range": "Close",
       "category": "melee",
       "equipped": false,
-      "tags": "blade, two-handed, precise"
+      "tags": "blade, two-handed, precise",
+      "rpCost": 5
     },
     "effects": [],
     "folder": null,
@@ -57,7 +59,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -73,7 +75,8 @@ export const STARTER_ITEMS = [
       "range": "Close",
       "category": "melee",
       "equipped": false,
-      "tags": "stun, nonlethal"
+      "tags": "stun, nonlethal",
+      "rpCost": 3
     },
     "effects": [],
     "folder": null,
@@ -84,7 +87,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -100,7 +103,8 @@ export const STARTER_ITEMS = [
       "range": "Short",
       "category": "ranged",
       "equipped": false,
-      "tags": "firearm, loud, sidearm"
+      "tags": "firearm, loud, sidearm",
+      "rpCost": 4
     },
     "effects": [],
     "folder": null,
@@ -111,7 +115,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -127,7 +131,8 @@ export const STARTER_ITEMS = [
       "range": "Medium",
       "category": "ranged",
       "equipped": false,
-      "tags": "firearm, burst, concealable"
+      "tags": "firearm, burst, concealable",
+      "rpCost": 6
     },
     "effects": [],
     "folder": null,
@@ -138,7 +143,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -154,7 +159,8 @@ export const STARTER_ITEMS = [
       "range": "Short",
       "category": "thrown",
       "equipped": false,
-      "tags": "thrown, blade, silent"
+      "tags": "thrown, blade, silent",
+      "rpCost": 1
     },
     "effects": [],
     "folder": null,
@@ -165,7 +171,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -181,7 +187,8 @@ export const STARTER_ITEMS = [
       "range": "Close",
       "category": "melee",
       "equipped": false,
-      "tags": "staff, defensive, blunt"
+      "tags": "staff, defensive, blunt",
+      "rpCost": 2
     },
     "effects": [],
     "folder": null,
@@ -192,7 +199,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -208,7 +215,8 @@ export const STARTER_ITEMS = [
       "range": "Close",
       "category": "melee",
       "equipped": false,
-      "tags": "brutal, blunt, improvised"
+      "tags": "brutal, blunt, improvised",
+      "rpCost": 1
     },
     "effects": [],
     "folder": null,
@@ -219,7 +227,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -227,7 +235,7 @@ export const STARTER_ITEMS = [
     "_id": "ScJacket0000001",
     "name": "Armored Jacket",
     "type": "gear",
-    "img": "icons/svg/item-bag.svg",
+    "img": "icons/svg/shield.svg",
     "system": {
       "description": "<p>Common street protection with modest armor plates.</p>",
       "quantity": 1,
@@ -239,7 +247,8 @@ export const STARTER_ITEMS = [
       "defenseBonus": 0,
       "damageReduction": 0,
       "notes": "Flexible armor; easy to conceal under street clothing.",
-      "tags": "armor, streetwear"
+      "tags": "armor, streetwear",
+      "rpCost": 2
     },
     "effects": [],
     "folder": null,
@@ -250,7 +259,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -258,7 +267,7 @@ export const STARTER_ITEMS = [
     "_id": "ScVest000000002",
     "name": "Tactical Vest",
     "type": "gear",
-    "img": "icons/svg/item-bag.svg",
+    "img": "icons/svg/shield.svg",
     "system": {
       "description": "<p>A heavier vest for guards, mercs, and prepared runners.</p>",
       "quantity": 1,
@@ -270,7 +279,8 @@ export const STARTER_ITEMS = [
       "defenseBonus": 0,
       "damageReduction": 1,
       "notes": "Bulky but dependable; includes one point of damage reduction.",
-      "tags": "armor, tactical"
+      "tags": "armor, tactical",
+      "rpCost": 3
     },
     "effects": [],
     "folder": null,
@@ -281,7 +291,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -289,7 +299,7 @@ export const STARTER_ITEMS = [
     "_id": "ScWeave00000003",
     "name": "Shinobi Weave Coat",
     "type": "gear",
-    "img": "icons/svg/item-bag.svg",
+    "img": "icons/svg/shield.svg",
     "system": {
       "description": "<p>A reinforced coat designed for mobility and silent operations.</p>",
       "quantity": 1,
@@ -301,7 +311,8 @@ export const STARTER_ITEMS = [
       "defenseBonus": 1,
       "damageReduction": 0,
       "notes": "Defense Bonus is shown as a reminder and is not automatically subtracted.",
-      "tags": "armor, stealth, stylish"
+      "tags": "armor, stealth, stylish",
+      "rpCost": 4
     },
     "effects": [],
     "folder": null,
@@ -312,7 +323,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -320,7 +331,7 @@ export const STARTER_ITEMS = [
     "_id": "ScMedkit0000004",
     "name": "Field Medkit",
     "type": "gear",
-    "img": "icons/svg/item-bag.svg",
+    "img": "icons/svg/chest.svg",
     "system": {
       "description": "<p>Bandages, sealant, antiseptic, injectors and compact trauma tools.</p>",
       "quantity": 1,
@@ -332,7 +343,8 @@ export const STARTER_ITEMS = [
       "defenseBonus": 0,
       "damageReduction": 0,
       "notes": "",
-      "tags": "medicine, tool, consumable"
+      "tags": "medicine, tool, consumable",
+      "rpCost": 2
     },
     "effects": [],
     "folder": null,
@@ -343,7 +355,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -351,7 +363,7 @@ export const STARTER_ITEMS = [
     "_id": "ScLockkit000005",
     "name": "Lockpick Set",
     "type": "gear",
-    "img": "icons/svg/item-bag.svg",
+    "img": "icons/svg/chest.svg",
     "system": {
       "description": "<p>Mechanical picks, bypass tools, and small probes.</p>",
       "quantity": 1,
@@ -363,7 +375,8 @@ export const STARTER_ITEMS = [
       "defenseBonus": 0,
       "damageReduction": 0,
       "notes": "",
-      "tags": "tool, infiltration"
+      "tags": "tool, infiltration",
+      "rpCost": 2
     },
     "effects": [],
     "folder": null,
@@ -374,7 +387,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -382,7 +395,7 @@ export const STARTER_ITEMS = [
     "_id": "ScSmoke0000006",
     "name": "Smoke Bomb",
     "type": "gear",
-    "img": "icons/svg/item-bag.svg",
+    "img": "icons/svg/chest.svg",
     "system": {
       "description": "<p>A compact smoke charge used for escapes, ambushes, and misdirection.</p>",
       "quantity": 1,
@@ -394,7 +407,8 @@ export const STARTER_ITEMS = [
       "defenseBonus": 0,
       "damageReduction": 0,
       "notes": "",
-      "tags": "consumable, concealment, ninja"
+      "tags": "consumable, concealment, ninja",
+      "rpCost": 1
     },
     "effects": [],
     "folder": null,
@@ -405,7 +419,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -413,7 +427,7 @@ export const STARTER_ITEMS = [
     "_id": "ScWard00000007",
     "name": "Mystic Ward Charm",
     "type": "gear",
-    "img": "icons/svg/item-bag.svg",
+    "img": "icons/svg/shield.svg",
     "system": {
       "description": "<p>A small charm carrying protective prayer strips and talismans.</p>",
       "quantity": 1,
@@ -425,7 +439,8 @@ export const STARTER_ITEMS = [
       "defenseBonus": 0,
       "damageReduction": 0,
       "notes": "Resistance applies automatically in the damage dialog when equipped.",
-      "tags": "mikkyo, ward, resistance"
+      "tags": "mikkyo, ward, resistance",
+      "rpCost": 3
     },
     "effects": [],
     "folder": null,
@@ -436,7 +451,7 @@ export const STARTER_ITEMS = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -787,7 +802,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Close",
           "category": "melee",
           "equipped": true,
-          "tags": "light, concealable, blade"
+          "tags": "light, concealable, blade",
+          "rpCost": 1
         },
         "effects": [],
         "folder": null,
@@ -795,7 +811,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -803,7 +819,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "ThugJacket0001",
         "name": "Armored Jacket",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/shield.svg",
         "system": {
           "description": "<p>Common street protection with modest armor plates.</p>",
           "quantity": 1,
@@ -815,7 +831,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 0,
           "damageReduction": 0,
           "notes": "Flexible armor; easy to conceal under street clothing.",
-          "tags": "armor, streetwear"
+          "tags": "armor, streetwear",
+          "rpCost": 2
         },
         "effects": [],
         "folder": null,
@@ -823,7 +840,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       }
@@ -853,7 +870,7 @@ export const STARTER_ADVERSARIES = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -930,7 +947,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Short",
           "category": "ranged",
           "equipped": true,
-          "tags": "firearm, loud, sidearm"
+          "tags": "firearm, loud, sidearm",
+          "rpCost": 4
         },
         "effects": [],
         "folder": null,
@@ -938,7 +956,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -946,7 +964,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "GuardVest00001",
         "name": "Tactical Vest",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/shield.svg",
         "system": {
           "description": "<p>A heavier vest for guards, mercs, and prepared runners.</p>",
           "quantity": 1,
@@ -958,7 +976,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 0,
           "damageReduction": 1,
           "notes": "Bulky but dependable; includes one point of damage reduction.",
-          "tags": "armor, tactical"
+          "tags": "armor, tactical",
+          "rpCost": 3
         },
         "effects": [],
         "folder": null,
@@ -966,7 +985,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -974,7 +993,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "GuardMedkit001",
         "name": "Field Medkit",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/chest.svg",
         "system": {
           "description": "<p>Bandages, sealant, antiseptic, injectors and compact trauma tools.</p>",
           "quantity": 1,
@@ -986,7 +1005,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 0,
           "damageReduction": 0,
           "notes": "",
-          "tags": "medicine, tool, consumable"
+          "tags": "medicine, tool, consumable",
+          "rpCost": 2
         },
         "effects": [],
         "folder": null,
@@ -994,7 +1014,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       }
@@ -1024,7 +1044,7 @@ export const STARTER_ADVERSARIES = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -1101,7 +1121,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Close",
           "category": "melee",
           "equipped": true,
-          "tags": "blade, two-handed, precise"
+          "tags": "blade, two-handed, precise",
+          "rpCost": 5
         },
         "effects": [],
         "folder": null,
@@ -1109,7 +1130,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1125,7 +1146,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Short",
           "category": "thrown",
           "equipped": true,
-          "tags": "thrown, blade, silent"
+          "tags": "thrown, blade, silent",
+          "rpCost": 1
         },
         "effects": [],
         "folder": null,
@@ -1133,7 +1155,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1141,7 +1163,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "ScoutCoat0001",
         "name": "Shinobi Weave Coat",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/shield.svg",
         "system": {
           "description": "<p>A reinforced coat designed for mobility and silent operations.</p>",
           "quantity": 1,
@@ -1153,7 +1175,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 1,
           "damageReduction": 0,
           "notes": "Defense Bonus is shown as a reminder and is not automatically subtracted.",
-          "tags": "armor, stealth, stylish"
+          "tags": "armor, stealth, stylish",
+          "rpCost": 4
         },
         "effects": [],
         "folder": null,
@@ -1161,7 +1184,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1169,7 +1192,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "ScoutSmoke001",
         "name": "Smoke Bomb",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/chest.svg",
         "system": {
           "description": "<p>A compact smoke charge used for escapes, ambushes, and misdirection.</p>",
           "quantity": 2,
@@ -1181,7 +1204,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 0,
           "damageReduction": 0,
           "notes": "",
-          "tags": "consumable, concealment, ninja"
+          "tags": "consumable, concealment, ninja",
+          "rpCost": 1
         },
         "effects": [],
         "folder": null,
@@ -1189,7 +1213,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1239,7 +1263,7 @@ export const STARTER_ADVERSARIES = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -1316,7 +1340,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Close",
           "category": "melee",
           "equipped": true,
-          "tags": "brutal, blunt, improvised"
+          "tags": "brutal, blunt, improvised",
+          "rpCost": 1
         },
         "effects": [],
         "folder": null,
@@ -1324,7 +1349,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1332,7 +1357,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "BruiserPlating1",
         "name": "Reinforced Hide Plates",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/chest.svg",
         "system": {
           "description": "<p>Thick protective layers that reduce incoming harm.</p>",
           "quantity": 1,
@@ -1344,7 +1369,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 0,
           "damageReduction": 1,
           "notes": "Represents thick hide, armor scraps, and sheer mass.",
-          "tags": "armor, monster"
+          "tags": "armor, monster",
+          "rpCost": 0
         },
         "effects": [],
         "folder": null,
@@ -1355,7 +1381,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       }
@@ -1385,7 +1411,7 @@ export const STARTER_ADVERSARIES = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -1462,7 +1488,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Close",
           "category": "melee",
           "equipped": true,
-          "tags": "staff, defensive, blunt"
+          "tags": "staff, defensive, blunt",
+          "rpCost": 2
         },
         "effects": [],
         "folder": null,
@@ -1470,7 +1497,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1478,7 +1505,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "AdeptWard00001",
         "name": "Mystic Ward Charm",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/shield.svg",
         "system": {
           "description": "<p>A small charm carrying protective prayer strips and talismans.</p>",
           "quantity": 1,
@@ -1490,7 +1517,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 0,
           "damageReduction": 0,
           "notes": "Resistance applies automatically in the damage dialog when equipped.",
-          "tags": "mikkyo, ward, resistance"
+          "tags": "mikkyo, ward, resistance",
+          "rpCost": 3
         },
         "effects": [],
         "folder": null,
@@ -1498,7 +1526,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1591,7 +1619,7 @@ export const STARTER_ADVERSARIES = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   },
@@ -1668,7 +1696,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Close",
           "category": "melee",
           "equipped": true,
-          "tags": "blade, two-handed, precise"
+          "tags": "blade, two-handed, precise",
+          "rpCost": 5
         },
         "effects": [],
         "folder": null,
@@ -1676,7 +1705,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1692,7 +1721,8 @@ export const STARTER_ADVERSARIES = [
           "range": "Short",
           "category": "ranged",
           "equipped": true,
-          "tags": "firearm, loud, sidearm"
+          "tags": "firearm, loud, sidearm",
+          "rpCost": 4
         },
         "effects": [],
         "folder": null,
@@ -1700,7 +1730,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1708,7 +1738,7 @@ export const STARTER_ADVERSARIES = [
         "_id": "BossCoat00001",
         "name": "Shinobi Weave Coat",
         "type": "gear",
-        "img": "icons/svg/item-bag.svg",
+        "img": "icons/svg/shield.svg",
         "system": {
           "description": "<p>A reinforced coat designed for mobility and silent operations.</p>",
           "quantity": 1,
@@ -1720,7 +1750,8 @@ export const STARTER_ADVERSARIES = [
           "defenseBonus": 1,
           "damageReduction": 0,
           "notes": "Defense Bonus is shown as a reminder and is not automatically subtracted.",
-          "tags": "armor, stealth, stylish"
+          "tags": "armor, stealth, stylish",
+          "rpCost": 4
         },
         "effects": [],
         "folder": null,
@@ -1728,7 +1759,7 @@ export const STARTER_ADVERSARIES = [
         "flags": {
           "shadow-scar": {
             "starterContent": true,
-            "version": "0.7.4"
+            "version": "0.7.15"
           }
         }
       },
@@ -1821,7 +1852,7 @@ export const STARTER_ADVERSARIES = [
     "flags": {
       "shadow-scar": {
         "starterContent": true,
-        "version": "0.7.4"
+        "version": "0.7.15"
       }
     }
   }
