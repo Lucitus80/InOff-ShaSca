@@ -1450,3 +1450,125 @@
 .shadow-scar .item-description-field span {
   font-weight: 600;
 }
+
+
+/* v0.7.17: Chronicle tab and advancement ledger. */
+.shadow-scar.character-sheet .sheet-tabs {
+  grid-template-columns: repeat(6, minmax(0, 1fr));
+}
+
+.shadow-scar .chronicle-page {
+  grid-template-columns: 1fr;
+}
+
+.shadow-scar .chronicle-notes-panel textarea {
+  border-radius: 5px;
+  min-height: 8rem;
+}
+
+.shadow-scar .chronicle-heading {
+  align-items: center;
+}
+
+.shadow-scar .chronicle-table-wrap {
+  border: 2px solid var(--ss-sheet-border, #111);
+  border-radius: 5px;
+  overflow-x: auto;
+}
+
+.shadow-scar .chronicle-table {
+  background: #fff;
+  border-collapse: collapse;
+  margin: 0;
+  table-layout: fixed;
+  width: 100%;
+}
+
+.shadow-scar .chronicle-table th {
+  background: linear-gradient(180deg, var(--ss-sheet-title-bg, #333), var(--ss-sheet-title-bg-dark, #111));
+  border-right: 1px solid #000;
+  color: var(--ss-sheet-title-fg, #fff);
+  font-weight: 700;
+  padding: 0.35rem 0.45rem;
+  text-align: center;
+  text-shadow: 0 1px 0 #000;
+}
+
+.shadow-scar .chronicle-table th:nth-child(1) { width: 18%; }
+.shadow-scar .chronicle-table th:nth-child(2) { width: 27%; }
+.shadow-scar .chronicle-table th:nth-child(3) { width: 40%; }
+.shadow-scar .chronicle-table th:nth-child(4) { width: 9%; }
+.shadow-scar .chronicle-table th:nth-child(5) { width: 6%; }
+
+.shadow-scar .chronicle-table td {
+  border-right: 1px solid var(--ss-sheet-border, #111);
+  border-top: 1px solid var(--ss-sheet-border, #111);
+  padding: 0;
+}
+
+.shadow-scar .chronicle-table th:last-child,
+.shadow-scar .chronicle-table td:last-child {
+  border-right: none;
+}
+
+.shadow-scar .chronicle-table input {
+  background: transparent;
+  border: 0;
+  border-radius: 0;
+  box-shadow: none;
+  box-sizing: border-box;
+  min-height: 2rem;
+  padding: 0.3rem 0.4rem;
+  width: 100%;
+}
+
+.shadow-scar .chronicle-table input:focus {
+  box-shadow: inset 0 0 0 2px rgba(0, 0, 0, 0.35);
+  outline: none;
+}
+
+.shadow-scar .chronicle-table input[type="number"] {
+  text-align: center;
+}
+
+.shadow-scar .chronicle-row-actions {
+  text-align: center;
+}
+
+.shadow-scar .chronicle-row-actions button {
+  background: transparent;
+  border: 0;
+  box-shadow: none;
+  font-size: 1rem;
+  line-height: 1;
+  margin: 0;
+  min-width: 1.8rem;
+  padding: 0.25rem;
+}
+
+.shadow-scar .chronicle-empty-row td {
+  color: #666;
+  font-style: italic;
+  padding: 0.65rem;
+  text-align: center;
+}
+
+.shadow-scar .sr-only {
+  clip: rect(0, 0, 0, 0);
+  clip-path: inset(50%);
+  height: 1px;
+  overflow: hidden;
+  position: absolute;
+  white-space: nowrap;
+  width: 1px;
+}
+
+@media (max-width: 760px) {
+  .shadow-scar.character-sheet .sheet-tabs {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .shadow-scar .chronicle-table {
+    min-width: 650px;
+  }
+}

@@ -17,7 +17,7 @@ import {
   useKiItem
 } from "../dice/rolls.mjs";
 
-const CHARACTER_TABS = ["general", "techniques", "equipment", "background", "conditions"];
+const CHARACTER_TABS = ["general", "techniques", "equipment", "background", "chronicle", "conditions"];
 const NPC_TABS = ["combat", "equipment", "conditions", "notes"];
 
 export class ShadowScarActorSheet extends ActorSheet {
@@ -67,7 +67,8 @@ export class ShadowScarActorSheet extends ActorSheet {
       mikkyo: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.mikkyo),
       condition: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.condition),
       quirk: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.quirk),
-      homelandAbility: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.homelandAbility)
+      homelandAbility: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.homelandAbility),
+      chronicleEntry: items.filter((item) => item.type === SHADOW_SCAR.itemTypes.chronicleEntry)
     };
 
     context.advantages = context.itemsByType.quirk.filter((item) => (item.system?.quirkType || "advantage") === "advantage");
@@ -96,6 +97,8 @@ export class ShadowScarActorSheet extends ActorSheet {
     html.find("[data-action='use-gear-item']").on("click", this._onUseGearItem.bind(this));
     html.find("[data-action='use-ki-item']").on("click", this._onUseKiItem.bind(this));
     html.find("[data-action='item-delete']").on("click", this._onItemDelete.bind(this));
+    html.find("[data-action='chronicle-entry-create']").on("click", this._onChronicleEntryCreate.bind(this));
+    html.find("[data-action='chronicle-entry-update']").on("change", this._onChronicleEntryUpdate.bind(this));
     html.find("[data-action='condition-toggle']").on("change", this._onConditionToggle.bind(this));
     html.find("[data-action='gear-equipped-toggle']").on("change", this._onItemEquippedToggle.bind(this));
     html.find("[data-action='weapon-equipped-toggle']").on("change", this._onItemEquippedToggle.bind(this));
@@ -179,6 +182,43 @@ export class ShadowScarActorSheet extends ActorSheet {
     const item = created?.[0];
     if (item?.sheet) item.sheet.render(true);
     return item;
+  }
+
+  async _onChronicleEntryCreate(event) {
+    event.preventDefault();
+
+    const data = {
+      name: "Chronicle Entry",
+      type: SHADOW_SCAR.itemTypes.chronicleEntry,
+      img: this.#getDefaultItemImage(SHADOW_SCAR.itemTypes.chronicleEntry),
+      system: this.#getDefaultItemSystem(SHADOW_SCAR.itemTypes.chronicleEntry)
+    };
+
+    const created = await this.actor.createEmbeddedDocuments("Item", [data]);
+    if (created?.length) return this.render(false);
+    return null;
+  }
+
+  async _onChronicleEntryUpdate(event) {
+    const input = event.currentTarget;
+    const row = input.closest("[data-item-id]");
+    const item = row ? this.actor.items.get(row.dataset.itemId) : null;
+    const field = input.dataset.field;
+    if (!item || item.type !== SHADOW_SCAR.itemTypes.chronicleEntry || !field) return null;
+
+    let value = input.value;
+    if (field === "rp") {
+      const numeric = Number(value);
+      value = Number.isFinite(numeric) ? Math.trunc(numeric) : 0;
+    }
+
+    const updates = { [`system.${field}`]: value };
+
+    // Keep the embedded Item name useful in Foundry's sidebar/debugging while
+    // the visible table uses system.title.
+    if (field === "title") updates.name = String(value || "Chronicle Entry");
+
+    return item.update(updates);
   }
 
   async _onUseGearItem(event) {
@@ -470,7 +510,7 @@ export class ShadowScarActorSheet extends ActorSheet {
   }
 
   _getItemFromEvent(event) {
-    const itemId = event.currentTarget.closest(".item-row")?.dataset.itemId;
+    const itemId = event.currentTarget.closest("[data-item-id]")?.dataset.itemId;
     if (!itemId) return null;
     return this.actor.items.get(itemId);
   }
@@ -559,6 +599,13 @@ export class ShadowScarActorSheet extends ActorSheet {
           category: "other",
           modifier: 0,
           penalty: ""
+        };
+      case SHADOW_SCAR.itemTypes.chronicleEntry:
+        return {
+          date: "",
+          title: "",
+          advancement: "",
+          rp: 0
         };
       case SHADOW_SCAR.itemTypes.quirk:
         return {

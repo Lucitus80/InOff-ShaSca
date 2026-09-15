@@ -173,6 +173,7 @@
     <button type="button" data-action="tab" data-tab="techniques" class='{{#if (eq activeTab "techniques")}}active{{/if}}'>Techniques & Mikkyo</button>
     <button type="button" data-action="tab" data-tab="equipment" class='{{#if (eq activeTab "equipment")}}active{{/if}}'>Equipment & Weapons</button>
     <button type="button" data-action="tab" data-tab="background" class='{{#if (eq activeTab "background")}}active{{/if}}'>Background</button>
+    <button type="button" data-action="tab" data-tab="chronicle" class='{{#if (eq activeTab "chronicle")}}active{{/if}}'>Chronicle</button>
     <button type="button" data-action="tab" data-tab="conditions" class='{{#if (eq activeTab "conditions")}}active{{/if}}'>Conditions</button>
   </nav>
 
@@ -370,6 +371,55 @@
             <span>Notes</span>
             <textarea name="system.details.notes" rows="8">{{system.details.notes}}</textarea>
           </label>
+        </section>
+      </section>
+    {{/if}}
+
+
+    {{#if (eq activeTab "chronicle")}}
+      <section class="tab-page chronicle-page">
+        <section class="panel chronicle-notes-panel">
+          <h2>Chronicle Notes</h2>
+          <label class="field-block">
+            <span class="sr-only">Chronicle Notes</span>
+            <textarea name="system.details.chronicleNotes" rows="7" placeholder="Campaign notes, milestones, important events...">{{system.details.chronicleNotes}}</textarea>
+          </label>
+        </section>
+
+        <section class="panel chronicle-ledger-panel">
+          <header class="panel-heading chronicle-heading">
+            <h2>Chronicle</h2>
+            <button type="button" class="item-create-button" data-action="chronicle-entry-create" title="Add Chronicle Entry" aria-label="Add Chronicle Entry">+</button>
+          </header>
+
+          <div class="chronicle-table-wrap">
+            <table class="chronicle-table">
+              <thead>
+                <tr>
+                  <th>Date</th>
+                  <th>Title</th>
+                  <th>Advancement</th>
+                  <th>RP</th>
+                  <th class="chronicle-actions-column" aria-label="Actions"></th>
+                </tr>
+              </thead>
+              <tbody>
+                {{#each itemsByType.chronicleEntry as |entry|}}
+                  <tr class="chronicle-entry-row" data-item-id="{{entry.id}}">
+                    <td><input type="text" value="{{entry.system.date}}" data-action="chronicle-entry-update" data-field="date" placeholder="Date" aria-label="Date" /></td>
+                    <td><input type="text" value="{{entry.system.title}}" data-action="chronicle-entry-update" data-field="title" placeholder="Title" aria-label="Title" /></td>
+                    <td><input type="text" value="{{entry.system.advancement}}" data-action="chronicle-entry-update" data-field="advancement" placeholder="Advancement" aria-label="Advancement" /></td>
+                    <td><input type="number" value="{{entry.system.rp}}" step="1" data-action="chronicle-entry-update" data-field="rp" aria-label="RP" /></td>
+                    <td class="chronicle-row-actions"><button type="button" data-action="item-delete" title="Delete Chronicle Entry" aria-label="Delete Chronicle Entry">×</button></td>
+                  </tr>
+                {{else}}
+                  <tr class="chronicle-empty-row">
+                    <td colspan="5">No chronicle entries yet.</td>
+                  </tr>
+                {{/each}}
+              </tbody>
+            </table>
+          </div>
         </section>
       </section>
     {{/if}}
