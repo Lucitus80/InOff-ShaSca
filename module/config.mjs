@@ -33,7 +33,8 @@ export const SHADOW_SCAR = {
     mikkyo: "mikkyo",
     condition: "condition",
     quirk: "quirk",
-    homelandAbility: "homelandAbility"
+    homelandAbility: "homelandAbility",
+    chronicleEntry: "chronicleEntry"
   },
 
   itemTypeLabels: {
@@ -43,7 +44,8 @@ export const SHADOW_SCAR = {
     mikkyo: "Mikkyo",
     condition: "Condition",
     quirk: "Quirk",
-    homelandAbility: "Homeland Ability"
+    homelandAbility: "Homeland Ability",
+    chronicleEntry: "Chronicle Entry"
   },
 
   /**
@@ -57,7 +59,8 @@ export const SHADOW_SCAR = {
     mikkyo: "icons/svg/aura.svg",
     condition: "icons/svg/terror.svg",
     quirk: "icons/svg/upgrade.svg",
-    homelandAbility: "icons/svg/book.svg"
+    homelandAbility: "icons/svg/book.svg",
+    chronicleEntry: "icons/svg/book.svg"
   },
 
   ratings: {

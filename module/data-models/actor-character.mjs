@@ -106,7 +106,8 @@ export class ShadowScarCharacterData extends foundry.abstract.TypeDataModel {
         quirks: new fields.StringField({ required: true, nullable: false, initial: "" }),
         background: new fields.StringField({ required: true, nullable: false, initial: "" }),
         contacts: new fields.StringField({ required: true, nullable: false, initial: "" }),
-        notes: new fields.StringField({ required: true, nullable: false, initial: "" })
+        notes: new fields.StringField({ required: true, nullable: false, initial: "" }),
+        chronicleNotes: new fields.StringField({ required: true, nullable: false, initial: "" })
       })
     };
   }

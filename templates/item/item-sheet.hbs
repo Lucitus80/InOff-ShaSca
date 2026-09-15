@@ -250,6 +250,31 @@
       </section>
     {{/if}}
 
+
+    {{#if (eq item.type "chronicleEntry")}}
+      <section class="panel item-fields-panel">
+        <h2>Chronicle Entry</h2>
+        <div class="item-field-grid two-fields">
+          <label class="field-block">
+            <span>Date</span>
+            <input name="system.date" type="text" value="{{system.date}}" />
+          </label>
+          <label class="field-block">
+            <span>RP</span>
+            <input name="system.rp" type="number" value="{{system.rp}}" step="1" />
+          </label>
+        </div>
+        <label class="field-block">
+          <span>Title</span>
+          <input name="system.title" type="text" value="{{system.title}}" />
+        </label>
+        <label class="field-block item-description-field">
+          <span>Advancement</span>
+          <textarea name="system.advancement" rows="6" placeholder="Advancement gained or spent.">{{system.advancement}}</textarea>
+        </label>
+      </section>
+    {{/if}}
+
     {{#if (eq item.type "condition")}}
       <section class="panel item-fields-panel">
         <h2>Condition</h2>
