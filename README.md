@@ -237,3 +237,15 @@ game.shadowScar.starterContent.importAdversaries()
 ```
 
 The helpers skip existing world documents by name unless called with `skipExisting: false`.
+
+
+## v0.7.18: Item descriptions directly on the Actor sheets
+
+Character and NPC Item rows now offer an optional `▸` expand/collapse toggle
+whenever an Item has descriptive text. Click the toggle to read the full
+description inside its own sheet without triggering Use, Attack, or Edit. Hover
+over the Item name for a short native tooltip preview. Gear also displays
+its Effect and Protection Notes; Weapons show Tags; Conditions show their
+Penalty / Rule text. Previews are read-only, work without sheet editing
+rights, and remember which Items are expanded while the sheet is open.
+The behavior does not change item drag-and-drop, rolls, or Item data.

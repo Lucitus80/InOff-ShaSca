@@ -22,6 +22,7 @@ const NPC_TABS = ["combat", "equipment", "conditions", "notes"];
 
 export class ShadowScarActorSheet extends ActorSheet {
   _activeTab = "general";
+  _expandedItemDescriptions = new Set();
 
   static get defaultOptions() {
     return foundry.utils.mergeObject(super.defaultOptions, {
@@ -87,6 +88,10 @@ export class ShadowScarActorSheet extends ActorSheet {
 
     html.find("[data-action='tab']").on("click", this._onTabClick.bind(this));
 
+    // Readable item previews must also work for users who can view a sheet
+    // but cannot edit its embedded items.
+    this.#activateItemDescriptionPreviews(html);
+
     if (!this.isEditable) return;
 
     html.find("[data-action='roll-attribute']").on("click", this._onRollAttribute.bind(this));
@@ -108,6 +113,137 @@ export class ShadowScarActorSheet extends ActorSheet {
     html.find("[data-action='resource-heal-dialog']").on("click", this._onResourceHealDialog.bind(this));
     html.find("[data-action='set-rating']").on("click", this._onSetRating.bind(this));
     this.#activateItemDragAndDrop(html);
+  }
+
+  /**
+   * v0.7.18: Add non-destructive, expandable Item descriptions on both Actor
+   * sheets. We enhance the rendered rows instead of changing every individual
+   * template, preserving the existing use, edit, equip and drag/drop actions.
+   * Only plain text is inserted into the sheet; legacy HTMLField markup is
+   * converted to text rather than being rendered as untrusted HTML.
+   */
+  #activateItemDescriptionPreviews(html) {
+    const rows = html.find(".item-row[data-item-id]");
+
+    rows.each((_index, row) => {
+      const item = this.actor.items.get(row.dataset.itemId);
+      if (!item || item.type === SHADOW_SCAR.itemTypes.chronicleEntry) return;
+
+      const descriptionSections = this.#getItemDescriptionSections(item);
+      if (!descriptionSections.length) return;
+
+      const itemAction = row.querySelector(
+        'a[data-action="item-open"], a[data-action="use-ki-item"], a[data-action="roll-weapon"]'
+      );
+      if (!itemAction) return;
+
+      const fullPreview = descriptionSections
+        .map(({ label, value }) => `${label}: ${value}`)
+        .join("\n\n");
+      const tooltip = fullPreview.length > 320
+        ? `${fullPreview.slice(0, 317)}…`
+        : fullPreview;
+      itemAction.title = tooltip;
+
+      const nameAndToggle = document.createElement("span");
+      nameAndToggle.className = "item-name-with-preview";
+      itemAction.before(nameAndToggle);
+      nameAndToggle.appendChild(itemAction);
+
+      const previewId = `shadow-scar-item-preview-${this.appId}-${item.id}`;
+      const isExpanded = this._expandedItemDescriptions.has(item.id);
+      const toggle = document.createElement("button");
+      toggle.type = "button";
+      toggle.draggable = false;
+      toggle.className = "item-preview-toggle";
+      toggle.dataset.action = "toggle-item-preview";
+      toggle.setAttribute("aria-controls", previewId);
+      toggle.setAttribute("aria-expanded", String(isExpanded));
+      toggle.setAttribute("aria-label", `${isExpanded ? "Hide" : "Show"} details for ${item.name}`);
+      toggle.title = isExpanded ? "Hide details" : "Show details";
+      toggle.textContent = isExpanded ? "▾" : "▸";
+      nameAndToggle.appendChild(toggle);
+
+      const body = document.createElement("div");
+      body.className = "item-description-preview";
+      body.id = previewId;
+      body.hidden = !isExpanded;
+      body.setAttribute("role", "region");
+      body.setAttribute("aria-label", `Details for ${item.name}`);
+
+      for (const { label, value } of descriptionSections) {
+        const section = document.createElement("section");
+        section.className = "item-description-preview-section";
+        const heading = document.createElement("strong");
+        heading.textContent = label;
+        const content = document.createElement("div");
+        content.className = "item-description-preview-text";
+        content.textContent = value;
+        section.append(heading, content);
+        body.appendChild(section);
+      }
+      row.appendChild(body);
+
+      if (isExpanded) row.closest(".header-item-list")?.classList.add("has-expanded-description");
+
+      toggle.addEventListener("click", (event) => {
+        event.preventDefault();
+        event.stopPropagation();
+        const expanded = toggle.getAttribute("aria-expanded") !== "true";
+        body.hidden = !expanded;
+        toggle.setAttribute("aria-expanded", String(expanded));
+        toggle.setAttribute("aria-label", `${expanded ? "Hide" : "Show"} details for ${item.name}`);
+        toggle.title = expanded ? "Hide details" : "Show details";
+        toggle.textContent = expanded ? "▾" : "▸";
+
+        if (expanded) this._expandedItemDescriptions.add(item.id);
+        else this._expandedItemDescriptions.delete(item.id);
+
+        const headerList = row.closest(".header-item-list");
+        if (headerList) {
+          headerList.classList.toggle(
+            "has-expanded-description",
+            Boolean(headerList.querySelector('.item-preview-toggle[aria-expanded="true"]'))
+          );
+        }
+      });
+    });
+  }
+
+  /** Returns visible text fields, including Gear effects and protection notes. */
+  #getItemDescriptionSections(item) {
+    const source = item.system ?? {};
+    const fields = [["Description", source.description]];
+
+    if (item.type === SHADOW_SCAR.itemTypes.gear) {
+      fields.push(["Effect", source.effect], ["Protection Notes", source.notes]);
+    } else if (item.type === SHADOW_SCAR.itemTypes.condition) {
+      fields.push(["Penalty / Rule", source.penalty]);
+    } else if (item.type === SHADOW_SCAR.itemTypes.weapon) {
+      fields.push(["Traits / Tags", source.tags]);
+    }
+
+    return fields
+      .map(([label, text]) => ({ label, value: this.#plainDescriptionText(text) }))
+      .filter((entry) => entry.value.length > 0);
+  }
+
+  /** Safely display both current textarea text and earlier HTML descriptions. */
+  #plainDescriptionText(value) {
+    if (value == null) return "";
+    const raw = String(value);
+    if (!raw.trim()) return "";
+
+    // A detached template is inert. Read only its textContent, never its HTML.
+    const template = document.createElement("template");
+    template.innerHTML = raw
+      .replace(/<br\s*\/?>/gi, "\n")
+      .replace(/<li(?:\s[^>]*)?>/gi, "\n• ")
+      .replace(/<\/(?:p|div|li|ul|ol|h[1-6])\s*>/gi, "\n");
+    return (template.content.textContent ?? "")
+      .replace(/\r\n?/g, "\n")
+      .replace(/\n{3,}/g, "\n\n")
+      .trim();
   }
 
   async _onTabClick(event) {
