@@ -1572,3 +1572,95 @@
     min-width: 650px;
   }
 }
+
+
+/* v0.7.18: collapsible, read-only descriptions without altering item actions. */
+.shadow-scar .item-name-with-preview {
+  align-items: center;
+  display: flex;
+  gap: 0.3rem;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.shadow-scar .item-name-with-preview > a {
+  flex: 1 1 auto;
+  min-width: 0;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.shadow-scar .item-row .item-preview-toggle {
+  align-items: center;
+  background: #f5f5f5;
+  border: 1px solid #777;
+  border-radius: 3px;
+  box-shadow: none;
+  color: #222;
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 1.3rem;
+  font-size: 0.95rem;
+  height: 1.3rem;
+  justify-content: center;
+  line-height: 1;
+  margin: 0;
+  min-height: 0;
+  min-width: 0;
+  padding: 0;
+  width: 1.3rem;
+}
+
+.shadow-scar .item-row .item-preview-toggle:hover,
+.shadow-scar .item-row .item-preview-toggle:focus-visible {
+  background: #e4e4e4;
+  border-color: #111;
+  outline-offset: 2px;
+}
+
+.shadow-scar .item-row > .item-description-preview {
+  background: #f5f5f5;
+  border: 1px solid #aaa;
+  border-left: 3px solid #444;
+  border-radius: 4px;
+  box-sizing: border-box;
+  color: #222;
+  grid-column: 1 / -1;
+  margin: 0.2rem 0.15rem 0.45rem;
+  min-width: 0;
+  overflow-wrap: anywhere;
+  padding: 0.45rem 0.6rem;
+}
+
+.shadow-scar .item-row > .item-description-preview[hidden] {
+  display: none;
+}
+
+.shadow-scar .item-description-preview-section + .item-description-preview-section {
+  border-top: 1px solid #ccc;
+  margin-top: 0.45rem;
+  padding-top: 0.45rem;
+}
+
+.shadow-scar .item-description-preview-section > strong {
+  display: block;
+  font-size: 0.85rem;
+  margin-bottom: 0.15rem;
+}
+
+.shadow-scar .item-description-preview-text {
+  font-size: 0.9rem;
+  line-height: 1.35;
+  white-space: pre-wrap;
+}
+
+/* Keep header Quirk / Homeland Ability descriptions legible when opened. */
+.shadow-scar .header-item-list.has-expanded-description {
+  max-height: 17rem;
+  overflow-y: auto;
+}
+
+.shadow-scar .header-item-row .item-name-with-preview {
+  min-width: 0;
+}
